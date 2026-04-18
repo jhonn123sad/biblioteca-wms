@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leads: {
+        Row: {
+          buying_intention: string | null
+          created_at: string
+          id: string
+          name: string
+          preferred_location: string | null
+          price_range: string | null
+          property_interest: string | null
+          timeframe: string | null
+          whatsapp: string
+        }
+        Insert: {
+          buying_intention?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          preferred_location?: string | null
+          price_range?: string | null
+          property_interest?: string | null
+          timeframe?: string | null
+          whatsapp: string
+        }
+        Update: {
+          buying_intention?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          preferred_location?: string | null
+          price_range?: string | null
+          property_interest?: string | null
+          timeframe?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
