@@ -10,9 +10,10 @@ export const WhatsAppButton = () => {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center justify-center gap-2 w-full max-w-md mx-auto bg-secondary text-secondary-foreground font-semibold py-4 px-6 rounded-full shadow-card hover:shadow-luxury transition-smooth hover:scale-[1.02]"
+      aria-label="Falar com o corretor no WhatsApp"
+      className="group inline-flex items-center justify-center gap-2.5 w-full bg-[hsl(142,70%,38%)] hover:bg-[hsl(142,70%,33%)] text-white font-semibold py-4 px-6 rounded-xl shadow-card hover:shadow-luxury transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[hsl(142,70%,38%)]"
     >
-      <MessageCircle className="w-5 h-5" />
+      <MessageCircle className="w-5 h-5" aria-hidden />
       Falar no WhatsApp
     </a>
   );
