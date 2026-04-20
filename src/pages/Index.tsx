@@ -4,10 +4,10 @@ import { Properties } from "@/components/Properties";
 
 const Index = () => {
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-md mx-auto">
+    <main className="min-h-screen bg-gradient-to-b from-muted/40 to-background">
+      <div className="max-w-md mx-auto pb-4">
         <AgentBio />
-        <div className="px-4">
+        <div className="px-5 sticky top-3 z-10">
           <WhatsAppButton />
         </div>
         <Properties />

@@ -47,10 +47,15 @@ export const Properties = () => {
   const active = properties.find((p) => p.id === openId);
 
   return (
-    <section className="px-4 py-8 max-w-md mx-auto space-y-6">
-      <h2 className="text-2xl font-bold text-center text-foreground">
-        Imóveis em <span className="text-secondary">destaque</span>
-      </h2>
+    <section className="px-5 py-10 max-w-md mx-auto space-y-6" aria-label="Imóveis em destaque">
+      <header className="text-center">
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          Imóveis em <span className="text-secondary">destaque</span>
+        </h2>
+        <p className="text-sm text-muted-foreground mt-2">
+          Toque em <span className="font-semibold text-foreground">"Tenho interesse"</span> para falar diretamente comigo
+        </p>
+      </header>
 
       {properties.map((p) => (
         <article
@@ -88,9 +93,11 @@ export const Properties = () => {
             </div>
             <Button
               onClick={() => setOpenId(p.id)}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+              size="lg"
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold text-base shadow-card hover:shadow-luxury transition-smooth"
+              aria-label={`Demonstrar interesse em ${p.name}`}
             >
-              Tenho interesse
+              Tenho interesse →
             </Button>
           </div>
         </article>
