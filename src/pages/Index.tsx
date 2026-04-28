@@ -197,64 +197,66 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
   };
 
   return (
-    <div className="group bg-white rounded-[2rem] border border-black/5 overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1">
-      <div className="aspect-[3/4] overflow-hidden relative">
+    <div className="group bg-white rounded-3xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-2">
+      <div className="aspect-[4/5] overflow-hidden relative">
         <img 
           src={mainImage} 
           alt={prompt.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-bold leading-tight mb-2 line-clamp-1">{prompt.title}</h3>
-        <p className="text-gray-400 text-xs font-medium mb-6 line-clamp-1">{prompt.description}</p>
+      <div className="p-7">
+        <h3 className="text-lg font-semibold leading-snug mb-2 line-clamp-1">{prompt.title}</h3>
+        <p className="text-gray-400 text-sm font-light mb-8 line-clamp-2 leading-relaxed">{prompt.description}</p>
         
         <div className="flex gap-2">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-black text-white hover:bg-gray-800 rounded-xl h-12 font-bold transition-all">
-                Abrir
+              <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-2xl h-12 text-sm font-medium transition-all shadow-lg shadow-black/5">
+                Visualizar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl bg-white p-0 overflow-hidden rounded-[2.5rem] border-none">
+            <DialogContent className="max-w-5xl bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
               <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
-                <div className="bg-gray-50 p-6 overflow-y-auto">
+                <div className="bg-[#F9F9F9] p-8 overflow-y-auto">
                   <div className="grid grid-cols-2 gap-4">
                     {prompt.images.map((img, i) => (
-                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/5">
-                        <img src={img} alt="Gallery" className="w-full h-full object-cover" />
+                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                        <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />
                       </div>
                     ))}
                     {prompt.images.length === 0 && (
-                      <div className="col-span-2 aspect-video bg-gray-200 rounded-2xl flex items-center justify-center text-gray-400">
-                        <ImageIcon className="w-8 h-8" />
+                      <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
+                        <ImageIcon className="w-8 h-8 opacity-20" />
                       </div>
                     )}
                   </div>
                 </div>
                 
-                <div className="p-10 flex flex-col justify-between">
+                <div className="p-10 md:p-14 flex flex-col justify-between bg-white">
                   <div>
-                    <DialogHeader className="mb-8">
-                      <DialogTitle className="text-3xl font-black tracking-tighter">{prompt.title}</DialogTitle>
-                      <p className="text-gray-400 font-medium mt-2">{prompt.description}</p>
+                    <DialogHeader className="mb-10 text-left">
+                      <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">{prompt.title}</DialogTitle>
+                      <p className="text-gray-400 font-light text-lg mt-3 leading-relaxed">{prompt.description}</p>
                     </DialogHeader>
 
-                    <div className="bg-gray-100 p-6 rounded-[1.5rem] border border-black/5">
-                      <pre className="text-sm font-medium whitespace-pre-wrap leading-relaxed text-gray-700 font-mono">
-                        {prompt.content}
-                      </pre>
+                    <div className="relative group">
+                      <div className="bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] max-h-[300px] overflow-y-auto custom-scrollbar">
+                        <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-600">
+                          {prompt.content}
+                        </pre>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 flex gap-3">
+                  <div className="mt-12">
                     <Button 
                       onClick={copyToClipboard}
-                      className="flex-1 bg-black text-white hover:bg-gray-800 rounded-[1.25rem] h-14 font-black"
+                      className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98]"
                     >
-                      <Copy className="mr-2 w-4 h-4" /> COPIAR PROMPT
+                      <Copy className="mr-3 w-4 h-4" /> COPIAR PROMPT
                     </Button>
                   </div>
                 </div>
