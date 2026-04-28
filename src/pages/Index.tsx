@@ -78,6 +78,8 @@ const formatSheetData = (data: any[]): Prompt[] => {
 export default function Index() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [showCarousel, setShowCarousel] = useState(true);
+  const [viewAllOrder, setViewAllOrder] = useState(false);
 
   const { data: prompts, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["prompts-sheets"],
