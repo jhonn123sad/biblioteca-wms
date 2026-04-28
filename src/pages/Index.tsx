@@ -115,6 +115,11 @@ export default function Index() {
   const organizedPrompts = (() => {
     if (!prompts) return [];
 
+    // Se o usuário clicou em "Ver Todos", mostramos tudo em ordem numérica sem categorias
+    if (viewAllOrder) {
+      return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    }
+
     // Se houver uma tag selecionada, filtramos e ordenamos apenas por ela
     if (selectedTag) {
       return prompts
@@ -123,7 +128,6 @@ export default function Index() {
     }
 
     // Se "Todos" estiver selecionado, organizamos por categorias (tags)
-    // Prompts com múltiplas tags aparecerão em cada categoria
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
@@ -143,7 +147,6 @@ export default function Index() {
       }
     });
 
-    // Criar lista final baseada na ordem alfabética das tags
     const result: { tag: string | null, prompts: Prompt[] }[] = [];
     allTags.forEach(tag => {
       if (categories[tag]) {
@@ -166,17 +169,16 @@ export default function Index() {
 
   const filteredPrompts = (() => {
     const search = searchTerm.toLowerCase();
-    
-    // Se estivermos filtrando pelo termo de busca, ignoramos a organização por categorias para uma busca limpa
     if (search) {
       return prompts?.filter(p => 
         p.title.toLowerCase().includes(search) || 
         p.description.toLowerCase().includes(search)
       ).sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 50);
     }
-
-    return null; // Usaremos organizedPrompts quando não houver busca
+    return null;
   })();
+
+  const carouselPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 15) || [];
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
