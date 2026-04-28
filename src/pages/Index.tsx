@@ -110,18 +110,23 @@ export default function Index() {
       // Usamos a URL de autenticação para validar o telefone
       const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
       const data = await response.json();
+      console.log("Auth response data:", data);
 
       if (data.authorized) {
-        setUserName(data.name || "Membro");
+        // Na planilha o nome está na coluna 1 (índice 1) ou pode vir como data.name se o Apps Script estiver mapeado
+        // Como o usuário disse que a ordem é: Data (0), Nome (1), Email (2), WhatsApp (3)
+        // O Apps Script provavelmente retorna 'name' se foi configurado assim, ou precisamos pegar da linha encontrada
+        const memberName = data.name || data.memberData?.[1] || "Membro";
+        
+        setUserName(memberName);
         setShowWelcome(true);
         
-        // Pequeno delay para a animação de boas-vindas antes de liberar o site
         setTimeout(() => {
           setIsAuthenticated(true);
           localStorage.setItem("wms_member_auth", "true");
-          localStorage.setItem("wms_member_name", data.name || "Membro");
+          localStorage.setItem("wms_member_name", memberName);
           setShowWelcome(false);
-          toast.success(`Bem-vindo(a), ${data.name || "Membro"}!`);
+          toast.success(`Bem-vindo(a), ${memberName}!`);
         }, 3000);
       } else {
         toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
