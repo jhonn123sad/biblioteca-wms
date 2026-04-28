@@ -169,7 +169,7 @@ export default function Index() {
             <p className="text-sm">Tente outros termos ou atualize a página.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
             {filteredPrompts?.map((prompt) => (
               <PromptItem key={prompt.id} prompt={prompt} />
             ))}
@@ -202,25 +202,58 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
     toast.success("Prompt copiado!");
   };
 
+  const neonColors = [
+    'bg-[#FF00FF] shadow-[0_0_10px_#FF00FF]', // Magenta
+    'bg-[#00FFFF] shadow-[0_0_10px_#00FFFF]', // Cyan
+    'bg-[#39FF14] shadow-[0_0_10px_#39FF14]', // Neon Green
+    'bg-[#FFFF00] shadow-[0_0_10px_#FFFF00]', // Yellow
+    'bg-[#FF3131] shadow-[0_0_10px_#FF3131]', // Red
+    'bg-[#8A2BE2] shadow-[0_0_10px_#8A2BE2]', // Purple
+    'bg-[#FF5E00] shadow-[0_0_10px_#FF5E00]', // Orange
+  ];
+
+  const renderWithTags = (text: string) => {
+    const parts = text.split(/(\[[^\]]+\])/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('[') && part.endsWith(']')) {
+        const tagContent = part.slice(1, -1);
+        const color = neonColors[index % neonColors.length];
+        return (
+          <span 
+            key={index} 
+            className={`${color} text-black text-[10px] font-bold px-2 py-0.5 rounded-full mx-1 uppercase tracking-wider inline-block transform -rotate-1`}
+          >
+            {tagContent}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
-    <div className="group bg-white rounded-3xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-2">
-      <div className="aspect-[4/5] overflow-hidden relative">
+    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1">
+      <div className="aspect-[3/4] overflow-hidden relative">
         <img 
           src={mainImage} 
           alt={prompt.title} 
-          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      <div className="p-7">
-        <h3 className="text-lg font-semibold leading-snug mb-2 line-clamp-1">{prompt.title}</h3>
-        <p className="text-gray-400 text-sm font-light mb-8 line-clamp-2 leading-relaxed">{prompt.description}</p>
+      <div className="p-4 md:p-5">
+        <h3 className="text-sm md:text-base font-bold leading-tight mb-2 line-clamp-2 min-h-[2.5rem]">
+          {renderWithTags(prompt.title)}
+        </h3>
+        <p className="text-gray-400 text-[11px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed">
+          {renderWithTags(prompt.description)}
+        </p>
         
         <div className="flex gap-2">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-2xl h-12 text-sm font-medium transition-all shadow-lg shadow-black/5">
+              <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-xl h-10 text-xs font-medium transition-all shadow-lg shadow-black/5">
                 Visualizar
               </Button>
             </DialogTrigger>
@@ -262,7 +295,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 <div className="p-8 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
                   <div className="flex flex-col h-full overflow-hidden">
                     <DialogHeader className="mb-8 text-left">
-                      <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">{prompt.title}</DialogTitle>
+                      <DialogTitle className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
                     </DialogHeader>
 
                     <div className="flex-1 flex flex-col min-h-0">
