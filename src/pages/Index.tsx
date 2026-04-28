@@ -245,6 +245,55 @@ export default function Index() {
 
   const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) || [];
 
+  if (isAuthenticated === null) return null; // Aguarda verificação do localStorage
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 selection:bg-black selection:text-white">
+        <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
+            <p className="text-gray-400 font-light leading-relaxed">
+              Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado no onboarding para entrar.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative group">
+              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-black transition-colors" />
+              <input 
+                type="tel" 
+                placeholder="Seu WhatsApp (apenas números)" 
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                disabled={isVerifying}
+                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-16 pl-12 pr-4 text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={isVerifying || !phoneNumber}
+              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {isVerifying ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                "Entrar na Biblioteca"
+              )}
+            </Button>
+          </form>
+
+          <p className="text-center text-xs text-gray-400">
+            Acesso verificado automaticamente via Google Sheets
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
       {/* Header */}
