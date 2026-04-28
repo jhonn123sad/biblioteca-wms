@@ -105,8 +105,8 @@ export default function Index() {
 
     setIsVerifying(true);
     try {
-      // Usamos a mesma URL do Apps Script mas com o parâmetro ?phone=
-      const response = await fetch(`${APPS_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
+      // Usamos a URL de autenticação para validar o telefone
+      const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
       const data = await response.json();
 
       if (data.authorized) {
