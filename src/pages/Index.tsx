@@ -238,11 +238,11 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Carrossel Minimalista */}
+        {/* Bloco de Preview em Ordem Numérica */}
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-12">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Início (#1, #2, ...)</h3>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -252,39 +252,40 @@ export default function Index() {
                 }}
                 className="text-xs font-bold hover:bg-black/5 rounded-lg"
               >
-                Ver tudo em ordem <ExternalLink className="w-3 h-3 ml-1" />
+                Ver lista completa <ExternalLink className="w-3 h-3 ml-1" />
               </Button>
             </div>
-            <div className="relative group/carousel">
-              <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-hide snap-x">
-                {carouselPrompts.map((prompt) => (
-                  <div key={`carousel-${prompt.id}`} className="flex-none w-24 md:w-32 snap-start">
-                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm mb-2 group/item relative">
-                      <img 
-                        src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
-                        alt={prompt.title} 
-                        className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
-                         <PromptItemOnlyDialog prompt={prompt} />
-                      </div>
-                    </div>
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3 md:gap-4">
+              {previewPrompts.map((prompt) => (
+                <div key={`preview-${prompt.id}`} className="group/item relative aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm">
+                  <img 
+                    src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
+                    alt={prompt.title} 
+                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
+                    <PromptItemOnlyDialog prompt={prompt} />
                   </div>
-                ))}
-                <button 
-                  onClick={() => {
-                    setViewAllOrder(true);
-                    setShowCarousel(false);
-                  }}
-                  className="flex-none w-24 md:w-32 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors"
-                >
-                  <Grid className="w-6 h-6 text-black/20" />
-                  <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
-                </button>
-              </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                    <span className="text-[9px] font-bold text-white uppercase tracking-tighter line-clamp-1">
+                      {prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <button 
+                onClick={() => {
+                  setViewAllOrder(true);
+                  setShowCarousel(false);
+                }}
+                className="aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1 hover:bg-black/[0.02] transition-colors group"
+              >
+                <Grid className="w-5 h-5 text-black/20 group-hover:scale-110 transition-transform" />
+                <span className="text-[9px] font-bold uppercase text-black/40">Ver Todos</span>
+              </button>
             </div>
           </div>
-        )}
+        )} oncology:
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
