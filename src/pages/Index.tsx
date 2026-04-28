@@ -319,7 +319,8 @@ export default function Index() {
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <LogoutButton />
             {/* O botão de sincronização agora só aparece se estivermos em ambiente de desenvolvimento (LOVABLE) */}
             {window.location.hostname.includes("lovable") && (
               <Button 
