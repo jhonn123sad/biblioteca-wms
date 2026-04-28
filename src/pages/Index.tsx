@@ -185,8 +185,7 @@ export default function Index() {
     </div>
   );
 }
-  );
-}
+
 
 function PromptItem({ prompt }: { prompt: Prompt }) {
   const [isOpen, setIsOpen] = useState(false);
