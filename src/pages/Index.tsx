@@ -83,6 +83,8 @@ export default function Index() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [userName, setUserName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
@@ -110,9 +112,17 @@ export default function Index() {
       const data = await response.json();
 
       if (data.authorized) {
-        setIsAuthenticated(true);
-        localStorage.setItem("wms_member_auth", "true");
-        toast.success("Acesso liberado! Bem-vindo(a).");
+        setUserName(data.name || "Membro");
+        setShowWelcome(true);
+        
+        // Pequeno delay para a animação de boas-vindas antes de liberar o site
+        setTimeout(() => {
+          setIsAuthenticated(true);
+          localStorage.setItem("wms_member_auth", "true");
+          localStorage.setItem("wms_member_name", data.name || "Membro");
+          setShowWelcome(false);
+          toast.success(`Bem-vindo(a), ${data.name || "Membro"}!`);
+        }, 3000);
       } else {
         toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
       }
@@ -248,6 +258,27 @@ export default function Index() {
 
   if (isAuthenticated === null) return null; // Aguarda verificação do localStorage
 
+  if (showWelcome) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 selection:bg-white selection:text-black transition-all duration-1000">
+        <div className="text-center space-y-6 animate-in fade-in zoom-in duration-1000 slide-in-from-bottom-8">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+          </div>
+          <h2 className="text-gray-400 text-sm font-medium uppercase tracking-[0.3em] animate-pulse">
+            Acesso Autorizado
+          </h2>
+          <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
+            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{userName}</span>
+          </h1>
+          <div className="flex justify-center mt-8">
+            <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 selection:bg-black selection:text-white">
@@ -286,10 +317,6 @@ export default function Index() {
               )}
             </Button>
           </form>
-
-          <p className="text-center text-xs text-gray-400">
-            Acesso verificado automaticamente via Google Sheets
-          </p>
         </div>
       </div>
     );
