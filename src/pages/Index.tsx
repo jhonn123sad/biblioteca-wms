@@ -113,19 +113,9 @@ export default function Index() {
       console.log("Auth response data:", data);
 
       if (data.authorized) {
-        // Se data.name não existe, tentamos encontrar o nome buscando na lista de dados
-        let memberName = data.name;
-        
-        if (!memberName && data.allData) {
-          const cleanInputPhone = phoneNumber.replace(/\D/g, '');
-          const foundRow = data.allData.find((row: any[]) => {
-            const rowPhone = String(row[3] || "").replace(/\D/g, '');
-            return rowPhone === cleanInputPhone;
-          });
-          if (foundRow) memberName = foundRow[1];
-        }
-
-        const finalName = memberName || "Membro";
+        const finalName = data.name || "Membro";
+        setUserName(finalName);
+        setShowWelcome(true);
         setUserName(finalName);
         setShowWelcome(true);
         
