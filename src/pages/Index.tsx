@@ -78,6 +78,8 @@ const formatSheetData = (data: any[]): Prompt[] => {
 export default function Index() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [showCarousel, setShowCarousel] = useState(true);
+  const [viewAllOrder, setViewAllOrder] = useState(false);
 
   const { data: prompts, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["prompts-sheets"],
@@ -113,6 +115,11 @@ export default function Index() {
   const organizedPrompts = (() => {
     if (!prompts) return [];
 
+    // Se o usuário clicou em "Ver Todos", mostramos tudo em ordem numérica sem categorias
+    if (viewAllOrder) {
+      return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    }
+
     // Se houver uma tag selecionada, filtramos e ordenamos apenas por ela
     if (selectedTag) {
       return prompts
@@ -121,7 +128,6 @@ export default function Index() {
     }
 
     // Se "Todos" estiver selecionado, organizamos por categorias (tags)
-    // Prompts com múltiplas tags aparecerão em cada categoria
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
@@ -141,7 +147,6 @@ export default function Index() {
       }
     });
 
-    // Criar lista final baseada na ordem alfabética das tags
     const result: { tag: string | null, prompts: Prompt[] }[] = [];
     allTags.forEach(tag => {
       if (categories[tag]) {
@@ -164,17 +169,16 @@ export default function Index() {
 
   const filteredPrompts = (() => {
     const search = searchTerm.toLowerCase();
-    
-    // Se estivermos filtrando pelo termo de busca, ignoramos a organização por categorias para uma busca limpa
     if (search) {
       return prompts?.filter(p => 
         p.title.toLowerCase().includes(search) || 
         p.description.toLowerCase().includes(search)
       ).sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 50);
     }
-
-    return null; // Usaremos organizedPrompts quando não houver busca
+    return null;
   })();
+
+  const carouselPrompts = prompts?.sort((a, b) => getSortNumber(b.title) - getSortNumber(a.title)).slice(0, 15) || [];
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
@@ -234,32 +238,106 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Filtro de Tags */}
-        {!isLoading && allTags.length > 0 && (
-          <div className="mb-10 flex flex-wrap gap-2 justify-center md:justify-start">
-            <Button
-              variant={selectedTag === null ? "default" : "outline"}
-              onClick={() => setSelectedTag(null)}
-              className={`rounded-full px-5 h-9 text-xs font-semibold transition-all ${
-                selectedTag === null ? "bg-black text-white" : "border-black/5 hover:bg-black/5"
-              }`}
-            >
-              Todos
-            </Button>
-            {allTags.map(tag => (
-              <Button
-                key={tag}
-                variant={selectedTag === tag ? "default" : "outline"}
-                onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                className={`rounded-full px-5 h-9 text-xs font-semibold transition-all ${
-                  selectedTag === tag 
-                    ? "bg-black text-white" 
-                    : "border-black/5 hover:bg-black/5"
-                }`}
+        {/* Carrossel Minimalista */}
+        {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  setViewAllOrder(true);
+                  setShowCarousel(false);
+                }}
+                className="text-xs font-bold hover:bg-black/5 rounded-lg"
               >
-                {tag}
+                Ver tudo em ordem <ExternalLink className="w-3 h-3 ml-1" />
               </Button>
-            ))}
+            </div>
+            <div className="relative group/carousel">
+              <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-hide snap-x">
+                {carouselPrompts.map((prompt) => (
+                  <div key={`carousel-${prompt.id}`} className="flex-none w-24 md:w-32 snap-start">
+                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm mb-2 group/item relative">
+                      <img 
+                        src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
+                        alt={prompt.title} 
+                        className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
+                         <PromptItemOnlyDialog prompt={prompt} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <button 
+                  onClick={() => {
+                    setViewAllOrder(true);
+                    setShowCarousel(false);
+                  }}
+                  className="flex-none w-24 md:w-32 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors"
+                >
+                  <Grid className="w-6 h-6 text-black/20" />
+                  <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Filtro de Tags - Redesenhado */}
+        {!isLoading && (
+          <div className="mb-10 sticky top-[80px] z-30 bg-white/80 backdrop-blur-md py-4 -mx-6 px-6 border-b border-black/[0.02]">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                <Button
+                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedTag(null);
+                    setViewAllOrder(false);
+                    setShowCarousel(true);
+                  }}
+                  className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
+                  }`}
+                >
+                  Categorias
+                </Button>
+                <Button
+                  variant={viewAllOrder ? "default" : "outline"}
+                  onClick={() => {
+                    setViewAllOrder(true);
+                    setSelectedTag(null);
+                    setShowCarousel(false);
+                  }}
+                  className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                    viewAllOrder ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
+                  }`}
+                >
+                  Ordem Numérica
+                </Button>
+                <div className="w-px h-4 bg-black/10 flex-none mx-2" />
+                {allTags.map(tag => (
+                  <Button
+                    key={tag}
+                    variant={selectedTag === tag ? "default" : "outline"}
+                    onClick={() => {
+                      setSelectedTag(selectedTag === tag ? null : tag);
+                      setViewAllOrder(false);
+                      setShowCarousel(false);
+                    }}
+                    className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                      selectedTag === tag 
+                        ? "bg-black text-white shadow-lg shadow-black/20" 
+                        : "bg-white hover:bg-black/5"
+                    }`}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -283,10 +361,10 @@ export default function Index() {
               <PromptItem key={`${prompt.id}-search`} prompt={prompt} />
             ))}
           </div>
-        ) : selectedTag ? (
+        ) : (selectedTag || viewAllOrder) ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {(organizedPrompts as Prompt[])?.map((prompt) => (
-              <PromptItem key={`${prompt.id}-tag`} prompt={prompt} />
+              <PromptItem key={`${prompt.id}-tag-or-order`} prompt={prompt} />
             ))}
           </div>
         ) : (
@@ -325,6 +403,118 @@ export default function Index() {
   );
 }
 
+
+function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(prompt.content);
+    toast.success("Prompt copiado!");
+  };
+
+  const neonColors = [
+    'bg-[#FF00FF] text-white border-transparent', 
+    'bg-[#00D1FF] text-white border-transparent', 
+    'bg-[#39FF14] text-black border-transparent', 
+    'bg-[#FFFB00] text-black border-transparent', 
+    'bg-[#FF3131] text-white border-transparent', 
+    'bg-[#8A2BE2] text-white border-transparent', 
+    'bg-[#FF5E00] text-white border-transparent', 
+    'bg-[#00FF94] text-black border-transparent', 
+    'bg-[#7000FF] text-white border-transparent', 
+    'bg-[#FF007A] text-white border-transparent', 
+  ];
+
+  const getTagColor = (content: string) => {
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      hash = content.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return neonColors[Math.abs(hash) % neonColors.length];
+  };
+
+  const renderWithTags = (text: string) => {
+    const parts = text.split(/(\[[^\]]+\])/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('[') && part.endsWith(']')) {
+        const tagContent = part.slice(1, -1);
+        const colorClass = getTagColor(tagContent);
+        return (
+          <span 
+            key={index} 
+            className={`${colorClass} text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+          >
+            {tagContent}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20">
+          <ImageIcon className="w-4 h-4 text-white" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
+        <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
+          <div className="bg-[#F9F9F9] p-8 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 gap-4">
+                {prompt.images.map((img, i) => (
+                  <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
+                    <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold">
+                  <BookOpen className="w-3 h-3" />
+                  <span>Tutorial & Contexto</span>
+                </div>
+                <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {prompt.description}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-8 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DialogHeader className="mb-8 text-left">
+                <DialogTitle className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
+              </DialogHeader>
+              <div className="flex-1 flex flex-col min-h-0">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
+                  <Terminal className="w-3 h-3" />
+                  <span>Prompt de Alta Performance</span>
+                </div>
+                <div className="relative group flex-1 min-h-0">
+                  <div className="h-full bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
+                    <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
+                      {prompt.content}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <Button 
+                onClick={copyToClipboard}
+                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+              >
+                <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
+              </Button>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 function PromptItem({ prompt }: { prompt: Prompt }) {
   const [isOpen, setIsOpen] = useState(false);
