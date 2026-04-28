@@ -242,7 +242,7 @@ export default function Index() {
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-12">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Início (#1, #2, ...)</h3>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Ordem Numérica</h3>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -255,9 +255,9 @@ export default function Index() {
                 Ver lista completa <ExternalLink className="w-3 h-3 ml-1" />
               </Button>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3 md:gap-4">
-              {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm">
+            <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {previewPrompts.slice(0, 10).map((prompt) => (
+                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-24 md:w-32 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm">
                   <img 
                     src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
                     alt={prompt.title} 
@@ -278,14 +278,14 @@ export default function Index() {
                   setViewAllOrder(true);
                   setShowCarousel(false);
                 }}
-                className="aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1 hover:bg-black/[0.02] transition-colors group"
+                className="flex-none w-24 md:w-32 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1 hover:bg-black/[0.02] transition-colors group"
               >
                 <Grid className="w-5 h-5 text-black/20 group-hover:scale-110 transition-transform" />
                 <span className="text-[9px] font-bold uppercase text-black/40">Ver Todos</span>
               </button>
             </div>
           </div>
-        )} oncology:
+        )}
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
