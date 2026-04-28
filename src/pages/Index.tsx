@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -20,14 +20,15 @@ import {
   BookOpen,
   Terminal,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Lock,
+  Phone
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
-// Você deve implantar seu Apps Script como Web App e colar a URL aqui
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0DHPEf-ggmK1FqFmfe5xbI8H5mnoPCyigbSwnZlKdjsGN2mFXChK58QxsozQf8MZ8/exec";
 
 interface Prompt {
   id: string;
@@ -78,13 +79,63 @@ const formatSheetData = (data: any[]): Prompt[] => {
 };
 
 export default function Index() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [viewAllOrder, setViewAllOrder] = useState(false);
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const auth = localStorage.getItem("wms_member_auth");
+    if (auth === "true") {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) return;
+
+    setIsVerifying(true);
+    try {
+      // Usamos a mesma URL do Apps Script mas com o parâmetro ?phone=
+      const response = await fetch(`${APPS_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
+      const data = await response.json();
+
+      if (data.authorized) {
+        setIsAuthenticated(true);
+        localStorage.setItem("wms_member_auth", "true");
+        toast.success("Acesso liberado! Bem-vindo(a).");
+      } else {
+        toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao validar acesso. Tente novamente.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const LogoutButton = () => (
+    <Button 
+      variant="ghost" 
+      onClick={() => {
+        localStorage.removeItem("wms_member_auth");
+        setIsAuthenticated(false);
+        toast.info("Você saiu do sistema.");
+      }}
+      className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+    >
+      Sair
+    </Button>
+  );
 
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
@@ -194,6 +245,55 @@ export default function Index() {
 
   const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) || [];
 
+  if (isAuthenticated === null) return null; // Aguarda verificação do localStorage
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 selection:bg-black selection:text-white">
+        <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
+            <p className="text-gray-400 font-light leading-relaxed">
+              Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado no onboarding para entrar.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative group">
+              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-black transition-colors" />
+              <input 
+                type="tel" 
+                placeholder="Seu WhatsApp (apenas números)" 
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                disabled={isVerifying}
+                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-16 pl-12 pr-4 text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={isVerifying || !phoneNumber}
+              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {isVerifying ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                "Entrar na Biblioteca"
+              )}
+            </Button>
+          </form>
+
+          <p className="text-center text-xs text-gray-400">
+            Acesso verificado automaticamente via Google Sheets
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
       {/* Header */}
@@ -219,7 +319,8 @@ export default function Index() {
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <LogoutButton />
             {/* O botão de sincronização agora só aparece se estivermos em ambiente de desenvolvimento (LOVABLE) */}
             {window.location.hostname.includes("lovable") && (
               <Button 
