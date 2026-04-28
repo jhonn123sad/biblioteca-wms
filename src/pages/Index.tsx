@@ -361,10 +361,10 @@ export default function Index() {
               <PromptItem key={`${prompt.id}-search`} prompt={prompt} />
             ))}
           </div>
-        ) : selectedTag ? (
+        ) : (selectedTag || viewAllOrder) ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {(organizedPrompts as Prompt[])?.map((prompt) => (
-              <PromptItem key={`${prompt.id}-tag`} prompt={prompt} />
+              <PromptItem key={`${prompt.id}-tag-or-order`} prompt={prompt} />
             ))}
           </div>
         ) : (
