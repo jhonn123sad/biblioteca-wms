@@ -89,6 +89,54 @@ export default function Index() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const auth = localStorage.getItem("wms_member_auth");
+    if (auth === "true") {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) return;
+
+    setIsVerifying(true);
+    try {
+      // Usamos a mesma URL do Apps Script mas com o parâmetro ?phone=
+      const response = await fetch(`${APPS_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
+      const data = await response.json();
+
+      if (data.authorized) {
+        setIsAuthenticated(true);
+        localStorage.setItem("wms_member_auth", "true");
+        toast.success("Acesso liberado! Bem-vindo(a).");
+      } else {
+        toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao validar acesso. Tente novamente.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const LogoutButton = () => (
+    <Button 
+      variant="ghost" 
+      onClick={() => {
+        localStorage.removeItem("wms_member_auth");
+        setIsAuthenticated(false);
+        toast.info("Você saiu do sistema.");
+      }}
+      className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+    >
+      Sair
+    </Button>
+  );
+
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
