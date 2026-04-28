@@ -48,3 +48,6 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.1);
 }
+#lovable-badge {
+  display: none !important;
+}
