@@ -404,6 +404,118 @@ export default function Index() {
 }
 
 
+function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(prompt.content);
+    toast.success("Prompt copiado!");
+  };
+
+  const neonColors = [
+    'bg-[#FF00FF] text-white border-transparent', 
+    'bg-[#00D1FF] text-white border-transparent', 
+    'bg-[#39FF14] text-black border-transparent', 
+    'bg-[#FFFB00] text-black border-transparent', 
+    'bg-[#FF3131] text-white border-transparent', 
+    'bg-[#8A2BE2] text-white border-transparent', 
+    'bg-[#FF5E00] text-white border-transparent', 
+    'bg-[#00FF94] text-black border-transparent', 
+    'bg-[#7000FF] text-white border-transparent', 
+    'bg-[#FF007A] text-white border-transparent', 
+  ];
+
+  const getTagColor = (content: string) => {
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      hash = content.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return neonColors[Math.abs(hash) % neonColors.length];
+  };
+
+  const renderWithTags = (text: string) => {
+    const parts = text.split(/(\[[^\]]+\])/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('[') && part.endsWith(']')) {
+        const tagContent = part.slice(1, -1);
+        const colorClass = getTagColor(tagContent);
+        return (
+          <span 
+            key={index} 
+            className={`${colorClass} text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+          >
+            {tagContent}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20">
+          <ImageIcon className="w-4 h-4 text-white" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
+        <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
+          <div className="bg-[#F9F9F9] p-8 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 gap-4">
+                {prompt.images.map((img, i) => (
+                  <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
+                    <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold">
+                  <BookOpen className="w-3 h-3" />
+                  <span>Tutorial & Contexto</span>
+                </div>
+                <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {prompt.description}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-8 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden">
+              <DialogHeader className="mb-8 text-left">
+                <DialogTitle className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
+              </DialogHeader>
+              <div className="flex-1 flex flex-col min-h-0">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
+                  <Terminal className="w-3 h-3" />
+                  <span>Prompt de Alta Performance</span>
+                </div>
+                <div className="relative group flex-1 min-h-0">
+                  <div className="h-full bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
+                    <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
+                      {prompt.content}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <Button 
+                onClick={copyToClipboard}
+                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+              >
+                <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
+              </Button>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function PromptItem({ prompt }: { prompt: Prompt }) {
   const [isOpen, setIsOpen] = useState(false);
   const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
