@@ -169,7 +169,7 @@ export default function Index() {
             <p className="text-sm">Tente outros termos ou atualize a página.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredPrompts?.map((prompt) => (
               <PromptItem key={prompt.id} prompt={prompt} />
             ))}
@@ -203,13 +203,13 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
   };
 
   const neonColors = [
-    'bg-[#FF00FF] shadow-[0_0_10px_#FF00FF]', // Magenta
-    'bg-[#00FFFF] shadow-[0_0_10px_#00FFFF]', // Cyan
-    'bg-[#39FF14] shadow-[0_0_10px_#39FF14]', // Neon Green
-    'bg-[#FFFF00] shadow-[0_0_10px_#FFFF00]', // Yellow
-    'bg-[#FF3131] shadow-[0_0_10px_#FF3131]', // Red
-    'bg-[#8A2BE2] shadow-[0_0_10px_#8A2BE2]', // Purple
-    'bg-[#FF5E00] shadow-[0_0_10px_#FF5E00]', // Orange
+    'bg-[#FF00FF]/10 text-[#FF00FF] border-[#FF00FF]/20', // Magenta
+    'bg-[#00FFFF]/10 text-[#00FFFF] border-[#00FFFF]/20', // Cyan
+    'bg-[#39FF14]/10 text-[#39FF14] border-[#39FF14]/20', // Neon Green
+    'bg-[#FFFF00]/10 text-[#CCAA00] border-[#FFFF00]/20', // Yellow
+    'bg-[#FF3131]/10 text-[#FF3131] border-[#FF3131]/20', // Red
+    'bg-[#8A2BE2]/10 text-[#8A2BE2] border-[#8A2BE2]/20', // Purple
+    'bg-[#FF5E00]/10 text-[#FF5E00] border-[#FF5E00]/20', // Orange
   ];
 
   const renderWithTags = (text: string) => {
@@ -217,11 +217,11 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
     return parts.map((part, index) => {
       if (part.startsWith('[') && part.endsWith(']')) {
         const tagContent = part.slice(1, -1);
-        const color = neonColors[index % neonColors.length];
+        const colorClass = neonColors[index % neonColors.length];
         return (
           <span 
             key={index} 
-            className={`${color} text-black text-[10px] font-bold px-2 py-0.5 rounded-full mx-1 uppercase tracking-wider inline-block transform -rotate-1`}
+            className={`${colorClass} text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none`}
           >
             {tagContent}
           </span>
@@ -243,7 +243,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
       </div>
 
       <div className="p-4 md:p-5">
-        <h3 className="text-sm md:text-base font-bold leading-tight mb-2 line-clamp-2 min-h-[2.5rem]">
+        <h3 className="text-sm md:text-base font-bold leading-tight mb-2">
           {renderWithTags(prompt.title)}
         </h3>
         <p className="text-gray-400 text-[11px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed">
