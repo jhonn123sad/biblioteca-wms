@@ -77,6 +77,7 @@ const formatSheetData = (data: any[]): Prompt[] => {
 
 export default function Index() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const { data: prompts, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["prompts-sheets"],
@@ -93,10 +94,25 @@ export default function Index() {
     }
   });
 
-  const filteredPrompts = prompts?.filter(p => 
-    p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    p.description.toLowerCase().includes(searchTerm.toLowerCase())
-  ).slice(0, 50);
+  // Extrair todas as tags únicas dos prompts
+  const allTags = Array.from(new Set(
+    prompts?.flatMap(p => {
+      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
+      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+      return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
+    }) || []
+  )).sort();
+
+  const filteredPrompts = prompts?.filter(p => {
+    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      p.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTag = !selectedTag || 
+      p.title.includes(`[${selectedTag}]`) || 
+      p.description.includes(`[${selectedTag}]`);
+      
+    return matchesSearch && matchesTag;
+  }).slice(0, 50);
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
@@ -145,14 +161,45 @@ export default function Index() {
 
       <main className="container mx-auto px-6 py-2 md:py-4">
         {/* Intro */}
-        <div className="mb-2">
-          <h2 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight text-center md:text-left">
-            Prompts exclusivos para membros WMS
-          </h2>
-          <p className="text-gray-400 max-w-2xl text-lg font-light text-center md:text-left leading-relaxed">
-            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-          </p>
+        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex-1">
+            <h2 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight text-center md:text-left">
+              Prompts exclusivos para membros WMS
+            </h2>
+            <p className="text-gray-400 max-w-2xl text-lg font-light text-center md:text-left leading-relaxed">
+              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+            </p>
+          </div>
         </div>
+
+        {/* Filtro de Tags */}
+        {!isLoading && allTags.length > 0 && (
+          <div className="mb-10 flex flex-wrap gap-2 justify-center md:justify-start">
+            <Button
+              variant={selectedTag === null ? "default" : "outline"}
+              onClick={() => setSelectedTag(null)}
+              className={`rounded-full px-5 h-9 text-xs font-semibold transition-all ${
+                selectedTag === null ? "bg-black text-white" : "border-black/5 hover:bg-black/5"
+              }`}
+            >
+              Todos
+            </Button>
+            {allTags.map(tag => (
+              <Button
+                key={tag}
+                variant={selectedTag === tag ? "default" : "outline"}
+                onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                className={`rounded-full px-5 h-9 text-xs font-semibold transition-all ${
+                  selectedTag === tag 
+                    ? "bg-black text-white" 
+                    : "border-black/5 hover:bg-black/5"
+                }`}
+              >
+                {tag}
+              </Button>
+            ))}
+          </div>
+        )}
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
@@ -203,25 +250,37 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
   };
 
   const neonColors = [
-    'bg-[#FF00FF]/10 text-[#FF00FF] border-[#FF00FF]/20', // Magenta
-    'bg-[#00FFFF]/10 text-[#00FFFF] border-[#00FFFF]/20', // Cyan
-    'bg-[#39FF14]/10 text-[#39FF14] border-[#39FF14]/20', // Neon Green
-    'bg-[#FFFF00]/10 text-[#CCAA00] border-[#FFFF00]/20', // Yellow
-    'bg-[#FF3131]/10 text-[#FF3131] border-[#FF3131]/20', // Red
-    'bg-[#8A2BE2]/10 text-[#8A2BE2] border-[#8A2BE2]/20', // Purple
-    'bg-[#FF5E00]/10 text-[#FF5E00] border-[#FF5E00]/20', // Orange
+    'bg-[#FF00FF] text-white border-transparent', // Magenta vibrante
+    'bg-[#00D1FF] text-white border-transparent', // Cyan vibrante
+    'bg-[#39FF14] text-black border-transparent', // Neon Green
+    'bg-[#FFFB00] text-black border-transparent', // Yellow
+    'bg-[#FF3131] text-white border-transparent', // Red
+    'bg-[#8A2BE2] text-white border-transparent', // Purple
+    'bg-[#FF5E00] text-white border-transparent', // Orange
+    'bg-[#00FF94] text-black border-transparent', // Mint
+    'bg-[#7000FF] text-white border-transparent', // Indigo
+    'bg-[#FF007A] text-white border-transparent', // Pink
   ];
+
+  const getTagColor = (content: string) => {
+    // Gerar um índice baseado na string para manter a cor consistente para a mesma tag
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      hash = content.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return neonColors[Math.abs(hash) % neonColors.length];
+  };
 
   const renderWithTags = (text: string) => {
     const parts = text.split(/(\[[^\]]+\])/g);
     return parts.map((part, index) => {
       if (part.startsWith('[') && part.endsWith(']')) {
         const tagContent = part.slice(1, -1);
-        const colorClass = neonColors[index % neonColors.length];
+        const colorClass = getTagColor(tagContent);
         return (
           <span 
             key={index} 
-            className={`${colorClass} text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none`}
+            className={`${colorClass} text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
           >
             {tagContent}
           </span>
@@ -243,7 +302,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
       </div>
 
       <div className="p-4 md:p-5">
-        <h3 className="text-sm md:text-base font-bold leading-tight mb-2">
+        <h3 className="text-sm md:text-base font-bold leading-tight mb-2 min-h-[1.25em]">
           {renderWithTags(prompt.title)}
         </h3>
         <p className="text-gray-400 text-[11px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed">
