@@ -255,9 +255,9 @@ export default function Index() {
                 Ver lista completa <ExternalLink className="w-3 h-3 ml-1" />
               </Button>
             </div>
-            <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {previewPrompts.slice(0, 10).map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-24 md:w-32 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm">
+            <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+              {previewPrompts.slice(0, 7).map((prompt) => (
+                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-28 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img 
                     src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
                     alt={prompt.title} 
@@ -267,7 +267,7 @@ export default function Index() {
                     <PromptItemOnlyDialog prompt={prompt} />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                    <span className="text-[9px] font-bold text-white uppercase tracking-tighter line-clamp-1">
+                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">
                       {prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}
                     </span>
                   </div>
@@ -278,10 +278,10 @@ export default function Index() {
                   setViewAllOrder(true);
                   setShowCarousel(false);
                 }}
-                className="flex-none w-24 md:w-32 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1 hover:bg-black/[0.02] transition-colors group"
+                className="flex-none w-28 md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors group snap-start"
               >
-                <Grid className="w-5 h-5 text-black/20 group-hover:scale-110 transition-transform" />
-                <span className="text-[9px] font-bold uppercase text-black/40">Ver Todos</span>
+                <Grid className="w-6 h-6 text-black/20 group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
               </button>
             </div>
           </div>
