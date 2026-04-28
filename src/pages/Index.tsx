@@ -103,16 +103,78 @@ export default function Index() {
     }) || []
   )).sort();
 
-  const filteredPrompts = prompts?.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      p.description.toLowerCase().includes(searchTerm.toLowerCase());
+  // Função para extrair o número de ordenação (#1, #2, etc)
+  const getSortNumber = (title: string) => {
+    const match = title.match(/#(\d+)/);
+    return match ? parseInt(match[1]) : Infinity;
+  };
+
+  // Organizar os prompts por categoria e ordenação numérica
+  const organizedPrompts = (() => {
+    if (!prompts) return [];
+
+    // Se houver uma tag selecionada, filtramos e ordenamos apenas por ela
+    if (selectedTag) {
+      return prompts
+        .filter(p => p.title.includes(`[${selectedTag}]`) || p.description.includes(`[${selectedTag}]`))
+        .sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    }
+
+    // Se "Todos" estiver selecionado, organizamos por categorias (tags)
+    // Prompts com múltiplas tags aparecerão em cada categoria
+    const categories: { [key: string]: Prompt[] } = {};
+    const uncategorized: Prompt[] = [];
+
+    prompts.forEach(p => {
+      const tags = Array.from(new Set([
+        ...(p.title.match(/\[([^\]]+)\]/g) || []),
+        ...(p.description.match(/\[([^\]]+)\]/g) || [])
+      ].map(tag => tag.slice(1, -1))));
+
+      if (tags.length === 0) {
+        uncategorized.push(p);
+      } else {
+        tags.forEach(tag => {
+          if (!categories[tag]) categories[tag] = [];
+          categories[tag].push(p);
+        });
+      }
+    });
+
+    // Criar lista final baseada na ordem alfabética das tags
+    const result: { tag: string | null, prompts: Prompt[] }[] = [];
+    allTags.forEach(tag => {
+      if (categories[tag]) {
+        result.push({
+          tag,
+          prompts: categories[tag].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+        });
+      }
+    });
+
+    if (uncategorized.length > 0) {
+      result.push({
+        tag: null,
+        prompts: uncategorized.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+      });
+    }
+
+    return result;
+  })();
+
+  const filteredPrompts = (() => {
+    const search = searchTerm.toLowerCase();
     
-    const matchesTag = !selectedTag || 
-      p.title.includes(`[${selectedTag}]`) || 
-      p.description.includes(`[${selectedTag}]`);
-      
-    return matchesSearch && matchesTag;
-  }).slice(0, 50);
+    // Se estivermos filtrando pelo termo de busca, ignoramos a organização por categorias para uma busca limpa
+    if (search) {
+      return prompts?.filter(p => 
+        p.title.toLowerCase().includes(search) || 
+        p.description.toLowerCase().includes(search)
+      ).sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 50);
+    }
+
+    return null; // Usaremos organizedPrompts quando não houver busca
+  })();
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
