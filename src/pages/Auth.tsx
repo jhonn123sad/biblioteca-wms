@@ -34,7 +34,8 @@ export default function Auth() {
     try {
       const { error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
-      toast.success("Verifique seu e-mail!");
+      toast.success("Conta criada! Você já pode entrar.");
+      // Optional: auto-login or redirect
     } catch (error: any) {
       toast.error(error.message);
     } finally {
