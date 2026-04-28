@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -20,14 +20,15 @@ import {
   BookOpen,
   Terminal,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Lock,
+  Phone
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
-// Você deve implantar seu Apps Script como Web App e colar a URL aqui
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0DHPEf-ggmK1FqFmfe5xbI8H5mnoPCyigbSwnZlKdjsGN2mFXChK58QxsozQf8MZ8/exec";
 
 interface Prompt {
   id: string;
