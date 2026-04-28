@@ -169,7 +169,7 @@ export default function Index() {
             <p className="text-sm">Tente outros termos ou atualize a página.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredPrompts?.map((prompt) => (
               <PromptItem key={prompt.id} prompt={prompt} />
             ))}
@@ -243,7 +243,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
       </div>
 
       <div className="p-4 md:p-5">
-        <h3 className="text-sm md:text-base font-bold leading-tight mb-2 line-clamp-2 min-h-[2.5rem]">
+        <h3 className="text-sm md:text-base font-bold leading-tight mb-2">
           {renderWithTags(prompt.title)}
         </h3>
         <p className="text-gray-400 text-[11px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed">
