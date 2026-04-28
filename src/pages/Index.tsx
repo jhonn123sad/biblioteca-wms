@@ -38,10 +38,10 @@ const fixDriveLink = (url: string) => {
   // Trata links de compartilhamento padrão do Drive
   const fileIdMatch = url.match(/\/file\/d\/([^\/]+)/) || url.match(/id=([^\&]+)/);
   if (fileIdMatch && fileIdMatch[1]) {
-    return `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
+    // Usando thumbnail de alta resolução que é mais estável para o Drive
+    return `https://drive.google.com/thumbnail?id=${fileIdMatch[1]}&sz=w1000`;
   }
   
-  // Trata links de pastas ou outros formatos (apenas retorna se for http direto)
   return url.startsWith('http') ? url : "";
 };
 
