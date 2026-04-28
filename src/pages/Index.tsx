@@ -29,7 +29,7 @@ import remarkGfm from "remark-gfm";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
 const PROMPTS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
-const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0DHPEf-ggmK1FqFmfe5xbI8H5mnoPCyigbSwnZlKdjsGN2mFXChK58QxsozQf8MZ8/exec";
+const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtcYiY9cgrk_vme8aMZEKJvUoaIMvjXq4UxwbtFNUMGWvRQJiUhhU1thdmOwIwZ7k5/exec";
 
 interface Prompt {
   id: string;
