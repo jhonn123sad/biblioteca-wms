@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../integrations/supabase/client";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -15,6 +15,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [title, setTitle] = useState("");
@@ -111,6 +112,7 @@ export default function Admin() {
       setDescription("");
       setContent("");
       setImages([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -181,8 +183,8 @@ export default function Admin() {
               <Label>Imagens (Máx 5)</Label>
               <div className="grid grid-cols-3 gap-2 mb-2">
                 {images.map((file, i) => (
-                  <div key={i} className="relative group aspect-square border rounded-md overflow-hidden">
-                    <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" />
+                  <div key={i} className="relative group aspect-square border rounded-md overflow-hidden bg-muted">
+                    <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" alt="preview" />
                     <button 
                       type="button"
                       onClick={() => setImages(images.filter((_, idx) => idx !== i))}
@@ -195,7 +197,14 @@ export default function Admin() {
                 {images.length < 5 && (
                   <label className="border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer hover:bg-muted transition-colors aspect-square">
                     <Plus className="h-6 w-6 text-muted-foreground" />
-                    <input type="file" className="hidden" accept="image/*" multiple onChange={handleFileChange} />
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      className="hidden" 
+                      accept="image/*" 
+                      multiple 
+                      onChange={handleFileChange} 
+                    />
                   </label>
                 )}
               </div>
