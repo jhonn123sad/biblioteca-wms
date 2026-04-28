@@ -178,7 +178,7 @@ export default function Index() {
     return null;
   })();
 
-  const carouselPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 15) || [];
+  const carouselPrompts = prompts?.sort((a, b) => getSortNumber(b.title) - getSortNumber(a.title)).slice(0, 15) || [];
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
