@@ -1,119 +1,66 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../integrations/supabase/client";
-import PromptCard from "../components/PromptCard";
+import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
-import { Link } from "react-router-dom";
-import { Loader2, Zap, LayoutGrid, Terminal } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Sparkles, Dice5, Coffee, Moon, Sun, Cloud, Heart } from "lucide-react";
+
+const IDEAS = [
+  { icon: <Coffee className="w-8 h-8 text-amber-500" />, text: "Beber mais água hoje" },
+  { icon: <Moon className="w-8 h-8 text-blue-500" />, text: "Dormir 8 horas seguidas" },
+  { icon: <Sun className="w-8 h-8 text-yellow-500" />, text: "Tomar 15 minutos de sol" },
+  { icon: <Cloud className="w-8 h-8 text-gray-400" />, text: "Meditar por 5 minutos" },
+  { icon: <Heart className="w-8 h-8 text-red-500" />, text: "Ligar para alguém querido" },
+  { icon: <Sparkles className="w-8 h-8 text-purple-500" />, text: "Aprender algo novo agora" },
+];
 
 export default function Index() {
-  const { data: prompts, isLoading, error } = useQuery({
-    queryKey: ["prompts"],
-    queryFn: async () => {
-      try {
-        const { data, error } = await supabase
-          .from("prompts")
-          .select(`
-            *,
-            images:prompt_images(*)
-          `)
-          .order("created_at", { ascending: false });
-        
-        if (error) throw error;
-        return data;
-      } catch (err: any) {
-        console.error("Error fetching prompts:", err);
-        throw new Error(err.message || "Falha ao carregar os prompts.");
-      }
-    },
-    retry: 2,
-  });
+  const [idea, setIdea] = useState(IDEAS[0]);
+  const [count, setCount] = useState(0);
+
+  const shuffle = () => {
+    const randomIndex = Math.floor(Math.random() * IDEAS.length);
+    setIdea(IDEAS[randomIndex]);
+    setCount(prev => prev + 1);
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
-      {/* Dynamic Background Effect */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-900/10 blur-[120px] rounded-full" />
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-slate-900 font-sans">
+      <div className="max-w-md w-full text-center space-y-8">
+        <header className="space-y-2">
+          <h1 className="text-4xl font-black tracking-tight text-slate-900">GERADOR ALEATÓRIO</h1>
+          <p className="text-slate-500 font-medium">Se você está vendo isso, a publicação funcionou!</p>
+        </header>
+
+        <Card className="border-2 border-slate-100 shadow-xl rounded-3xl overflow-hidden bg-white">
+          <CardHeader className="bg-slate-50 border-b border-slate-100 py-6">
+            <CardTitle className="text-sm uppercase tracking-widest text-slate-400 font-bold">Sugestão do Momento</CardTitle>
+          </CardHeader>
+          <CardContent className="p-12 space-y-6">
+            <div className="flex justify-center transform transition-transform hover:scale-110 duration-300">
+              {idea.icon}
+            </div>
+            <p className="text-2xl font-bold text-slate-800">{idea.text}</p>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-4">
+          <Button 
+            onClick={shuffle}
+            className="w-full h-16 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-lg font-bold shadow-lg shadow-slate-200 transition-all active:scale-95 flex gap-3"
+          >
+            <Dice5 className="w-6 h-6" /> GERAR NOVA IDEIA
+          </Button>
+          
+          <div className="pt-4 flex flex-col items-center gap-2">
+            <span className="bg-slate-100 px-4 py-1 rounded-full text-xs font-bold text-slate-500">
+              CLIQUE NO BOTÃO ACIMA
+            </span>
+            <p className="text-slate-400 text-xs">Ideias geradas: {count}</p>
+          </div>
+        </div>
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-black/50 backdrop-blur-xl">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
-              <Terminal className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-2xl font-black tracking-tighter">PROMPTVULT</span>
-          </div>
-          <nav className="flex items-center gap-6">
-            <Link to="/admin">
-              <Button variant="ghost" className="hover:bg-white/5 rounded-full px-6">
-                Gerenciar
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button className="bg-white text-black hover:bg-white/90 rounded-full px-6 font-bold">
-                Entrar
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-6 py-12 relative">
-        <div className="mb-16 max-w-2xl">
-          <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter mb-6">
-            A ERA DOS <span className="gradient-text">PROMPTS</span> CHEGOU.
-          </h2>
-          <p className="text-xl text-gray-400 font-medium">
-            Sua biblioteca definitiva de engenharia de prompts, curada e organizada com precisão visual.
-          </p>
-        </div>
-
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-96 gap-4">
-            <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
-            <p className="text-gray-500 font-medium animate-pulse">Sincronizando biblioteca...</p>
-          </div>
-        ) : error ? (
-          <div className="glass-morphism rounded-3xl p-12 text-center max-w-md mx-auto">
-            <p className="text-red-400 mb-6">{(error as Error).message}</p>
-            <Button onClick={() => window.location.reload()} className="bg-white text-black rounded-xl">
-              Tentar Novamente
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {prompts?.map((prompt: any) => (
-              <PromptCard key={prompt.id} prompt={prompt} />
-            ))}
-            
-            {prompts?.length === 0 && (
-              <div className="col-span-full border-2 border-dashed border-white/5 rounded-3xl py-32 text-center">
-                <div className="mb-4 text-gray-600 flex justify-center">
-                  <LayoutGrid className="w-16 h-16" />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 text-gray-400">Vazio por enquanto</h3>
-                <p className="text-gray-600 mb-8">Nenhum prompt foi catalogado ainda.</p>
-                <Link to="/admin">
-                  <Button className="bg-purple-600 hover:bg-purple-500 rounded-xl">
-                    Começar a Catalogar
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-      </main>
-
-      <footer className="border-t border-white/5 py-12 mt-24">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-gray-500 text-sm">© 2024 PromptVault. All rights reserved.</p>
-          <div className="flex gap-8 text-sm font-bold text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="hover:text-white transition-colors">Discord</a>
-            <a href="#" className="hover:text-white transition-colors">Github</a>
-          </div>
-        </div>
+      <footer className="fixed bottom-8 text-slate-300 text-xs font-medium">
+        PROJETO DE TESTE DE PUBLICAÇÃO • 2024
       </footer>
     </div>
   );
