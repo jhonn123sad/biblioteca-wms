@@ -79,11 +79,13 @@ const formatSheetData = (data: any[]): Prompt[] => {
 };
 
 export default function Index() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [viewAllOrder, setViewAllOrder] = useState(false);
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
