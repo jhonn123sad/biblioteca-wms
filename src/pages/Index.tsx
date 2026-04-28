@@ -104,8 +104,8 @@ export default function Index() {
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 flex items-center justify-center">
-              <img src="/logo-wms.png" alt="WMS Logo" className="w-full h-full object-contain" />
+            <div className="h-10 flex items-center">
+              <img src="/logo-wms.png" alt="WMS Logo" className="h-full w-auto object-contain" />
             </div>
             <h1 className="text-lg font-bold tracking-tight">Bíblioteca de Prompts WMS</h1>
           </div>
