@@ -28,7 +28,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0DHPEf-ggmK1FqFmfe5xbI8H5mnoPCyigbSwnZlKdjsGN2mFXChK58QxsozQf8MZ8/exec";
+const PROMPTS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
+const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0DHPEf-ggmK1FqFmfe5xbI8H5mnoPCyigbSwnZlKdjsGN2mFXChK58QxsozQf8MZ8/exec";
 
 interface Prompt {
   id: string;
@@ -104,8 +105,8 @@ export default function Index() {
 
     setIsVerifying(true);
     try {
-      // Usamos a mesma URL do Apps Script mas com o parâmetro ?phone=
-      const response = await fetch(`${APPS_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
+      // Usamos a URL de autenticação para validar o telefone
+      const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
       const data = await response.json();
 
       if (data.authorized) {
@@ -150,7 +151,7 @@ export default function Index() {
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
-        const response = await fetch(APPS_SCRIPT_URL);
+        const response = await fetch(PROMPTS_SCRIPT_URL);
         if (!response.ok) throw new Error("Não foi possível carregar os dados.");
         const json = await response.json();
         return formatSheetData(json.data || []);
