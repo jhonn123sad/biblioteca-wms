@@ -254,28 +254,50 @@ export default function Index() {
 
         {/* Bloco de Preview em Ordem Numérica */}
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
-          <div className="mb-12">
+          <div className="mb-12 relative group/carousel">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Ordem Numérica</h3>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => {
-                  setViewAllOrder(true);
-                  setShowCarousel(false);
-                }}
-                className="text-xs font-bold hover:bg-black/5 rounded-lg"
-              >
-                Ver lista completa <ExternalLink className="w-3 h-3 ml-1" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => scrollCarousel('left')}
+                  className="w-8 h-8 rounded-full border border-black/5 hover:bg-black/5 md:flex hidden"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => scrollCarousel('right')}
+                  className="w-8 h-8 rounded-full border border-black/5 hover:bg-black/5 md:flex hidden"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => {
+                    setViewAllOrder(true);
+                    setShowCarousel(false);
+                  }}
+                  className="text-xs font-bold hover:bg-black/5 rounded-lg ml-2"
+                >
+                  Ver lista completa <ExternalLink className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-              {previewPrompts.slice(0, 7).map((prompt) => (
+            
+            <div 
+              ref={scrollContainerRef}
+              className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none"
+            >
+              {previewPrompts.map((prompt) => (
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-28 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img 
                     src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
                     alt={prompt.title} 
-                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
+                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110 pointer-events-none"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
                     <PromptItemOnlyDialog prompt={prompt} />
