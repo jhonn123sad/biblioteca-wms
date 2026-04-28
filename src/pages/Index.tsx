@@ -151,7 +151,7 @@ export default function Index() {
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
-        const response = await fetch(APPS_SCRIPT_URL);
+        const response = await fetch(PROMPTS_SCRIPT_URL);
         if (!response.ok) throw new Error("Não foi possível carregar os dados.");
         const json = await response.json();
         return formatSheetData(json.data || []);
