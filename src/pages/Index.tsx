@@ -137,14 +137,14 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-12 md:py-20">
+      <main className="container mx-auto px-6 py-6 md:py-10">
         {/* Intro */}
-        <div className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-3 tracking-tight text-center md:text-left">
-            Prompts de alta performance
+        <div className="mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-center md:text-left">
+            Prompts exclusivos para membros WMS
           </h2>
-          <p className="text-gray-400 max-w-lg text-lg font-light text-center md:text-left">
-            Uma curadoria minimalista de prompts otimizados para maximizar seus resultados.
+          <p className="text-gray-400 max-w-2xl text-lg font-light text-center md:text-left leading-relaxed">
+            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
         </div>
 
