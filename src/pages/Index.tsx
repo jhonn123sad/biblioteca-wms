@@ -113,20 +113,28 @@ export default function Index() {
       console.log("Auth response data:", data);
 
       if (data.authorized) {
-        // Na planilha o nome está na coluna 1 (índice 1) ou pode vir como data.name se o Apps Script estiver mapeado
-        // Como o usuário disse que a ordem é: Data (0), Nome (1), Email (2), WhatsApp (3)
-        // O Apps Script provavelmente retorna 'name' se foi configurado assim, ou precisamos pegar da linha encontrada
-        const memberName = data.name || data.memberData?.[1] || "Membro";
+        // Se data.name não existe, tentamos encontrar o nome buscando na lista de dados
+        let memberName = data.name;
         
-        setUserName(memberName);
+        if (!memberName && data.allData) {
+          const cleanInputPhone = phoneNumber.replace(/\D/g, '');
+          const foundRow = data.allData.find((row: any[]) => {
+            const rowPhone = String(row[3] || "").replace(/\D/g, '');
+            return rowPhone === cleanInputPhone;
+          });
+          if (foundRow) memberName = foundRow[1];
+        }
+
+        const finalName = memberName || "Membro";
+        setUserName(finalName);
         setShowWelcome(true);
         
         setTimeout(() => {
           setIsAuthenticated(true);
           localStorage.setItem("wms_member_auth", "true");
-          localStorage.setItem("wms_member_name", memberName);
+          localStorage.setItem("wms_member_name", finalName);
           setShowWelcome(false);
-          toast.success(`Bem-vindo(a), ${memberName}!`);
+          toast.success(`Bem-vindo(a), ${finalName}!`);
         }, 3000);
       } else {
         toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
