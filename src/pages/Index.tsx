@@ -18,9 +18,9 @@ import {
   Image as ImageIcon 
 } from "lucide-react";
 
-// CONFIGURAÇÃO DO GOOGLE SHEETS
-// Você deve publicar seu Sheets como CSV (Arquivo > Compartilhar > Publicar na Web > CSV)
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1zG9y_R_o_Bq_9rY_x_a_m_o_L_u_v_a_b_l_e_T_e_s_t/pub?output=csv";
+// CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
+// Você deve implantar seu Apps Script como Web App e colar a URL aqui
+const APPS_SCRIPT_URL = "SUA_URL_DO_WEB_APP_AQUI";
 
 interface Prompt {
   id: string;
@@ -30,38 +30,23 @@ interface Prompt {
   images: string[];
 }
 
-const parseCSV = (csv: string): Prompt[] => {
-  const lines = csv.split("\n");
-  const result: Prompt[] = [];
-  
-  // Pula o cabeçalho
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    
-    // Divide respeitando aspas se houver (opcional para simplicidade aqui usamos split simples)
-    // Mas para prompts que podem ter vírgulas, idealmente usaríamos uma lib ou regex
-    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-    
-    const title = cols[0]?.replace(/^"|"$/g, '').trim();
-    const description = cols[1]?.replace(/^"|"$/g, '').trim();
-    const content = cols[2]?.replace(/^"|"$/g, '').trim();
-    const image1 = cols[3]?.replace(/^"|"$/g, '').trim();
-    const image2 = cols[4]?.replace(/^"|"$/g, '').trim();
-    const image3 = cols[5]?.replace(/^"|"$/g, '').trim();
-    const image4 = cols[6]?.replace(/^"|"$/g, '').trim();
-    const image5 = cols[7]?.replace(/^"|"$/g, '').trim();
+// Função para formatar os dados vindos do Apps Script (JSON)
+const formatSheetData = (data: any[]): Prompt[] => {
+  return data.map((cols, index) => {
+    const image1 = cols[3]?.toString().trim();
+    const image2 = cols[4]?.toString().trim();
+    const image3 = cols[5]?.toString().trim();
+    const image4 = cols[6]?.toString().trim();
+    const image5 = cols[7]?.toString().trim();
 
-    if (title && content) {
-      result.push({
-        id: i.toString(),
-        title,
-        description,
-        content,
-        images: [image1, image2, image3, image4, image5].filter(img => img && img.startsWith('http'))
-      });
-    }
-  }
-  return result;
+    return {
+      id: index.toString(),
+      title: cols[0]?.toString().trim() || "Sem Título",
+      description: cols[1]?.toString().trim() || "",
+      content: cols[2]?.toString().trim() || "",
+      images: [image1, image2, image3, image4, image5].filter(img => img && img.startsWith('http'))
+    };
+  }).filter(p => p.content);
 };
 
 export default function Index() {
@@ -71,13 +56,13 @@ export default function Index() {
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
-        const response = await fetch(CSV_URL);
-        if (!response.ok) throw new Error("Não foi possível carregar os dados do Sheets.");
-        const csvText = await response.text();
-        return parseCSV(csvText);
+        const response = await fetch(APPS_SCRIPT_URL);
+        if (!response.ok) throw new Error("Não foi possível carregar os dados.");
+        const json = await response.json();
+        return formatSheetData(json.data || []);
       } catch (err: any) {
         console.error(err);
-        return []; // Retorna vazio em caso de erro na URL de teste
+        return [];
       }
     }
   });
@@ -136,7 +121,7 @@ export default function Index() {
             <h3 className="text-lg font-bold mb-1">Nenhum prompt encontrado</h3>
             <p className="text-gray-400 text-sm mb-6">Certifique-se de que o CSV está publicado e a URL está correta.</p>
             <div className="max-w-md mx-auto p-4 bg-gray-50 rounded-xl text-left text-xs font-mono overflow-x-auto">
-              {CSV_URL}
+              {APPS_SCRIPT_URL}
             </div>
           </div>
         ) : (
@@ -157,11 +142,11 @@ export default function Index() {
           </div>
           <div>
             <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-4 text-gray-400">Passo 02</h4>
-            <p className="text-sm font-medium leading-relaxed">Vá em <b>Arquivo &gt; Compartilhar &gt; Publicar na Web</b>. Escolha <b>Valores separados por vírgula (.csv)</b>.</p>
+            <p className="text-sm font-medium leading-relaxed">No Sheets, vá em <b>Extensões &gt; Apps Script</b>, cole o código do robô e clique em <b>Implantar &gt; Nova Implantação &gt; App da Web</b> (Acesso: Qualquer pessoa).</p>
           </div>
           <div>
             <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-4 text-gray-400">Passo 03</h4>
-            <p className="text-sm font-medium leading-relaxed">Copie a URL gerada e cole no código (const <b>CSV_URL</b>). O site atualizará automaticamente ao detectar mudanças no Sheets.</p>
+            <p className="text-sm font-medium leading-relaxed">Copie a URL gerada e cole no código (const <b>APPS_SCRIPT_URL</b>). O site lerá os dados via JSON para maior estabilidade.</p>
           </div>
         </div>
       </footer>
