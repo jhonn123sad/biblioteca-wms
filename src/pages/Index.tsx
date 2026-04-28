@@ -6,20 +6,26 @@ import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 export default function Index() {
-  const { data: prompts, isLoading } = useQuery({
+  const { data: prompts, isLoading, error } = useQuery({
     queryKey: ["prompts"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select(`
-          *,
-          images:prompt_images(*)
-        `)
-        .order("created_at", { ascending: false });
-      
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("prompts")
+          .select(`
+            *,
+            images:prompt_images(*)
+          `)
+          .order("created_at", { ascending: false });
+        
+        if (error) throw error;
+        return data;
+      } catch (err: any) {
+        console.error("Error fetching prompts:", err);
+        throw new Error(err.message || "Falha ao carregar os prompts.");
+      }
     },
+    retry: 2,
   });
 
   return (
@@ -37,6 +43,11 @@ export default function Index() {
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="w-8 h-8 animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-destructive mb-4">{(error as Error).message}</p>
+            <Button onClick={() => window.location.reload()}>Tentar Novamente</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -39,14 +39,21 @@ export default function Admin() {
   }, []);
 
   const checkAdmin = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", userId)
-      .single();
-    
-    if (data?.role === 'admin') setIsAdmin(true);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      if (data?.role === 'admin') setIsAdmin(true);
+    } catch (err: any) {
+      console.error("Error checking admin status:", err);
+      toast.error("Erro ao verificar permissões: " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,15 +120,19 @@ export default function Admin() {
 
   const becomeAdmin = async () => {
     if (!session) return;
-    const { error } = await supabase.from("profiles").upsert({
-      id: session.user.id,
-      email: session.user.email,
-      role: 'admin'
-    });
-    if (error) toast.error(error.message);
-    else {
+    try {
+      const { error } = await supabase.from("profiles").upsert({
+        id: session.user.id,
+        email: session.user.email,
+        role: 'admin'
+      });
+      if (error) throw error;
+      
       setIsAdmin(true);
       toast.success("Agora você é um administrador!");
+    } catch (err: any) {
+      console.error("Error becoming admin:", err);
+      toast.error("Erro ao obter acesso admin: " + (err.message || "Tente novamente mais tarde."));
     }
   };
 

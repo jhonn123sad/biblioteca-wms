@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
@@ -52,8 +53,13 @@ export default function PromptCard({ prompt }: PromptCardProps) {
                 <pre className="whitespace-pre-wrap text-sm">{prompt.content}</pre>
               </div>
               <Button 
-                onClick={() => {
-                  navigator.clipboard.writeText(prompt.content);
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(prompt.content);
+                    toast.success("Prompt copiado!");
+                  } catch (err) {
+                    toast.error("Erro ao copiar para a área de transferência.");
+                  }
                 }}
                 className="w-full"
               >
