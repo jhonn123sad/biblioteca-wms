@@ -16,8 +16,12 @@ import {
   Grid, 
   ExternalLink, 
   Image as ImageIcon,
-  RefreshCcw
+  RefreshCcw,
+  BookOpen,
+  Terminal
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
 // Você deve implantar seu Apps Script como Web App e colar a URL aqui
