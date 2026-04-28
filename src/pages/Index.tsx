@@ -327,10 +327,10 @@ export default function Index() {
                       setViewAllOrder(false);
                       setShowCarousel(false);
                     }}
-                    className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none ${
+                    className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
                       selectedTag === tag 
                         ? "bg-black text-white shadow-lg shadow-black/20" 
-                        : "border-black/5 hover:bg-black/5"
+                        : "bg-white hover:bg-black/5"
                     }`}
                   >
                     {tag}
