@@ -16,8 +16,12 @@ import {
   Grid, 
   ExternalLink, 
   Image as ImageIcon,
-  RefreshCcw
+  RefreshCcw,
+  BookOpen,
+  Terminal
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
 // Você deve implantar seu Apps Script como Web App e colar a URL aqui
@@ -137,10 +141,10 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-6 md:py-10">
+      <main className="container mx-auto px-6 py-4 md:py-6">
         {/* Intro */}
-        <div className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-center md:text-left">
+        <div className="mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-center md:text-left">
             Prompts exclusivos para membros WMS
           </h2>
           <p className="text-gray-400 max-w-2xl text-lg font-light text-center md:text-left leading-relaxed">
@@ -218,45 +222,79 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 Visualizar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-5xl bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
+            <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
               <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
-                <div className="bg-[#F9F9F9] p-8 overflow-y-auto">
-                  <div className="grid grid-cols-2 gap-4">
-                    {prompt.images.map((img, i) => (
-                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
-                        <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />
+                {/* Lado Esquerdo: Imagens e Tutorial */}
+                <div className="bg-[#F9F9F9] p-8 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+                  <div className="space-y-8">
+                    {/* Galeria de Imagens */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {prompt.images.map((img, i) => (
+                        <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
+                          <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
+                        </div>
+                      ))}
+                      {prompt.images.length === 0 && (
+                        <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
+                          <ImageIcon className="w-8 h-8 opacity-20" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Tutorial / Descrição */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold">
+                        <BookOpen className="w-3 h-3" />
+                        <span>Tutorial & Contexto</span>
                       </div>
-                    ))}
-                    {prompt.images.length === 0 && (
-                      <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
-                        <ImageIcon className="w-8 h-8 opacity-20" />
+                      <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {prompt.description}
+                        </ReactMarkdown>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="p-10 md:p-14 flex flex-col justify-between bg-white">
-                  <div>
-                    <DialogHeader className="mb-10 text-left">
+                {/* Lado Direito: Prompt */}
+                <div className="p-8 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+                  <div className="flex flex-col h-full overflow-hidden">
+                    <DialogHeader className="mb-8 text-left">
                       <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">{prompt.title}</DialogTitle>
-                      <p className="text-gray-400 font-light text-lg mt-3 leading-relaxed">{prompt.description}</p>
                     </DialogHeader>
 
-                    <div className="relative group">
-                      <div className="bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] max-h-[300px] overflow-y-auto custom-scrollbar">
-                        <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-600">
-                          {prompt.content}
-                        </pre>
+                    <div className="flex-1 flex flex-col min-h-0">
+                      <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
+                        <Terminal className="w-3 h-3" />
+                        <span>Prompt de Alta Performance</span>
+                      </div>
+                      
+                      <div className="relative group flex-1 min-h-0">
+                        <div className="h-full bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
+                          <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
+                            {prompt.content}
+                          </pre>
+                        </div>
+                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            variant="secondary" 
+                            size="sm" 
+                            onClick={copyToClipboard}
+                            className="bg-white/80 backdrop-blur shadow-sm rounded-xl h-9"
+                          >
+                            <Copy className="w-3 h-3 mr-2" /> Copiar
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-12">
+                  <div className="mt-8">
                     <Button 
                       onClick={copyToClipboard}
-                      className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98]"
+                      className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
                     >
-                      <Copy className="mr-3 w-4 h-4" /> COPIAR PROMPT
+                      <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
                     </Button>
                   </div>
                 </div>
