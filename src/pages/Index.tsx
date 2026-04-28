@@ -20,7 +20,7 @@ import {
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
 // Você deve implantar seu Apps Script como Web App e colar a URL aqui
-const APPS_SCRIPT_URL = "SUA_URL_DO_WEB_APP_AQUI";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
 
 interface Prompt {
   id: string;
