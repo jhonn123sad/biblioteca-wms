@@ -103,11 +103,13 @@ export default function Index() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
-              <img src="/placeholder.svg" alt="WMS Logo" className="w-full h-full object-cover" />
-            </div>
-            <h1 className="text-lg font-bold tracking-tight">Bíblioteca de Prompts WMS</h1>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/logo-wms.png" 
+              alt="WMS Logo" 
+              className="h-10 w-10 object-contain rounded-lg shadow-sm"
+            />
+            <h1 className="text-xl font-bold tracking-tight">Bíblioteca de Prompts WMS</h1>
           </div>
           
           <div className="relative hidden md:block w-72 group">
@@ -141,10 +143,10 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-4 md:py-6">
+      <main className="container mx-auto px-6 py-2 md:py-4">
         {/* Intro */}
-        <div className="mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-center md:text-left">
+        <div className="mb-2">
+          <h2 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight text-center md:text-left">
             Prompts exclusivos para membros WMS
           </h2>
           <p className="text-gray-400 max-w-2xl text-lg font-light text-center md:text-left leading-relaxed">
