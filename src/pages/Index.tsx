@@ -31,21 +31,39 @@ interface Prompt {
   images: string[];
 }
 
+// Função para converter links do Google Drive em links diretos de imagem
+const fixDriveLink = (url: string) => {
+  if (!url || typeof url !== 'string') return "";
+  const driveRegex = /drive\.google\.com\/file\/d\/([^\/]+)/;
+  const match = url.match(driveRegex);
+  if (match && match[1]) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+  return url;
+};
+
 // Função para formatar os dados vindos do Apps Script (JSON)
 const formatSheetData = (data: any[]): Prompt[] => {
   return data.map((cols, index) => {
-    const image1 = cols[3]?.toString().trim();
-    const image2 = cols[4]?.toString().trim();
-    const image3 = cols[5]?.toString().trim();
-    const image4 = cols[6]?.toString().trim();
-    const image5 = cols[7]?.toString().trim();
+    const getValue = (val: any) => {
+      if (!val || typeof val === 'object') return "";
+      return val.toString().trim();
+    };
+
+    const images = [
+      fixDriveLink(getValue(cols[3])),
+      fixDriveLink(getValue(cols[4])),
+      fixDriveLink(getValue(cols[5])),
+      fixDriveLink(getValue(cols[6])),
+      fixDriveLink(getValue(cols[7]))
+    ].filter(img => img && img.startsWith('http'));
 
     return {
       id: index.toString(),
-      title: cols[0]?.toString().trim() || "Sem Título",
-      description: cols[1]?.toString().trim() || "",
-      content: cols[2]?.toString().trim() || "",
-      images: [image1, image2, image3, image4, image5].filter(img => img && img.startsWith('http'))
+      title: getValue(cols[0]) || "Sem Título",
+      description: getValue(cols[1]) || "",
+      content: getValue(cols[2]) || "",
+      images
     };
   }).filter(p => p.content);
 };
