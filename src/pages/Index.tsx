@@ -34,12 +34,15 @@ interface Prompt {
 // Função para converter links do Google Drive em links diretos de imagem
 const fixDriveLink = (url: string) => {
   if (!url || typeof url !== 'string') return "";
-  const driveRegex = /drive\.google\.com\/file\/d\/([^\/]+)/;
-  const match = url.match(driveRegex);
-  if (match && match[1]) {
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  
+  // Trata links de compartilhamento padrão do Drive
+  const fileIdMatch = url.match(/\/file\/d\/([^\/]+)/) || url.match(/id=([^\&]+)/);
+  if (fileIdMatch && fileIdMatch[1]) {
+    return `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
   }
-  return url;
+  
+  // Trata links de pastas ou outros formatos (apenas retorna se for http direto)
+  return url.startsWith('http') ? url : "";
 };
 
 // Função para formatar os dados vindos do Apps Script (JSON)
