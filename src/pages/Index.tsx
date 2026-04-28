@@ -238,32 +238,106 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Filtro de Tags */}
-        {!isLoading && allTags.length > 0 && (
-          <div className="mb-10 flex flex-wrap gap-2 justify-center md:justify-start">
-            <Button
-              variant={selectedTag === null ? "default" : "outline"}
-              onClick={() => setSelectedTag(null)}
-              className={`rounded-full px-5 h-9 text-xs font-semibold transition-all ${
-                selectedTag === null ? "bg-black text-white" : "border-black/5 hover:bg-black/5"
-              }`}
-            >
-              Todos
-            </Button>
-            {allTags.map(tag => (
-              <Button
-                key={tag}
-                variant={selectedTag === tag ? "default" : "outline"}
-                onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                className={`rounded-full px-5 h-9 text-xs font-semibold transition-all ${
-                  selectedTag === tag 
-                    ? "bg-black text-white" 
-                    : "border-black/5 hover:bg-black/5"
-                }`}
+        {/* Carrossel Minimalista */}
+        {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  setViewAllOrder(true);
+                  setShowCarousel(false);
+                }}
+                className="text-xs font-bold hover:bg-black/5 rounded-lg"
               >
-                {tag}
+                Ver tudo em ordem <ExternalLink className="w-3 h-3 ml-1" />
               </Button>
-            ))}
+            </div>
+            <div className="relative group/carousel">
+              <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-hide snap-x">
+                {carouselPrompts.map((prompt) => (
+                  <div key={`carousel-${prompt.id}`} className="flex-none w-24 md:w-32 snap-start">
+                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm mb-2 group/item relative">
+                      <img 
+                        src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
+                        alt={prompt.title} 
+                        className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
+                         <PromptItemOnlyDialog prompt={prompt} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <button 
+                  onClick={() => {
+                    setViewAllOrder(true);
+                    setShowCarousel(false);
+                  }}
+                  className="flex-none w-24 md:w-32 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors"
+                >
+                  <Grid className="w-6 h-6 text-black/20" />
+                  <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Filtro de Tags - Redesenhado */}
+        {!isLoading && (
+          <div className="mb-10 sticky top-[80px] z-30 bg-white/80 backdrop-blur-md py-4 -mx-6 px-6 border-b border-black/[0.02]">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                <Button
+                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedTag(null);
+                    setViewAllOrder(false);
+                    setShowCarousel(true);
+                  }}
+                  className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none ${
+                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-lg shadow-black/20" : "border-black/5 hover:bg-black/5"
+                  }`}
+                >
+                  Categorias
+                </Button>
+                <Button
+                  variant={viewAllOrder ? "default" : "outline"}
+                  onClick={() => {
+                    setViewAllOrder(true);
+                    setSelectedTag(null);
+                    setShowCarousel(false);
+                  }}
+                  className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none ${
+                    viewAllOrder ? "bg-black text-white shadow-lg shadow-black/20" : "border-black/5 hover:bg-black/5"
+                  }`}
+                >
+                  Ordem Numérica
+                </Button>
+                <div className="w-px h-4 bg-black/10 flex-none mx-2" />
+                {allTags.map(tag => (
+                  <Button
+                    key={tag}
+                    variant={selectedTag === tag ? "default" : "outline"}
+                    onClick={() => {
+                      setSelectedTag(selectedTag === tag ? null : tag);
+                      setViewAllOrder(false);
+                      setShowCarousel(false);
+                    }}
+                    className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none ${
+                      selectedTag === tag 
+                        ? "bg-black text-white shadow-lg shadow-black/20" 
+                        : "border-black/5 hover:bg-black/5"
+                    }`}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
