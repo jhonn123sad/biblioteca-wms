@@ -82,6 +82,18 @@ export default function Index() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [viewAllOrder, setViewAllOrder] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (!scrollContainerRef.current) return;
+    const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
+    scrollContainerRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
 
   const { data: prompts, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["prompts-sheets"],
