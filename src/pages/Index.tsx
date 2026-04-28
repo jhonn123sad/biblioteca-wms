@@ -95,74 +95,75 @@ export default function Index() {
   ).slice(0, 50);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] font-sans selection:bg-black selection:text-white">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-black/5">
+      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-              <Grid className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg shadow-black/10">
+              <Grid className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight">PROMPT GALLERY</h1>
+            <h1 className="text-lg font-semibold tracking-tight">Bíblioteca de Prompts WMS</h1>
           </div>
           
-          <div className="relative hidden md:block w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <div className="relative hidden md:block w-72 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-black transition-colors" />
             <input 
               type="text" 
-              placeholder="Buscar prompts..." 
+              placeholder="Pesquisar inspirações..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-100 border-none rounded-xl h-10 pl-10 text-sm focus:ring-2 focus:ring-black transition-all"
+              className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-11 pl-11 pr-4 text-sm focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                refetch();
-                toast.success("Sincronizando biblioteca...");
-              }}
-              disabled={isFetching}
-              className="rounded-xl border-black/10 hover:bg-black hover:text-white transition-all h-10 w-10 p-0"
-              title="Sincronizar dados"
-            >
-              <RefreshCcw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-            </Button>
-            
-            <a href="https://sheets.new" target="_blank" rel="noreferrer">
-              <Button variant="outline" className="rounded-xl border-black/10 hover:bg-black hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
-                Sheets <ExternalLink className="ml-2 w-3 h-3" />
+          <div className="flex items-center gap-2">
+            {/* O botão de sincronização agora só aparece se estivermos em ambiente de desenvolvimento (LOVABLE) */}
+            {window.location.hostname.includes("lovable") && (
+              <Button 
+                variant="ghost" 
+                onClick={() => {
+                  refetch();
+                  toast.success("Sincronizando biblioteca...");
+                }}
+                disabled={isFetching}
+                className="rounded-xl hover:bg-black/5 transition-all h-10 w-10 p-0"
+                title="Sincronizar Sheets (Apenas Editor)"
+              >
+                <RefreshCcw className={`w-4 h-4 text-gray-400 ${isFetching ? 'animate-spin text-black' : ''}`} />
               </Button>
-            </a>
+            )}
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-12">
+      <main className="container mx-auto px-6 py-12 md:py-20">
         {/* Intro */}
-        <div className="mb-12 text-center md:text-left">
-          <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter">SUA BIBLIOTECA<br />NO GOOGLE SHEETS.</h2>
-          <p className="text-gray-500 max-w-md font-medium">Sincronização direta. Minimalismo total. Carregamento instantâneo.</p>
+        <div className="mb-16">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-3 tracking-tight text-center md:text-left">
+            Prompts de alta performance
+          </h2>
+          <p className="text-gray-400 max-w-lg text-lg font-light text-center md:text-left">
+            Uma curadoria minimalista de prompts otimizados para maximizar seus resultados.
+          </p>
         </div>
 
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-4">
-            <Loader2 className="w-8 h-8 animate-spin text-black" />
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Sincronizando Sheets...</p>
+          <div className="flex flex-col items-center justify-center py-40 gap-6">
+            <div className="relative">
+              <div className="w-12 h-12 border-2 border-black/5 rounded-full" />
+              <div className="w-12 h-12 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" />
+            </div>
+            <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
           </div>
         ) : filteredPrompts?.length === 0 ? (
-          <div className="bg-white border border-black/5 rounded-[2rem] p-20 text-center">
-            <ImageIcon className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-            <h3 className="text-lg font-bold mb-1">Nenhum prompt encontrado</h3>
-            <p className="text-gray-400 text-sm mb-6">Certifique-se de que o CSV está publicado e a URL está correta.</p>
-            <div className="max-w-md mx-auto p-4 bg-gray-50 rounded-xl text-left text-xs font-mono overflow-x-auto">
-              {APPS_SCRIPT_URL}
-            </div>
+          <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
+            <ImageIcon className="w-10 h-10 mb-4" />
+            <h3 className="text-lg font-medium">Nenhum resultado</h3>
+            <p className="text-sm">Tente outros termos ou atualize a página.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             {filteredPrompts?.map((prompt) => (
               <PromptItem key={prompt.id} prompt={prompt} />
             ))}
@@ -170,26 +171,21 @@ export default function Index() {
         )}
       </main>
 
-      {/* Footer Instructions */}
-      <footer className="container mx-auto px-6 py-20 border-t border-black/5">
-        <div className="grid md:grid-cols-3 gap-12">
-          <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-4 text-gray-400">Passo 01</h4>
-            <p className="text-sm font-medium leading-relaxed">Crie uma planilha no Google Sheets com as colunas: <b>Título, Descrição, Prompt, Imagem1, Imagem2, Imagem3, Imagem4, Imagem5</b>.</p>
-          </div>
-          <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-4 text-gray-400">Passo 02</h4>
-            <p className="text-sm font-medium leading-relaxed">No Sheets, vá em <b>Extensões &gt; Apps Script</b>, cole o código do robô e clique em <b>Implantar &gt; Nova Implantação &gt; App da Web</b> (Acesso: Qualquer pessoa).</p>
-          </div>
-          <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-4 text-gray-400">Passo 03</h4>
-            <p className="text-sm font-medium leading-relaxed">Copie a URL gerada e cole no código (const <b>APPS_SCRIPT_URL</b>). O site lerá os dados via JSON para maior estabilidade.</p>
+      <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03]">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
+            &copy; {new Date().getFullYear()} Bíblioteca de Prompts WMS
+          </p>
+          <div className="flex gap-8">
+            <span className="text-xs text-gray-300 font-medium uppercase tracking-widest">Minimalist Design</span>
+            <span className="text-xs text-gray-300 font-medium uppercase tracking-widest">Fast Sync</span>
           </div>
         </div>
       </footer>
     </div>
   );
 }
+
 
 function PromptItem({ prompt }: { prompt: Prompt }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -201,64 +197,66 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
   };
 
   return (
-    <div className="group bg-white rounded-[2rem] border border-black/5 overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1">
-      <div className="aspect-[3/4] overflow-hidden relative">
+    <div className="group bg-white rounded-3xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-2">
+      <div className="aspect-[4/5] overflow-hidden relative">
         <img 
           src={mainImage} 
           alt={prompt.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-bold leading-tight mb-2 line-clamp-1">{prompt.title}</h3>
-        <p className="text-gray-400 text-xs font-medium mb-6 line-clamp-1">{prompt.description}</p>
+      <div className="p-7">
+        <h3 className="text-lg font-semibold leading-snug mb-2 line-clamp-1">{prompt.title}</h3>
+        <p className="text-gray-400 text-sm font-light mb-8 line-clamp-2 leading-relaxed">{prompt.description}</p>
         
         <div className="flex gap-2">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-black text-white hover:bg-gray-800 rounded-xl h-12 font-bold transition-all">
-                Abrir
+              <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-2xl h-12 text-sm font-medium transition-all shadow-lg shadow-black/5">
+                Visualizar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl bg-white p-0 overflow-hidden rounded-[2.5rem] border-none">
+            <DialogContent className="max-w-5xl bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
               <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
-                <div className="bg-gray-50 p-6 overflow-y-auto">
+                <div className="bg-[#F9F9F9] p-8 overflow-y-auto">
                   <div className="grid grid-cols-2 gap-4">
                     {prompt.images.map((img, i) => (
-                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/5">
-                        <img src={img} alt="Gallery" className="w-full h-full object-cover" />
+                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                        <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />
                       </div>
                     ))}
                     {prompt.images.length === 0 && (
-                      <div className="col-span-2 aspect-video bg-gray-200 rounded-2xl flex items-center justify-center text-gray-400">
-                        <ImageIcon className="w-8 h-8" />
+                      <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
+                        <ImageIcon className="w-8 h-8 opacity-20" />
                       </div>
                     )}
                   </div>
                 </div>
                 
-                <div className="p-10 flex flex-col justify-between">
+                <div className="p-10 md:p-14 flex flex-col justify-between bg-white">
                   <div>
-                    <DialogHeader className="mb-8">
-                      <DialogTitle className="text-3xl font-black tracking-tighter">{prompt.title}</DialogTitle>
-                      <p className="text-gray-400 font-medium mt-2">{prompt.description}</p>
+                    <DialogHeader className="mb-10 text-left">
+                      <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">{prompt.title}</DialogTitle>
+                      <p className="text-gray-400 font-light text-lg mt-3 leading-relaxed">{prompt.description}</p>
                     </DialogHeader>
 
-                    <div className="bg-gray-100 p-6 rounded-[1.5rem] border border-black/5">
-                      <pre className="text-sm font-medium whitespace-pre-wrap leading-relaxed text-gray-700 font-mono">
-                        {prompt.content}
-                      </pre>
+                    <div className="relative group">
+                      <div className="bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] max-h-[300px] overflow-y-auto custom-scrollbar">
+                        <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-600">
+                          {prompt.content}
+                        </pre>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 flex gap-3">
+                  <div className="mt-12">
                     <Button 
                       onClick={copyToClipboard}
-                      className="flex-1 bg-black text-white hover:bg-gray-800 rounded-[1.25rem] h-14 font-black"
+                      className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98]"
                     >
-                      <Copy className="mr-2 w-4 h-4" /> COPIAR PROMPT
+                      <Copy className="mr-3 w-4 h-4" /> COPIAR PROMPT
                     </Button>
                   </div>
                 </div>
