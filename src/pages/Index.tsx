@@ -84,7 +84,7 @@ export default function Index() {
   const [viewAllOrder, setViewAllOrder] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
