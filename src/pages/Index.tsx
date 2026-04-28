@@ -15,7 +15,8 @@ import {
   Search, 
   Grid, 
   ExternalLink, 
-  Image as ImageIcon 
+  Image as ImageIcon,
+  RefreshCcw
 } from "lucide-react";
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
@@ -52,7 +53,7 @@ const formatSheetData = (data: any[]): Prompt[] => {
 export default function Index() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: prompts, isLoading, error } = useQuery({
+  const { data: prompts, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
@@ -95,11 +96,26 @@ export default function Index() {
             />
           </div>
 
-          <a href="https://sheets.new" target="_blank" rel="noreferrer">
-            <Button variant="outline" className="rounded-xl border-black/10 hover:bg-black hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
-              Sheets <ExternalLink className="ml-2 w-3 h-3" />
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                refetch();
+                toast.success("Sincronizando biblioteca...");
+              }}
+              disabled={isFetching}
+              className="rounded-xl border-black/10 hover:bg-black hover:text-white transition-all h-10 w-10 p-0"
+              title="Sincronizar dados"
+            >
+              <RefreshCcw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
             </Button>
-          </a>
+            
+            <a href="https://sheets.new" target="_blank" rel="noreferrer">
+              <Button variant="outline" className="rounded-xl border-black/10 hover:bg-black hover:text-white transition-all text-xs font-bold uppercase tracking-widest">
+                Sheets <ExternalLink className="ml-2 w-3 h-3" />
+              </Button>
+            </a>
+          </div>
         </div>
       </header>
 
