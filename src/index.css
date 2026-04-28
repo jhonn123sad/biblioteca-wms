@@ -1,92 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 215 25% 15%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
-
-    --primary: 215 45% 18%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 32 45% 42%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 215 15% 96%;
-    --muted-foreground: 215 12% 42%;
-
-    --accent: 32 38% 35%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 215 15% 88%;
-    --input: 215 15% 88%;
-    --ring: 215 50% 15%;
-
-    --radius: 0.5rem;
-
-    /* Luxury theme colors - sober & professional */
-    --luxury-navy: 215 45% 18%;
-    --luxury-gold: 32 45% 42%;
-    --luxury-gold-dark: 32 38% 35%;
-    --luxury-cream: 32 20% 96%;
-    --luxury-gray: 215 10% 50%;
-    
-    /* Gradients */
-    --gradient-luxury: linear-gradient(135deg, hsl(215 45% 18%) 0%, hsl(215 40% 28%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(32 45% 42%) 0%, hsl(32 38% 35%) 100%);
-    
-    /* Shadows */
-    --shadow-luxury: 0 10px 40px -10px hsl(215 45% 18% / 0.25);
-    --shadow-card: 0 4px 16px -4px hsl(215 45% 18% / 0.12);
-    
-    /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .dark {
-    --background: 215 50% 8%;
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
-    --card: 215 45% 12%;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 215 45% 12%;
+    --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 45 100% 51%;
-    --primary-foreground: 215 50% 15%;
+    --primary: 263.4 70% 50.4%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 215 40% 20%;
+    --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 40% 20%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
 
-    --accent: 45 100% 51%;
-    --accent-foreground: 215 50% 15%;
+    --accent: 263.4 70% 50.4%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 50%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 215 40% 20%;
-    --input: 215 40% 20%;
-    --ring: 45 100% 51%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 263.4 70% 50.4%;
+
+    --radius: 0.75rem;
   }
 }
 
@@ -95,41 +43,20 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-    -webkit-tap-highlight-color: transparent;
-  }
-
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-feature-settings: 'cv11', 'ss01';
+    font-family: 'Space Grotesk', sans-serif;
   }
 
-  h1, h2, .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
-    letter-spacing: -0.02em;
-  }
-
-  :focus-visible {
-    @apply outline-none ring-2 ring-secondary ring-offset-2 ring-offset-background;
+  pre, code {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
-@layer utilities {
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-  .shadow-luxury {
-    box-shadow: var(--shadow-luxury);
-  }
-  .transition-smooth {
-    transition: var(--transition-smooth);
-  }
-  .bg-gradient-luxury {
-    background: var(--gradient-luxury);
-  }
-  .bg-gradient-gold {
-    background: var(--gradient-gold);
-  }
+.glass-morphism {
+  @apply bg-white/5 backdrop-blur-lg border border-white/10;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600;
 }
