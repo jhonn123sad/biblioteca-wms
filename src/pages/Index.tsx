@@ -192,7 +192,7 @@ export default function Index() {
     return null;
   })();
 
-  const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 15) || [];
+  const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) || [];
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
