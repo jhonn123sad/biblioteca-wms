@@ -271,16 +271,40 @@ export default function Index() {
             </div>
             <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
           </div>
-        ) : filteredPrompts?.length === 0 ? (
+        ) : (searchTerm ? filteredPrompts : organizedPrompts)?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
             <ImageIcon className="w-10 h-10 mb-4" />
             <h3 className="text-lg font-medium">Nenhum resultado</h3>
             <p className="text-sm">Tente outros termos ou atualize a página.</p>
           </div>
-        ) : (
+        ) : searchTerm ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filteredPrompts?.map((prompt) => (
-              <PromptItem key={prompt.id} prompt={prompt} />
+            {(filteredPrompts as Prompt[])?.map((prompt) => (
+              <PromptItem key={`${prompt.id}-search`} prompt={prompt} />
+            ))}
+          </div>
+        ) : selectedTag ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {(organizedPrompts as Prompt[])?.map((prompt) => (
+              <PromptItem key={`${prompt.id}-tag`} prompt={prompt} />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {(organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group, groupIdx) => (
+              <div key={group.tag || 'uncategorized'} className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <h3 className="text-xl font-bold uppercase tracking-widest text-black/80">
+                    {group.tag || "Sem Categoria"}
+                  </h3>
+                  <div className="h-px flex-1 bg-black/[0.05]" />
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  {group.prompts.map((prompt) => (
+                    <PromptItem key={`${group.tag}-${prompt.id}`} prompt={prompt} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
