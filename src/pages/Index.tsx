@@ -102,12 +102,12 @@ export default function Index() {
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
-        <div className="container mx-auto px-6 h-24 flex items-center justify-between">
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img 
               src="/logo-wms.png" 
               alt="WMS Logo" 
-              className="h-16 w-auto object-contain"
+              className="h-10 w-10 object-contain rounded-lg shadow-sm"
             />
             <h1 className="text-xl font-bold tracking-tight">Bíblioteca de Prompts WMS</h1>
           </div>
@@ -143,9 +143,9 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-4 md:py-6">
+      <main className="container mx-auto px-6 py-2 md:py-4">
         {/* Intro */}
-        <div className="mb-4">
+        <div className="mb-2">
           <h2 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight text-center md:text-left">
             Prompts exclusivos para membros WMS
           </h2>
