@@ -470,8 +470,8 @@ export default function Index() {
         )}
 
         {!isLoading && (
-          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-3 px-3 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 max-w-full">
+          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex items-center gap-1.5 md:gap-2 max-w-full overflow-x-auto scrollbar-hide pb-1">
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
