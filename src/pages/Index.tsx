@@ -145,7 +145,7 @@ export default function Index() {
         setIsAuthenticated(false);
         toast.info("Você saiu do sistema.");
       }}
-      className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+      className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 md:h-9 px-2"
     >
       Sair
     </Button>
@@ -330,13 +330,13 @@ export default function Index() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
         <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
             <img 
               src="/logo-wms.png" 
               alt="WMS Logo" 
               className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm"
             />
-            <h1 className="text-lg md:text-xl font-bold tracking-tight line-clamp-1">Biblioteca WMS</h1>
+            <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1">Biblioteca WMS</h1>
           </div>
           
           <div className="relative flex-1 max-w-md mx-4 group">
@@ -350,7 +350,7 @@ export default function Index() {
             />
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 md:gap-4 flex-shrink-0">
             <LogoutButton />
             {/* O botão de sincronização agora só aparece se estivermos em ambiente de desenvolvimento (LOVABLE) */}
             {window.location.hostname.includes("lovable") && (
@@ -631,7 +631,7 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
         <div className="grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[92vh] md:max-h-[90vh]">
           <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
             <div className="space-y-6 md:space-y-8">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
                 {prompt.images.map((img, i) => (
                   <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
                     <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
@@ -746,7 +746,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      <div className="p-4 md:p-5">
+      <div className="p-3 md:p-5">
         <h3 className="text-sm md:text-base font-bold leading-tight mb-2 min-h-[1.25em]">
           {renderWithTags(prompt.title)}
         </h3>
@@ -767,7 +767,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
                   <div className="space-y-6 md:space-y-8">
                     {/* Galeria de Imagens */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3 md:gap-4">
                       {prompt.images.map((img, i) => (
                         <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
                           <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
