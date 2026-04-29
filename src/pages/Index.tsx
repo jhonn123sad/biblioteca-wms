@@ -133,9 +133,13 @@ const getTagColor = (content: string) => {
 
 const renderWithTags = (text: string) => {
   if (!text) return null;
-  const parts = text.split(/(\[[^\]]+\])/g);
+  // Regex atualizada para ignorar links markdown [texto](url)
+  // Ela procura por [algo] que NÃO seja seguido por (
+  const parts = text.split(/(\[[^\]]+\](?!\()|!\[[^\]]+\](?!\()|#\d+)/g);
+  
   return parts.map((part, index) => {
-    if (part.startsWith('[') && part.endsWith(']')) {
+    // Se for uma tag [Conteúdo]
+    if (part.startsWith('[') && part.endsWith(']') && !text.includes(part + '(')) {
       const tagContent = part.slice(1, -1).trim();
       const colorClass = getTagColor(tagContent);
       return (
@@ -144,6 +148,14 @@ const renderWithTags = (text: string) => {
           className={`${colorClass} text-[8px] md:text-[10px] font-extrabold px-1.5 md:px-2.5 py-0.5 rounded-md border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-all hover:scale-110 select-none`}
         >
           {tagContent}
+        </span>
+      );
+    }
+    // Se for um ID numérico como #123
+    if (part.startsWith('#') && /^\d+$/.test(part.slice(1))) {
+      return (
+        <span key={index} className="text-[#FF007A] font-black mr-1">
+          {part}
         </span>
       );
     }
