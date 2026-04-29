@@ -457,21 +457,21 @@ export default function Index() {
         ) : (
           <div className="space-y-12">
             {searchTerm ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
                 {(filteredPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-search`} prompt={prompt} />)}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
                 {(organizedPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-list`} prompt={prompt} />)}
               </div>
             ) : (
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
-                <div key={group.tag || 'uncategorized'} className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <h3 className="text-lg md:text-xl font-bold uppercase tracking-widest text-black/80">{group.tag || "Sem Categoria"}</h3>
+                <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-black/80">{group.tag || "Sem Categoria"}</h3>
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
                     {group.prompts.map((prompt) => <PromptCard key={`${group.tag}-${prompt.id}`} prompt={prompt} />)}
                   </div>
                 </div>
