@@ -824,6 +824,20 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
 export default function Index() {
   return (
     <ErrorBoundary>
+      <style dangerouslySetInnerHTML={{ __html: `
+        :root { --vh: 1vh; }
+        .min-h-screen { min-height: 100vh; min-height: calc(var(--vh, 1vh) * 100); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        * { -webkit-tap-highlight-color: transparent; }
+        body { overflow-x: hidden; width: 100%; position: relative; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        @media (max-width: 640px) {
+          .container { padding-left: 1rem; padding-right: 1rem; }
+        }
+      `}} />
       <MainApp />
     </ErrorBoundary>
   );
