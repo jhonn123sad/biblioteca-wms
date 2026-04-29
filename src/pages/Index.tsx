@@ -568,9 +568,9 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
             </div>
           </div>
         </div>
-        <DialogPrimitive.Close className="absolute right-3 top-3 md:right-6 md:top-6 rounded-full p-1.5 bg-black/5 hover:bg-black/10 transition-colors">
+        <DialogClose className="absolute right-3 top-3 md:right-6 md:top-6 rounded-full p-1.5 bg-black/5 hover:bg-black/10 transition-colors focus:outline-none">
           <X className="h-4 w-4 md:h-6 md:w-6 text-black/40" />
-        </DialogPrimitive.Close>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
