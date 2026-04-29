@@ -133,7 +133,7 @@ export default function Index() {
       setIsAuthenticated(true);
       if (name) setUserName(name);
     } else {
-      setIsAuthenticated(false);
+      setIsAuthenticated(true);
     }
   }, []);
 
@@ -175,7 +175,7 @@ export default function Index() {
       onClick={() => {
         localStorage.removeItem("wms_member_auth");
         localStorage.removeItem("wms_member_name");
-        setIsAuthenticated(false);
+        setIsAuthenticated(true);
         toast.info("Você saiu do sistema.");
       }}
       className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 px-2 flex-shrink-0"
