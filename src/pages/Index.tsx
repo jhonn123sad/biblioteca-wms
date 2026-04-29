@@ -485,9 +485,9 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full antialiased">
-      <header className="sticky top-0 z-[60] bg-white/70 backdrop-blur-xl border-b border-black/[0.02] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(20px)' }}>
-        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white flex flex-col w-full antialiased">
+      <header className="sticky top-0 z-[60] bg-white/80 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
+        <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
             <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
             <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
