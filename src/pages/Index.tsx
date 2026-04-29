@@ -391,7 +391,7 @@ export default function Index() {
                   <ChevronRight className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2 h-7 md:h-8">
-                  <span>Ver Todos</span>
+                  <span>Ordem Numérica</span>
                   <ExternalLink className="w-2.5 h-2.5 ml-1" />
                 </Button>
               </div>
