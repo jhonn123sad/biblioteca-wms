@@ -590,11 +590,11 @@ function MainApp() {
               </Button>
             </div>
 
-            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-3 transition-all duration-300`}>
+            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-2.5 transition-all duration-300`}>
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
               >
                 <Grid className="w-3.5 h-3.5 mr-2" />
                 Início
@@ -603,13 +603,13 @@ function MainApp() {
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
               >
-                <span className="mr-2">#</span>
+                <span className="mr-2 font-black">#</span>
                 Ordem Numérica
               </Button>
 
-              <div className="w-full md:w-px h-px md:h-11 bg-black/5 my-1 md:my-0" />
+              <div className="hidden md:block w-px h-10 bg-black/[0.05] mx-1" />
 
               {allTags.map(tag => {
                 const isSpecial = tag.toLowerCase() === "curso dentro";
@@ -619,12 +619,12 @@ function MainApp() {
                     key={tag}
                     variant={isSelected ? "default" : "outline"}
                     onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
-                    className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${
+                    className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
                       isSelected 
-                        ? "bg-black text-white border-black shadow-lg shadow-black/20" 
+                        ? "bg-black text-white border-black shadow-md shadow-black/10" 
                         : isSpecial 
                           ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"
+                          : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
@@ -632,6 +632,17 @@ function MainApp() {
                   </Button>
                 );
               })}
+
+              {(selectedTag || viewAllOrder) && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
+                  className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl ml-auto"
+                >
+                  <X className="w-3 h-3" />
+                  Limpar
+                </Button>
+              )}
             </div>
           </div>
         )}
