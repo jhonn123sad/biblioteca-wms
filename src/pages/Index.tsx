@@ -672,10 +672,80 @@ function MainApp() {
         )}
       </main>
 
-      <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03] mt-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 opacity-40">
-          <p className="text-[10px] font-medium tracking-wider uppercase">&copy; {new Date().getFullYear()} WMS</p>
-          <div className="flex gap-8"><span className="text-[10px] font-medium uppercase tracking-widest">Minimalist</span><span className="text-[10px] font-medium uppercase tracking-widest">Sync</span></div>
+      <footer className="container mx-auto px-4 md:px-12 py-16 border-t border-black/[0.05] mt-20 bg-black/[0.01]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <img src="/logo-wms.png" alt="WMS Logo" className="h-10 w-10 object-contain rounded-xl" />
+              <h2 className="text-xl font-black uppercase tracking-tighter">WMS Society</h2>
+            </div>
+            <p className="text-gray-400 text-sm font-light leading-relaxed max-w-xs">
+              A maior comunidade de tecnologia e lifestyle para quem busca a liberdade através da internet.
+            </p>
+          </div>
+          
+          <div className="space-y-6">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Nossa Comunidade
+            </h3>
+            <div className="flex flex-col gap-4">
+              <a href="https://www.instagram.com/webmoneysociety/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-all">
+                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <Instagram className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Instagram</span>
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Siga a Comunidade</span>
+                </div>
+              </a>
+              <a href="https://www.youtube.com/@WMoneySociety" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-all">
+                <div className="w-10 h-10 rounded-xl bg-[#FF0000] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <Youtube className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">YouTube</span>
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Inscreva-se</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">Fundadores</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <a href="https://www.instagram.com/jota.wms/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-black/[0.03] shadow-sm hover:shadow-md transition-all group">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#FF007A] to-[#8A2BE2] p-[2px] group-hover:rotate-12 transition-transform">
+                  <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                    <span className="text-xs font-black">J</span>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Jota</span>
+                  <span className="text-[10px] text-[#FF007A] font-bold uppercase tracking-wider">@jota.wms</span>
+                </div>
+              </a>
+              <a href="https://www.instagram.com/ia.gostini/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-black/[0.03] shadow-sm hover:shadow-md transition-all group">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#00D1FF] to-[#39FF14] p-[2px] group-hover:-rotate-12 transition-transform">
+                  <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                    <span className="text-xs font-black">A</span>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Agostini</span>
+                  <span className="text-[10px] text-[#00D1FF] font-bold uppercase tracking-wider">@ia.gostini</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-black/[0.03] opacity-40">
+          <p className="text-[10px] font-black tracking-widest uppercase">&copy; {new Date().getFullYear()} WEB MONEY SOCIETY</p>
+          <div className="flex gap-8">
+            <span className="text-[10px] font-black uppercase tracking-widest">Premium Resource</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">Official Library</span>
+          </div>
         </div>
       </footer>
 
