@@ -377,7 +377,7 @@ function MainApp() {
     return null;
   })();
 
-  const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) || [];
+  const previewPrompts = prompts ? [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) : [];
 
   if (isAuthenticated === null) return null;
 
