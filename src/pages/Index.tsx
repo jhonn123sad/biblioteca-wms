@@ -332,6 +332,9 @@ export default function Index() {
                 type="tel" 
                 placeholder="WhatsApp (apenas números)" 
                 value={phoneNumber}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleLogin(e);
+                }}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isVerifying}
                 className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-14 md:h-16 pl-12 pr-4 text-base focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
