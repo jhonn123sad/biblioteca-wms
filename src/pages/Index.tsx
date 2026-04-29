@@ -801,8 +801,14 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
   };
 
   useEffect(() => {
+    // Bloquear scroll e garantir que o modal cubra tudo
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    return () => { 
+      document.body.style.overflow = 'unset';
+      document.body.style.position = 'relative';
+    };
   }, []);
 
   return (
