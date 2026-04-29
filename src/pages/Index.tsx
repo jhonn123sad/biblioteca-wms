@@ -735,7 +735,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      <div className="p-3 md:p-5">
+      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
         <h3 className="text-sm md:text-base font-bold leading-tight mb-2 min-h-[1.25em]">
           {renderWithTags(prompt.title)}
         </h3>
