@@ -104,7 +104,7 @@ const renderWithTags = (text: string) => {
       return (
         <span 
           key={index} 
-          className={`${colorClass} text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+          className={`${colorClass} text-[8px] md:text-[10px] font-bold px-1 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
         >
           {tagContent}
         </span>
