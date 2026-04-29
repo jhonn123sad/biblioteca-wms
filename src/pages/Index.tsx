@@ -326,31 +326,31 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/[0.03]">
-        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top">
+        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-shrink-0">
             <img 
               src="/logo-wms.png" 
               alt="WMS Logo" 
               className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm"
             />
-            <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden sm:block">Biblioteca WMS</h1>
+            <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative flex-1 max-w-md group">
-            <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 group-focus-within:text-black transition-colors" />
+          <div className="relative flex-1 max-w-md group min-w-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-black transition-colors" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.04] border border-transparent rounded-xl md:rounded-2xl h-10 md:h-11 pl-9 md:pl-11 pr-4 text-sm md:text-sm focus:bg-white focus:border-black/10 focus:ring-2 focus:ring-black/5 transition-all outline-none"
+              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-10 pl-9 pr-4 text-sm focus:bg-white focus:border-black/10 focus:ring-2 focus:ring-black/5 transition-all outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-1 md:gap-4 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <LogoutButton />
           </div>
         </div>
