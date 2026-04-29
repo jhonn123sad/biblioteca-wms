@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Component, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -24,10 +24,36 @@ import {
   Lock,
   Phone,
   X,
-  RotateCw
+  RotateCw,
+  AlertCircle
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+// Error Boundary para capturar erros fatais e evitar tela branca
+class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}> {
+  constructor(props: {children: ReactNode}) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: any, errorInfo: any) { console.error("FATA_ERROR:", error, errorInfo); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-white flex items-center justify-center p-6 text-center">
+          <div className="space-y-4">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+            <h1 className="text-xl font-bold">Ops! Algo deu errado.</h1>
+            <p className="text-gray-500 text-sm">O sistema encontrou um erro inesperado.</p>
+            <Button onClick={() => window.location.reload()} className="bg-black text-white rounded-xl">Recarregar Página</Button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
 const PROMPTS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
