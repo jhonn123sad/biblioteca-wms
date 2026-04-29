@@ -423,7 +423,12 @@ export default function Index() {
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
-                    <PromptModal prompt={prompt} trigger={<Button className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" /></Button>} />
+                    <Button 
+                      onClick={() => setSelectedPrompt(prompt)}
+                      className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"
+                    >
+                      <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
+                    </Button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
                     <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
