@@ -429,7 +429,7 @@ export default function Index() {
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
                 className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
-              >Todos (#)</Button>
+              >Ordem Numérica</Button>
               <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
               {allTags.map(tag => (
                 <Button
@@ -520,9 +520,10 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-w-5xl w-[98vw] md:w-[95vw] bg-white p-0 overflow-hidden rounded-[1.25rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-[90dvh] md:h-auto max-h-[95dvh] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden">
+        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden relative">
+          
           {/* Section 1: Images & Tutorial (Top on Mobile, Left on Desktop) */}
-          <div className="bg-[#F9F9F9] p-4 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] flex-shrink-0 md:flex-shrink h-[40%] md:h-full md:max-h-[85vh]">
+          <div className="bg-[#F9F9F9] p-4 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] flex-shrink-0 md:flex-shrink h-[45%] md:h-full md:max-h-[85vh] relative group">
             <div className="space-y-4 md:space-y-8">
               <div className="grid grid-cols-2 gap-2 md:gap-4">
                 {prompt.images.map((img, i) => (
@@ -532,19 +533,29 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
                 ))}
                 {prompt.images.length === 0 && <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10"><ImageIcon className="w-6 h-6 md:w-8 md:h-8 opacity-20" /></div>}
               </div>
-              <div className="space-y-3">
+              <div className="space-y-3 pb-4">
                 <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[8px] md:text-[10px] font-bold"><BookOpen className="w-2.5 md:w-3 h-2.5 md:h-3" /><span>Tutorial & Contexto</span></div>
                 <div className="prose prose-xs md:prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-[11px] md:text-sm">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
                 </div>
               </div>
             </div>
+            {/* Mobile Scroll Indicator */}
+            <div className="md:hidden absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-60 animate-bounce">
+              <span className="text-[7px] uppercase font-bold text-black/30 tracking-widest">Arraste para ler mais</span>
+              <div className="w-4 h-1 bg-black/10 rounded-full" />
+            </div>
           </div>
           
+          {/* Visual Divider / Drag Handle for Mobile */}
+          <div className="md:hidden h-2 bg-white flex items-center justify-center border-y border-black/[0.03] flex-shrink-0">
+            <div className="w-12 h-1 bg-black/10 rounded-full" />
+          </div>
+
           {/* Section 2: Prompt Content (Bottom on Mobile, Right on Desktop) */}
-          <div className="p-4 md:p-12 flex flex-col justify-between bg-white overflow-hidden flex-1 min-h-0 h-[60%] md:h-full">
+          <div className="p-4 md:p-12 flex flex-col justify-between bg-white overflow-hidden flex-1 min-h-0 h-[55%] md:h-full shadow-[0_-10px_20px_rgba(0,0,0,0.02)] md:shadow-none z-10">
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="flex justify-between items-start gap-4 mb-3 md:mb-8 pr-6 md:pr-8">
+              <div className="flex justify-between items-start gap-4 mb-3 md:mb-8 pr-12 md:pr-8">
                 <DialogHeader className="text-left"><DialogTitle className="text-sm md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle></DialogHeader>
               </div>
 
@@ -568,8 +579,10 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
             </div>
           </div>
         </div>
-        <DialogClose className="absolute right-3 top-3 md:right-6 md:top-6 rounded-full p-1.5 bg-black/5 hover:bg-black/10 transition-colors focus:outline-none">
-          <X className="h-4 w-4 md:h-6 md:w-6 text-black/40" />
+        
+        {/* Close Button - More Visible */}
+        <DialogClose className="absolute right-3 top-3 md:right-8 md:top-8 rounded-full w-8 h-8 md:w-12 md:h-12 flex items-center justify-center bg-black shadow-lg hover:bg-black/80 transition-all focus:outline-none z-50 group/close">
+          <X className="h-4 w-4 md:h-6 md:w-6 text-white transition-transform group-hover/close:rotate-90" />
         </DialogClose>
       </DialogContent>
     </Dialog>
