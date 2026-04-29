@@ -360,8 +360,8 @@ export default function Index() {
         {/* Intro */}
         <div className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
-            <h2 className="text-xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
-              Prompts exclusivos para membros WMS
+            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
+              Prompts WMS
             </h2>
             <p className="text-gray-400 max-w-2xl text-xs md:text-lg font-light text-center md:text-left leading-relaxed">
               Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
