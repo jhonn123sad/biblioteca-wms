@@ -585,7 +585,6 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
           <X className="h-4 w-4 md:h-6 md:w-6 text-white transition-transform group-hover/close:rotate-90" />
         </DialogClose>
       </DialogContent>
-      </DialogContent>
     </Dialog>
   );
 }
