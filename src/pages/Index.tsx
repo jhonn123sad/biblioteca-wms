@@ -432,7 +432,7 @@ export default function Index() {
                   setViewAllOrder(true);
                   setShowCarousel(false);
                 }}
-                className="flex-none w-28 md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors group snap-start"
+                className="flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors group snap-start"
               >
                 <Grid className="w-6 h-6 text-black/20 group-hover:scale-110 transition-transform" />
                 <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
