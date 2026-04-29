@@ -271,8 +271,8 @@ export default function Index() {
           <h2 className="text-gray-400 text-sm font-medium uppercase tracking-[0.3em] animate-pulse">
             Acesso Autorizado
           </h2>
-          <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
-            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{userName}</span>
+          <h1 className="text-3xl md:text-6xl font-bold text-white tracking-tight">
+            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight">{userName}</span>
           </h1>
           <div className="flex justify-center mt-8">
             <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -287,11 +287,11 @@ export default function Index() {
       <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 selection:bg-black selection:text-white">
         <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
-              <Lock className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
+              <Lock className="w-6 h-6 md:w-8 md:h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
-            <p className="text-gray-400 font-light leading-relaxed">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
+            <p className="text-gray-400 font-light leading-relaxed text-sm md:text-base">
               Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado no onboarding para entrar.
             </p>
           </div>
@@ -305,13 +305,13 @@ export default function Index() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isVerifying}
-                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-16 pl-12 pr-4 text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-14 md:h-16 pl-12 pr-4 text-base md:text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
               />
             </div>
             <Button 
               type="submit" 
               disabled={isVerifying || !phoneNumber}
-              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
+              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-base md:text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {isVerifying ? (
                 <Loader2 className="w-6 h-6 animate-spin" />
@@ -326,17 +326,17 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3 md:gap-4">
             <img 
               src="/logo-wms.png" 
               alt="WMS Logo" 
-              className="h-10 w-10 object-contain rounded-lg shadow-sm"
+              className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm"
             />
-            <h1 className="text-xl font-bold tracking-tight">Bíblioteca de Prompts WMS</h1>
+            <h1 className="text-lg md:text-xl font-bold tracking-tight line-clamp-1">Biblioteca WMS</h1>
           </div>
           
           <div className="relative hidden md:block w-72 group">
@@ -371,14 +371,14 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-2 md:py-4">
+      <main className="container mx-auto px-4 md:px-6 py-4 md:py-6">
         {/* Intro */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
-            <h2 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight text-center md:text-left">
+            <h2 className="text-2xl md:text-5xl font-bold mb-3 tracking-tight text-center md:text-left leading-tight">
               Prompts exclusivos para membros WMS
             </h2>
-            <p className="text-gray-400 max-w-2xl text-lg font-light text-center md:text-left leading-relaxed">
+            <p className="text-gray-400 max-w-2xl text-base md:text-lg font-light text-center md:text-left leading-relaxed">
               Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
             </p>
           </div>
@@ -457,7 +457,7 @@ export default function Index() {
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-10 sticky top-[80px] z-30 bg-white/80 backdrop-blur-md py-4 -mx-6 px-6 border-b border-black/[0.02]">
+          <div className="mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.02]">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 <Button
@@ -560,7 +560,7 @@ export default function Index() {
       <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03]">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
-            &copy; {new Date().getFullYear()} Bíblioteca de Prompts WMS
+            &copy; {new Date().getFullYear()} Biblioteca de Prompts WMS
           </p>
           <div className="flex gap-8">
             <span className="text-xs text-gray-300 font-medium uppercase tracking-widest">Minimalist Design</span>
@@ -627,10 +627,10 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
           <ImageIcon className="w-4 h-4 text-white" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
-        <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
-          <div className="bg-[#F9F9F9] p-8 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
-            <div className="space-y-8">
+      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
+        <div className="grid md:grid-cols-2 h-full max-h-[92vh] md:max-h-[90vh]">
+          <div className="bg-[#F9F9F9] p-6 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+            <div className="space-y-6 md:space-y-8">
               <div className="grid grid-cols-2 gap-4">
                 {prompt.images.map((img, i) => (
                   <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
@@ -651,10 +651,10 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
               </div>
             </div>
           </div>
-          <div className="p-8 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+          <div className="p-6 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
             <div className="flex flex-col h-full overflow-hidden">
-              <DialogHeader className="mb-8 text-left">
-                <DialogTitle className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
+              <DialogHeader className="mb-6 md:mb-8 text-left">
+                <DialogTitle className="text-xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
               </DialogHeader>
               <div className="flex-1 flex flex-col min-h-0">
                 <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
@@ -662,7 +662,7 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
                   <span>Prompt de Alta Performance</span>
                 </div>
                 <div className="relative group flex-1 min-h-0">
-                  <div className="h-full bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
+                  <div className="h-full bg-black/[0.02] p-6 md:p-8 rounded-2xl md:rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
                     <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
                       {prompt.content}
                     </pre>
@@ -673,7 +673,7 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
             <div className="mt-8">
               <Button 
                 onClick={copyToClipboard}
-                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-sm md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
               >
                 <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
               </Button>
@@ -761,11 +761,11 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 Visualizar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl">
-              <div className="grid md:grid-cols-2 h-full max-h-[90vh]">
+            <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
+              <div className="grid md:grid-cols-2 h-full max-h-[92vh] md:max-h-[90vh]">
                 {/* Lado Esquerdo: Imagens e Tutorial */}
-                <div className="bg-[#F9F9F9] p-8 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
-                  <div className="space-y-8">
+                <div className="bg-[#F9F9F9] p-6 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+                  <div className="space-y-6 md:space-y-8">
                     {/* Galeria de Imagens */}
                     <div className="grid grid-cols-2 gap-4">
                       {prompt.images.map((img, i) => (
@@ -796,10 +796,10 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 </div>
                 
                 {/* Lado Direito: Prompt */}
-                <div className="p-8 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+                <div className="p-6 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
                   <div className="flex flex-col h-full overflow-hidden">
-                    <DialogHeader className="mb-8 text-left">
-                      <DialogTitle className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
+                    <DialogHeader className="mb-6 md:mb-8 text-left">
+                      <DialogTitle className="text-xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
                     </DialogHeader>
 
                     <div className="flex-1 flex flex-col min-h-0">
@@ -809,7 +809,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                       </div>
                       
                       <div className="relative group flex-1 min-h-0">
-                        <div className="h-full bg-black/[0.02] p-8 rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
+                        <div className="h-full bg-black/[0.02] p-6 md:p-8 rounded-2xl md:rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
                           <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
                             {prompt.content}
                           </pre>
@@ -829,10 +829,10 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                   </div>
 
                   <div className="mt-8">
-                    <Button 
-                      onClick={copyToClipboard}
-                      className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
-                    >
+              <Button 
+                onClick={copyToClipboard}
+                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-sm md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+              >
                       <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
                     </Button>
                   </div>
