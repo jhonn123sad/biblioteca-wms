@@ -429,7 +429,7 @@ export default function Index() {
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
                 className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
-              >Todos (#)</Button>
+              >Ordem Numérica</Button>
               <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
               {allTags.map(tag => (
                 <Button
