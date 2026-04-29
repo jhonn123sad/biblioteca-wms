@@ -696,6 +696,8 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
 
 function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => void }) {
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [dragPos, setDragPos] = useState({ x: 0, y: 0 });
 
   const copyToClipboard = () => {
     if (!prompt.content) return;
