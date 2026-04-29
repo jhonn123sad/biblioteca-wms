@@ -652,7 +652,7 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Detalhes do Prompt</span>
                   </div>
-                  <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black">
+                  <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-a:text-[#FF007A] prose-a:no-underline hover:prose-a:underline prose-a:font-bold">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
                   </div>
                 </div>
