@@ -23,7 +23,8 @@ import {
   ChevronRight,
   Lock,
   Phone,
-  X
+  X,
+  RotateCw
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -194,7 +195,7 @@ export default function Index() {
     });
   };
 
-  const { data: prompts, isLoading } = useQuery({
+  const { data: prompts, isLoading, refetch } = useQuery({
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
@@ -206,7 +207,9 @@ export default function Index() {
         console.error(err);
         return [];
       }
-    }
+    },
+    refetchInterval: 30000, // Sync every 30 seconds
+    staleTime: 10000,
   });
 
   const allTags = Array.from(new Set(
@@ -329,6 +332,9 @@ export default function Index() {
                 type="tel" 
                 placeholder="WhatsApp (apenas números)" 
                 value={phoneNumber}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleLogin(e);
+                }}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isVerifying}
                 className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-14 md:h-16 pl-12 pr-4 text-base focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
@@ -367,7 +373,21 @@ export default function Index() {
             />
           </div>
 
-          <LogoutButton />
+          <div className="flex items-center gap-1 md:gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => {
+                refetch();
+                toast.success("Sincronizando biblioteca...");
+              }}
+              className="w-8 h-8 rounded-full text-gray-400 hover:text-black hover:bg-black/5"
+              title="Sincronizar"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+            </Button>
+            <LogoutButton />
+          </div>
         </div>
       </header>
 
