@@ -16,13 +16,13 @@ import {
   Grid, 
   ExternalLink, 
   Image as ImageIcon,
-  RefreshCcw,
   BookOpen,
   Terminal,
   ChevronLeft,
   ChevronRight,
   Lock,
-  Phone
+  Phone,
+  X
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -39,21 +39,15 @@ interface Prompt {
   images: string[];
 }
 
-// Função para converter links do Google Drive em links diretos de imagem
 const fixDriveLink = (url: string) => {
   if (!url || typeof url !== 'string') return "";
-  
-  // Trata links de compartilhamento padrão do Drive
   const fileIdMatch = url.match(/\/file\/d\/([^\/]+)/) || url.match(/id=([^\&]+)/);
   if (fileIdMatch && fileIdMatch[1]) {
-    // Usando thumbnail de alta resolução que é mais estável para o Drive
     return `https://drive.google.com/thumbnail?id=${fileIdMatch[1]}&sz=w1000`;
   }
-  
   return url.startsWith('http') ? url : "";
 };
 
-// Função para formatar os dados vindos do Apps Script (JSON)
 const formatSheetData = (data: any[]): Prompt[] => {
   return data.map((cols, index) => {
     const getValue = (val: any) => {
@@ -79,6 +73,46 @@ const formatSheetData = (data: any[]): Prompt[] => {
   }).filter(p => p.content);
 };
 
+const neonColors = [
+  'bg-[#FF00FF] text-white border-transparent', 
+  'bg-[#00D1FF] text-white border-transparent', 
+  'bg-[#39FF14] text-black border-transparent', 
+  'bg-[#FFFB00] text-black border-transparent', 
+  'bg-[#FF3131] text-white border-transparent', 
+  'bg-[#8A2BE2] text-white border-transparent', 
+  'bg-[#FF5E00] text-white border-transparent', 
+  'bg-[#00FF94] text-black border-transparent', 
+  'bg-[#7000FF] text-white border-transparent', 
+  'bg-[#FF007A] text-white border-transparent', 
+];
+
+const getTagColor = (content: string) => {
+  let hash = 0;
+  for (let i = 0; i < content.length; i++) {
+    hash = content.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return neonColors[Math.abs(hash) % neonColors.length];
+};
+
+const renderWithTags = (text: string) => {
+  const parts = text.split(/(\[[^\]]+\])/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('[') && part.endsWith(']')) {
+      const tagContent = part.slice(1, -1);
+      const colorClass = getTagColor(tagContent);
+      return (
+        <span 
+          key={index} 
+          className={`${colorClass} text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+        >
+          {tagContent}
+        </span>
+      );
+    }
+    return part;
+  });
+};
+
 export default function Index() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -94,8 +128,10 @@ export default function Index() {
 
   useEffect(() => {
     const auth = localStorage.getItem("wms_member_auth");
+    const name = localStorage.getItem("wms_member_name");
     if (auth === "true") {
       setIsAuthenticated(true);
+      if (name) setUserName(name);
     } else {
       setIsAuthenticated(false);
     }
@@ -107,15 +143,11 @@ export default function Index() {
 
     setIsVerifying(true);
     try {
-      // Usamos a URL de autenticação para validar o telefone
       const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
       const data = await response.json();
-      console.log("Auth response data:", data);
 
       if (data.authorized) {
         const finalName = data.name || "Membro";
-        setUserName(finalName);
-        setShowWelcome(true);
         setUserName(finalName);
         setShowWelcome(true);
         
@@ -142,10 +174,11 @@ export default function Index() {
       variant="ghost" 
       onClick={() => {
         localStorage.removeItem("wms_member_auth");
+        localStorage.removeItem("wms_member_name");
         setIsAuthenticated(false);
         toast.info("Você saiu do sistema.");
       }}
-      className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 md:h-9 px-2"
+      className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 px-2 flex-shrink-0"
     >
       Sair
     </Button>
@@ -160,7 +193,7 @@ export default function Index() {
     });
   };
 
-  const { data: prompts, isLoading, error, refetch, isFetching } = useQuery({
+  const { data: prompts, isLoading } = useQuery({
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
@@ -175,7 +208,6 @@ export default function Index() {
     }
   });
 
-  // Extrair todas as tags únicas dos prompts
   const allTags = Array.from(new Set(
     prompts?.flatMap(p => {
       const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
@@ -184,29 +216,22 @@ export default function Index() {
     }) || []
   )).sort();
 
-  // Função para extrair o número de ordenação (#1, #2, etc)
   const getSortNumber = (title: string) => {
     const match = title.match(/#(\d+)/);
     return match ? parseInt(match[1]) : Infinity;
   };
 
-  // Organizar os prompts por categoria e ordenação numérica
   const organizedPrompts = (() => {
     if (!prompts) return [];
-
-    // Se o usuário clicou em "Ver Todos", mostramos tudo em ordem numérica sem categorias
     if (viewAllOrder) {
       return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     }
-
-    // Se houver uma tag selecionada, filtramos e ordenamos apenas por ela
     if (selectedTag) {
       return prompts
         .filter(p => p.title.includes(`[${selectedTag}]`) || p.description.includes(`[${selectedTag}]`))
         .sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     }
 
-    // Se "Todos" estiver selecionado, organizamos por categorias (tags)
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
@@ -259,20 +284,20 @@ export default function Index() {
 
   const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) || [];
 
-  if (isAuthenticated === null) return null; // Aguarda verificação do localStorage
+  if (isAuthenticated === null) return null;
 
   if (showWelcome) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 selection:bg-white selection:text-black transition-all duration-1000">
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 transition-all duration-1000">
         <div className="text-center space-y-6 animate-in fade-in zoom-in duration-1000 slide-in-from-bottom-8">
           <div className="flex justify-center mb-4">
             <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
           </div>
-          <h2 className="text-gray-400 text-sm font-medium uppercase tracking-[0.3em] animate-pulse">
+          <h2 className="text-gray-400 text-xs md:text-sm font-medium uppercase tracking-[0.3em] animate-pulse">
             Acesso Autorizado
           </h2>
-          <h1 className="text-3xl md:text-6xl font-bold text-white tracking-tight">
-            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight">{userName}</span>
+          <h1 className="text-2xl md:text-6xl font-bold text-white tracking-tight">
+            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight break-words px-4">{userName}</span>
           </h1>
           <div className="flex justify-center mt-8">
             <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -284,15 +309,15 @@ export default function Index() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 selection:bg-black selection:text-white">
+      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-4 selection:bg-black selection:text-white">
         <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
-              <Lock className="w-6 h-6 md:w-8 md:h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-[1.25rem] bg-black shadow-xl shadow-black/10 mb-4">
+              <Lock className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
-            <p className="text-gray-400 font-light leading-relaxed text-sm md:text-base">
-              Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado no onboarding para entrar.
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Biblioteca WMS</h1>
+            <p className="text-gray-400 font-light leading-relaxed text-sm md:text-base px-2">
+              Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado para entrar.
             </p>
           </div>
 
@@ -301,23 +326,19 @@ export default function Index() {
               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-black transition-colors" />
               <input 
                 type="tel" 
-                placeholder="Seu WhatsApp (apenas números)" 
+                placeholder="WhatsApp (apenas números)" 
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isVerifying}
-                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-14 md:h-16 pl-12 pr-4 text-base md:text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-14 md:h-16 pl-12 pr-4 text-base focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
               />
             </div>
             <Button 
               type="submit" 
               disabled={isVerifying || !phoneNumber}
-              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-base md:text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
+              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98]"
             >
-              {isVerifying ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
-              ) : (
-                "Entrar na Biblioteca"
-              )}
+              {isVerifying ? <Loader2 className="w-6 h-6 animate-spin" /> : "Entrar na Biblioteca"}
             </Button>
           </form>
         </div>
@@ -327,511 +348,221 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top">
-        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-3 safe-top">
+        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           <div className="flex items-center gap-2 flex-shrink-0">
-            <img 
-              src="/logo-wms.png" 
-              alt="WMS Logo" 
-              className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm"
-            />
+            <img src="/logo-wms.png" alt="WMS Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
             <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
           </div>
           
           <div className="relative flex-1 max-w-md group min-w-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-black transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-black" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-10 pl-9 pr-4 text-sm focus:bg-white focus:border-black/10 focus:ring-2 focus:ring-black/5 transition-all outline-none"
+              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-10 pl-9 pr-4 text-sm focus:bg-white focus:border-black/10 transition-all outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <LogoutButton />
-          </div>
+          <LogoutButton />
         </div>
       </header>
 
-      <main className="container mx-auto px-4 md:px-6 py-4 md:py-6">
-        {/* Intro */}
-        <div className="mb-6 md:mb-10 flex flex-col items-center md:items-start text-center md:text-left gap-3">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
-            Prompts WMS
-          </h2>
-          <p className="text-gray-400 max-w-2xl text-sm md:text-lg font-light leading-relaxed px-4 md:px-0">
+      <main className="container mx-auto px-4 md:px-6 py-6 flex-1">
+        <div className="mb-8 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-3">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
+          <p className="text-gray-400 max-w-2xl text-sm md:text-lg font-light leading-relaxed px-2 md:px-0">
             Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
         </div>
 
-        {/* Bloco de Preview em Ordem Numérica */}
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
-          <div className="mb-12 relative group/carousel">
+          <div className="mb-12 relative">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
               <div className="flex items-center gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => scrollCarousel('left')}
-                  className="w-8 h-8 rounded-full border border-black/5 hover:bg-black/5 md:flex hidden"
-                >
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => scrollCarousel('right')}
-                  className="w-8 h-8 rounded-full border border-black/5 hover:bg-black/5 md:flex hidden"
-                >
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => {
-                    setViewAllOrder(true);
-                    setShowCarousel(false);
-                  }}
-                  className="text-[10px] md:text-xs font-bold hover:bg-black/5 rounded-lg ml-1 md:ml-2"
-                >
-                  <span className="hidden md:inline">Ver lista completa</span>
-                  <span className="md:hidden">Ver Todos</span>
-                  <ExternalLink className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1" />
+                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[10px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2">
+                  <span>Ver Todos</span>
+                  <ExternalLink className="w-3 h-3 ml-1" />
                 </Button>
               </div>
             </div>
             
-            <div 
-              ref={scrollContainerRef}
-              className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none"
-            >
+            <div ref={scrollContainerRef} className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none -mx-4 px-4">
               {previewPrompts.map((prompt) => (
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
-                  <img 
-                    src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
-                    alt={prompt.title} 
-                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/40 md:opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
-                    <PromptItemOnlyDialog prompt={prompt} />
+                  <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
+                    <PromptModal prompt={prompt} trigger={<Button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-4 h-4 text-white" /></Button>} />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">
-                      {prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}
-                    </span>
+                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
                   </div>
                 </div>
-
               ))}
-              <button 
-                onClick={() => {
-                  setViewAllOrder(true);
-                  setShowCarousel(false);
-                }}
-                className="flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors group snap-start"
-              >
-                <Grid className="w-6 h-6 text-black/20 group-hover:scale-110 transition-transform" />
+              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] snap-start">
+                <Grid className="w-6 h-6 text-black/20" />
                 <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/90 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex flex-col gap-3 min-w-0">
-
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
+          <div className="mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/90 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <Button
+                variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
+                onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
+                className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+              >Início</Button>
+              <Button
+                variant={viewAllOrder ? "default" : "outline"}
+                onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
+                className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+              >Todos (#)</Button>
+              <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
+              {allTags.map(tag => (
                 <Button
-                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                  onClick={() => {
-                    setSelectedTag(null);
-                    setViewAllOrder(false);
-                    setShowCarousel(true);
-                  }}
-                  className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
-                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white hover:bg-black/5"
-                  }`}
-                >
-                  Início
-                </Button>
-                <Button
-                  variant={viewAllOrder ? "default" : "outline"}
-                  onClick={() => {
-                    setViewAllOrder(true);
-                    setSelectedTag(null);
-                    setShowCarousel(false);
-                  }}
-                  className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
-                    viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white hover:bg-black/5"
-                  }`}
-                >
-                  Todos (#)
-                </Button>
-                <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
-                {allTags.map(tag => (
-                  <Button
-                    key={tag}
-                    variant={selectedTag === tag ? "default" : "outline"}
-                    onClick={() => {
-                      setSelectedTag(selectedTag === tag ? null : tag);
-                      setViewAllOrder(false);
-                      setShowCarousel(false);
-                    }}
-                    className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
-                      selectedTag === tag 
-                        ? "bg-black text-white shadow-md shadow-black/10" 
-                        : "bg-white hover:bg-black/5"
-                    }`}
-                  >
-                    {tag}
-                  </Button>
-                ))}
-              </div>
+                  key={tag}
+                  variant={selectedTag === tag ? "default" : "outline"}
+                  onClick={() => { setSelectedTag(selectedTag === tag ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
+                  className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                >{tag}</Button>
+              ))}
             </div>
           </div>
         )}
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="relative">
-              <div className="w-12 h-12 border-2 border-black/5 rounded-full" />
-              <div className="w-12 h-12 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" />
-            </div>
+            <div className="relative"><div className="w-10 h-10 border-2 border-black/5 rounded-full" /><div className="w-10 h-10 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" /></div>
             <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
           </div>
         ) : (searchTerm ? filteredPrompts : organizedPrompts)?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
             <ImageIcon className="w-10 h-10 mb-4" />
             <h3 className="text-lg font-medium">Nenhum resultado</h3>
-            <p className="text-sm">Tente outros termos ou atualize a página.</p>
-          </div>
-        ) : searchTerm ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-            {(filteredPrompts as Prompt[])?.map((prompt) => (
-              <PromptItem key={`${prompt.id}-search`} prompt={prompt} />
-            ))}
-          </div>
-        ) : (selectedTag || viewAllOrder) ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-            {(organizedPrompts as Prompt[])?.map((prompt) => (
-              <PromptItem key={`${prompt.id}-tag-or-order`} prompt={prompt} />
-            ))}
+            <p className="text-sm">Tente outros termos.</p>
           </div>
         ) : (
           <div className="space-y-12">
-            {(organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group, groupIdx) => (
-              <div key={group.tag || 'uncategorized'} className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <h3 className="text-xl font-bold uppercase tracking-widest text-black/80">
-                    {group.tag || "Sem Categoria"}
-                  </h3>
-                  <div className="h-px flex-1 bg-black/[0.05]" />
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                  {group.prompts.map((prompt) => (
-                    <PromptItem key={`${group.tag}-${prompt.id}`} prompt={prompt} />
-                  ))}
-                </div>
+            {searchTerm ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                {(filteredPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-search`} prompt={prompt} />)}
               </div>
-            ))}
+            ) : (selectedTag || viewAllOrder) ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                {(organizedPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-list`} prompt={prompt} />)}
+              </div>
+            ) : (
+              (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
+                <div key={group.tag || 'uncategorized'} className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-lg md:text-xl font-bold uppercase tracking-widest text-black/80">{group.tag || "Sem Categoria"}</h3>
+                    <div className="h-px flex-1 bg-black/[0.05]" />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                    {group.prompts.map((prompt) => <PromptCard key={`${group.tag}-${prompt.id}`} prompt={prompt} />)}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
       </main>
 
-      <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03]">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
-            &copy; {new Date().getFullYear()} Biblioteca de Prompts WMS
-          </p>
-          <div className="flex gap-8">
-            <span className="text-xs text-gray-300 font-medium uppercase tracking-widest">Minimalist Design</span>
-            <span className="text-xs text-gray-300 font-medium uppercase tracking-widest">Fast Sync</span>
-          </div>
+      <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03] mt-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 opacity-40">
+          <p className="text-[10px] font-medium tracking-wider uppercase">&copy; {new Date().getFullYear()} WMS</p>
+          <div className="flex gap-8"><span className="text-[10px] font-medium uppercase tracking-widest">Minimalist</span><span className="text-[10px] font-medium uppercase tracking-widest">Sync</span></div>
         </div>
       </footer>
     </div>
   );
 }
 
+function PromptCard({ prompt }: { prompt: Prompt }) {
+  const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
+  return (
+    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full">
+      <div className="aspect-[3/4] overflow-hidden relative">
+        <img src={mainImage} alt={prompt.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
+        <h3 className="text-[13px] md:text-base font-bold leading-tight mb-2 line-clamp-2 min-h-[2.6em] md:min-h-[2.5em]">{renderWithTags(prompt.title)}</h3>
+        <p className="text-gray-400 text-[10px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed flex-1">{renderWithTags(prompt.description)}</p>
+        <PromptModal prompt={prompt} trigger={<Button className="w-full bg-black text-white hover:bg-black/90 rounded-xl h-10 text-xs font-medium transition-all shadow-lg shadow-black/5">Visualizar</Button>} />
+      </div>
+    </div>
+  );
+}
 
-function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
+function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const copyToClipboard = () => {
     navigator.clipboard.writeText(prompt.content);
     toast.success("Prompt copiado!");
-  };
-
-  const neonColors = [
-    'bg-[#FF00FF] text-white border-transparent', 
-    'bg-[#00D1FF] text-white border-transparent', 
-    'bg-[#39FF14] text-black border-transparent', 
-    'bg-[#FFFB00] text-black border-transparent', 
-    'bg-[#FF3131] text-white border-transparent', 
-    'bg-[#8A2BE2] text-white border-transparent', 
-    'bg-[#FF5E00] text-white border-transparent', 
-    'bg-[#00FF94] text-black border-transparent', 
-    'bg-[#7000FF] text-white border-transparent', 
-    'bg-[#FF007A] text-white border-transparent', 
-  ];
-
-  const getTagColor = (content: string) => {
-    let hash = 0;
-    for (let i = 0; i < content.length; i++) {
-      hash = content.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return neonColors[Math.abs(hash) % neonColors.length];
-  };
-
-  const renderWithTags = (text: string) => {
-    const parts = text.split(/(\[[^\]]+\])/g);
-    return parts.map((part, index) => {
-      if (part.startsWith('[') && part.endsWith(']')) {
-        const tagContent = part.slice(1, -1);
-        const colorClass = getTagColor(tagContent);
-        return (
-          <span 
-            key={index} 
-            className={`${colorClass} text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
-          >
-            {tagContent}
-          </span>
-        );
-      }
-      return part;
-    });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20">
-          <ImageIcon className="w-4 h-4 text-white" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-[90vh] md:h-auto">
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col max-h-[92dvh] md:h-auto translate-y-[-50%] md:translate-y-[-50%]">
         <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden">
-          <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
-
+          {/* Section 1: Images & Tutorial */}
+          <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] max-h-[45vh] md:max-h-[85vh]">
             <div className="space-y-6 md:space-y-8">
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 {prompt.images.map((img, i) => (
-                  <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
+                  <div key={i} className="aspect-square rounded-xl md:rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
                     <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
                   </div>
                 ))}
+                {prompt.images.length === 0 && <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10"><ImageIcon className="w-8 h-8 opacity-20" /></div>}
               </div>
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold">
-                  <BookOpen className="w-3 h-3" />
-                  <span>Tutorial & Contexto</span>
-                </div>
-                <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {prompt.description}
-                  </ReactMarkdown>
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] md:text-[10px] font-bold"><BookOpen className="w-3 h-3" /><span>Tutorial & Contexto</span></div>
+                <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-xs md:text-sm">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
                 </div>
               </div>
             </div>
           </div>
-          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden min-h-0">
-
+          
+          {/* Section 2: Prompt Content */}
+          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-hidden flex-1 min-h-0">
             <div className="flex flex-col h-full overflow-hidden">
-              <DialogHeader className="mb-6 md:mb-8 text-left">
-                <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
-              </DialogHeader>
+              <div className="flex justify-between items-start gap-4 mb-4 md:mb-8">
+                <DialogHeader className="text-left"><DialogTitle className="text-base md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle></DialogHeader>
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="md:hidden h-8 w-8 rounded-full bg-black/5"><X className="h-4 w-4" /></Button>
+              </div>
+
               <div className="flex-1 flex flex-col min-h-0">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
-                  <Terminal className="w-3 h-3" />
-                  <span>Prompt de Alta Performance</span>
-                </div>
-                <div className="relative group flex-1 min-h-0">
-                  <div className="h-full bg-black/[0.02] p-6 md:p-8 rounded-2xl md:rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
-                    <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
-                      {prompt.content}
-                    </pre>
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] md:text-[10px] font-bold mb-3 md:mb-4"><Terminal className="w-3 h-3" /><span>Prompt de Alta Performance</span></div>
+                <div className="relative group flex-1 min-h-0 bg-black/[0.02] rounded-xl md:rounded-3xl border border-black/[0.03] overflow-hidden">
+                  <div className="h-full p-4 md:p-8 overflow-y-auto custom-scrollbar">
+                    <pre className="text-[12px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+                  </div>
+                  <div className="absolute top-2 right-2 md:top-4 md:right-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                    <Button variant="secondary" size="sm" onClick={copyToClipboard} className="bg-white/90 backdrop-blur shadow-sm rounded-lg h-8 md:h-9 text-[10px] md:text-xs"><Copy className="w-3 h-3 mr-2" />Copiar</Button>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="mt-8">
-              <Button 
-                onClick={copyToClipboard}
-                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-sm md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
-              >
-                <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
-              </Button>
-            </div>
+            <div className="mt-4 md:mt-8"><Button onClick={copyToClipboard} className="w-full bg-black text-white hover:bg-black/90 rounded-xl md:rounded-2xl h-12 md:h-16 text-xs md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"><Copy className="w-4 h-4 md:w-5 md:h-5" />COPIAR PROMPT COMPLETO</Button></div>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function PromptItem({ prompt }: { prompt: Prompt }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(prompt.content);
-    toast.success("Prompt copiado!");
-  };
-
-  const neonColors = [
-    'bg-[#FF00FF] text-white border-transparent', // Magenta vibrante
-    'bg-[#00D1FF] text-white border-transparent', // Cyan vibrante
-    'bg-[#39FF14] text-black border-transparent', // Neon Green
-    'bg-[#FFFB00] text-black border-transparent', // Yellow
-    'bg-[#FF3131] text-white border-transparent', // Red
-    'bg-[#8A2BE2] text-white border-transparent', // Purple
-    'bg-[#FF5E00] text-white border-transparent', // Orange
-    'bg-[#00FF94] text-black border-transparent', // Mint
-    'bg-[#7000FF] text-white border-transparent', // Indigo
-    'bg-[#FF007A] text-white border-transparent', // Pink
-  ];
-
-  const getTagColor = (content: string) => {
-    // Gerar um índice baseado na string para manter a cor consistente para a mesma tag
-    let hash = 0;
-    for (let i = 0; i < content.length; i++) {
-      hash = content.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return neonColors[Math.abs(hash) % neonColors.length];
-  };
-
-  const renderWithTags = (text: string) => {
-    const parts = text.split(/(\[[^\]]+\])/g);
-    return parts.map((part, index) => {
-      if (part.startsWith('[') && part.endsWith(']')) {
-        const tagContent = part.slice(1, -1);
-        const colorClass = getTagColor(tagContent);
-        return (
-          <span 
-            key={index} 
-            className={`${colorClass} text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
-          >
-            {tagContent}
-          </span>
-        );
-      }
-      return part;
-    });
-  };
-
-  return (
-    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 flex flex-col h-full">
-      <div className="aspect-[3/4] overflow-hidden relative">
-        <img 
-          src={mainImage} 
-          alt={prompt.title} 
-          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      </div>
-
-      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
-        <h3 className="text-sm md:text-base font-bold leading-tight mb-2 min-h-[1.25em]">
-          {renderWithTags(prompt.title)}
-        </h3>
-        <p className="text-gray-400 text-[11px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed">
-          {renderWithTags(prompt.description)}
-        </p>
-        
-        <div className="flex gap-2 mt-auto">
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-              <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-xl h-10 text-xs font-medium transition-all shadow-lg shadow-black/5">
-                Visualizar
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-[90vh] md:h-auto">
-              <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden">
-                {/* Lado Esquerdo: Imagens e Tutorial */}
-                <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
-
-                  <div className="space-y-6 md:space-y-8">
-                    {/* Galeria de Imagens */}
-                    <div className="grid grid-cols-2 gap-3 md:gap-4">
-                      {prompt.images.map((img, i) => (
-                        <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
-                          <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
-                        </div>
-                      ))}
-                      {prompt.images.length === 0 && (
-                        <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
-                          <ImageIcon className="w-8 h-8 opacity-20" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Tutorial / Descrição */}
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold">
-                        <BookOpen className="w-3 h-3" />
-                        <span>Tutorial & Contexto</span>
-                      </div>
-                      <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {prompt.description}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Lado Direito: Prompt */}
-                <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden min-h-0">
-                  <div className="flex flex-col h-full overflow-hidden">
-                    <DialogHeader className="mb-6 md:mb-8 text-left">
-                      <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
-                    </DialogHeader>
-
-                    <div className="flex-1 flex flex-col min-h-0">
-                      <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
-                        <Terminal className="w-3 h-3" />
-                        <span>Prompt de Alta Performance</span>
-                      </div>
-                      
-                      <div className="relative group flex-1 min-h-0">
-                        <div className="h-full bg-black/[0.02] p-6 md:p-8 rounded-2xl md:rounded-3xl border border-black/[0.03] overflow-y-auto custom-scrollbar">
-                          <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800">
-                            {prompt.content}
-                          </pre>
-                        </div>
-                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button 
-                            variant="secondary" 
-                            size="sm" 
-                            onClick={copyToClipboard}
-                            className="bg-white/80 backdrop-blur shadow-sm rounded-xl h-9"
-                          >
-                            <Copy className="w-3 h-3 mr-2" /> Copiar
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8">
-              <Button 
-                onClick={copyToClipboard}
-                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-sm md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
-              >
-                      <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-    </div>
   );
 }
