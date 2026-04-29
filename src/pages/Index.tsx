@@ -708,6 +708,33 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
           </div>
         </div>
       </div>
+      {/* Image Zoom Overlay */}
+      {expandedImage && (
+        <div 
+          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setExpandedImage(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all active:scale-90"
+            onClick={(e) => { e.stopPropagation(); setExpandedImage(null); }}
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          <div className="w-full h-full flex items-center justify-center overflow-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={expandedImage} 
+              alt="Expanded" 
+              className="max-w-none min-w-full md:min-w-0 md:max-w-full md:max-h-full object-contain cursor-zoom-out"
+              onClick={() => setExpandedImage(null)}
+            />
+          </div>
+          
+          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-[10px] uppercase tracking-widest font-medium md:hidden">
+            Arraste para ver detalhes
+          </p>
+        </div>
+      )}
     </div>
   );
 }
