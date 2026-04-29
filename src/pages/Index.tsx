@@ -1010,10 +1010,22 @@ export default function Index() {
         
         /* Garantir que o header seja fixo e tenha prioridade visual */
         header { 
-          position: sticky !important; 
+          position: fixed !important; 
           top: 0 !important; 
+          left: 0 !important;
+          right: 0 !important;
           z-index: 100 !important;
           width: 100%;
+        }
+
+        main {
+          margin-top: 64px; /* Altura do header mobile */
+        }
+
+        @media (min-width: 768px) {
+          main {
+            margin-top: 80px; /* Altura do header desktop */
+          }
         }
 
         @media (max-width: 640px) {
