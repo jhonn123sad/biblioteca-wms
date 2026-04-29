@@ -600,6 +600,8 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
 }
 
 function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => void }) {
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
+
   const copyToClipboard = () => {
     if (!prompt.content) return;
     navigator.clipboard.writeText(prompt.content);
