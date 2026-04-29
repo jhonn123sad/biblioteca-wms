@@ -179,7 +179,7 @@ export default function Index() {
         setIsAuthenticated(false);
         toast.info("Você saiu do sistema.");
       }}
-      className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 px-2 flex-shrink-0"
+      className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
     >
       Sair
     </Button>
