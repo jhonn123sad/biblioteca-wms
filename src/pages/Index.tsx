@@ -411,7 +411,7 @@ export default function Index() {
               ))}
               <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-black/[0.02] snap-start">
                 <Grid className="w-5 h-5 md:w-6 md:h-6 text-black/20" />
-                <span className="text-[9px] md:text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
+                <span className="text-[9px] md:text-[10px] font-bold uppercase text-black/40">Ordem Numérica</span>
               </button>
             </div>
           </div>
