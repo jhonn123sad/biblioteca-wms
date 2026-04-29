@@ -637,8 +637,15 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
                 {/* Image Grid */}
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                   {prompt.images.map((img, i) => (
-                    <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                    <div 
+                      key={i} 
+                      onClick={() => setExpandedImage(img)}
+                      className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white cursor-zoom-in group/img relative"
+                    >
                       <img src={img} alt="Preview" className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                        <Search className="w-6 h-6 text-white drop-shadow-md" />
+                      </div>
                     </div>
                   ))}
                   {prompt.images.length === 0 && (
