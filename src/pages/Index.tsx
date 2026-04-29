@@ -725,7 +725,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
   };
 
   return (
-    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1">
+    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 flex flex-col h-full">
       <div className="aspect-[3/4] overflow-hidden relative">
         <img 
           src={mainImage} 
