@@ -377,7 +377,7 @@ function MainApp() {
         ...(p.title.match(tagRegex) || []),
         ...(p.description.match(tagRegex) || [])
       ].map(t => t.slice(1, -1).trim().toLowerCase())
-       .filter(t => t && !/^\d+$/.test(t) && t.length > 1);
+       .filter(t => t && !/^\d+$/.test(t) && t.length > 2 && !t.includes('.') && !t.includes('/') && !/^#?\d+$/.test(t));
       return Array.from(new Set(matches));
     };
 
