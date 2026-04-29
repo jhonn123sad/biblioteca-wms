@@ -339,7 +339,7 @@ export default function Index() {
             <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative flex-1 max-w-md mx-4 group">
+          <div className="relative flex-1 max-w-md mx-1 md:mx-4 group">
             <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 group-focus-within:text-black transition-colors" />
             <input 
               type="text" 
@@ -388,7 +388,7 @@ export default function Index() {
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-12 relative group/carousel">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-black/40">Ordem Numérica</h3>
+              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Ordem Numérica</h3>
               <div className="flex items-center gap-2">
                 <Button 
                   variant="ghost" 
@@ -413,9 +413,11 @@ export default function Index() {
                     setViewAllOrder(true);
                     setShowCarousel(false);
                   }}
-                  className="text-xs font-bold hover:bg-black/5 rounded-lg ml-2"
+                  className="text-[10px] md:text-xs font-bold hover:bg-black/5 rounded-lg ml-1 md:ml-2"
                 >
-                  Ver lista completa <ExternalLink className="w-3 h-3 ml-1" />
+                  <span className="hidden md:inline">Ver lista completa</span>
+                  <span className="md:hidden">Ver Todos</span>
+                  <ExternalLink className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1" />
                 </Button>
               </div>
             </div>
