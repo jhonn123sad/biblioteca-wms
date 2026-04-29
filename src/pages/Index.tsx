@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Component, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -24,10 +24,36 @@ import {
   Lock,
   Phone,
   X,
-  RotateCw
+  RotateCw,
+  AlertCircle
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+// Error Boundary para capturar erros fatais e evitar tela branca
+class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}> {
+  constructor(props: {children: ReactNode}) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: any, errorInfo: any) { console.error("FATA_ERROR:", error, errorInfo); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-white flex items-center justify-center p-6 text-center">
+          <div className="space-y-4">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+            <h1 className="text-xl font-bold">Ops! Algo deu errado.</h1>
+            <p className="text-gray-500 text-sm">O sistema encontrou um erro inesperado.</p>
+            <Button onClick={() => window.location.reload()} className="bg-black text-white rounded-xl">Recarregar Página</Button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // CONFIGURAÇÃO DO GOOGLE SHEETS VIA APPS SCRIPT
 const PROMPTS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEyFpibtm2eSElodTKKMSVF2dK1S3vKtRAjCWmF86L18wQ6Kf8HShFNTHORegiHUgc/exec";
@@ -89,8 +115,9 @@ const neonColors = [
 ];
 
 const getTagColor = (content: string) => {
-  if (content.toLowerCase() === "curso dentro") {
-    return "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A] border-2";
+  const normalized = content.toLowerCase().trim();
+  if (normalized === "curso dentro") {
+    return "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A] border-2 shadow-[0_0_10px_rgba(255,0,122,0.2)]";
   }
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
@@ -140,7 +167,7 @@ const linkify = (text: string) => {
   });
 };
 
-export default function Index() {
+function MainApp() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
@@ -155,6 +182,16 @@ export default function Index() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Correção para Safari Mobile em dispositivos antigos
+    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    const handleResize = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     const auth = localStorage.getItem("wms_member_auth");
     const name = localStorage.getItem("wms_member_name");
     if (auth === "true") {
@@ -167,14 +204,26 @@ export default function Index() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phoneNumber.trim()) return;
+    const sanitizedPhone = phoneNumber.replace(/\D/g, '');
+    if (!sanitizedPhone) {
+      toast.error("Por favor, insira o número do seu WhatsApp.");
+      return;
+    }
 
     setIsVerifying(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
     try {
-      const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
+      const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(sanitizedPhone)}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) throw new Error(`Status: ${response.status}`);
       const data = await response.json();
 
-      if (data.authorized) {
+      if (data && data.authorized) {
         const finalName = data.name || "Membro";
         setUserName(finalName);
         setShowWelcome(true);
@@ -189,9 +238,14 @@ export default function Index() {
       } else {
         toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao validar acesso. Tente novamente.");
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      console.error("Login error:", error);
+      if (error.name === 'AbortError') {
+        toast.error("Tempo de conexão esgotado. Verifique sua internet.");
+      } else {
+        toast.error("Erro ao validar acesso. Verifique sua conexão e tente novamente.");
+      }
     } finally {
       setIsVerifying(false);
     }
@@ -221,21 +275,27 @@ export default function Index() {
     });
   };
 
-  const { data: prompts, isLoading, refetch } = useQuery({
+  const { data: prompts, isLoading, refetch, isError } = useQuery({
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+      
       try {
-        const response = await fetch(PROMPTS_SCRIPT_URL);
-        if (!response.ok) throw new Error("Não foi possível carregar os dados.");
+        const response = await fetch(PROMPTS_SCRIPT_URL, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!response.ok) throw new Error("Falha na resposta do servidor.");
         const json = await response.json();
         return formatSheetData(json.data || []);
       } catch (err: any) {
-        console.error(err);
-        return [];
+        clearTimeout(timeoutId);
+        console.error("Fetch prompts error:", err);
+        throw err;
       }
     },
-    refetchInterval: 30000, // Sync every 30 seconds
-    staleTime: 10000,
+    retry: 2,
+    refetchInterval: 60000, // Sync every minute
+    staleTime: 30000,
   });
 
   const allTags = Array.from(new Set(
@@ -380,9 +440,9 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full antialiased">
-      <header className="sticky top-0 z-[60] bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full">
-        <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full antialiased">
+      <header className="sticky top-0 z-[60] bg-white/70 backdrop-blur-xl border-b border-black/[0.02] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(20px)' }}>
+        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
             <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
             <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
@@ -443,7 +503,7 @@ export default function Index() {
               </div>
             </div>
             
-            <div ref={scrollContainerRef} className="flex gap-2.5 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none -mx-3 px-3 md:-mx-4 md:px-4">
+            <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-4 md:px-6">
               {previewPrompts.map((prompt) => (
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
@@ -469,8 +529,8 @@ export default function Index() {
         )}
 
         {!isLoading && (
-          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-3 px-3 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 max-w-full">
+          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex items-center gap-1.5 md:gap-2 max-w-full overflow-x-auto scrollbar-hide pb-2 snap-x px-4 md:px-0">
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
@@ -490,7 +550,7 @@ export default function Index() {
                     key={tag}
                     variant={isSelected ? "default" : "outline"}
                     onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all ${
+                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all whitespace-nowrap snap-center ${
                       isSelected 
                         ? "bg-black text-white shadow-md shadow-black/10" 
                         : isSpecial 
@@ -509,11 +569,18 @@ export default function Index() {
             <div className="relative"><div className="w-10 h-10 border-2 border-black/5 rounded-full" /><div className="w-10 h-10 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" /></div>
             <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
           </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center py-32 text-center space-y-4">
+            <AlertCircle className="w-10 h-10 text-red-500" />
+            <h3 className="text-lg font-bold">Erro ao carregar dados</h3>
+            <p className="text-sm text-gray-500">Não foi possível conectar à base de dados.</p>
+            <Button onClick={() => refetch()} className="bg-black text-white rounded-xl">Tentar Novamente</Button>
+          </div>
         ) : (searchTerm ? filteredPrompts : organizedPrompts)?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
             <ImageIcon className="w-10 h-10 mb-4" />
             <h3 className="text-lg font-medium">Nenhum resultado</h3>
-            <p className="text-sm">Tente outros termos.</p>
+            <p className="text-sm">Tente outros termos ou limpe o filtro.</p>
           </div>
         ) : (
           <div className="space-y-12">
@@ -581,16 +648,24 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
   const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
   return (
     <div className="group bg-white rounded-xl md:rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full">
-      <div className="aspect-[3/4] overflow-hidden relative">
-        <img src={mainImage} alt={prompt.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+      <div className="aspect-[3/4] overflow-hidden relative bg-gray-50">
+        <img 
+          src={mainImage} 
+          alt={prompt.title} 
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+          loading="lazy" 
+          decoding="async"
+        />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-      <div className="p-2.5 md:p-5 flex flex-col flex-1 min-w-0">
-        <h3 className="text-[11px] md:text-base font-bold leading-tight mb-1.5 md:mb-2">{renderWithTags(prompt.title)}</h3>
-        <p className="text-gray-400 text-[9px] md:text-xs font-light mb-3 md:mb-4 line-clamp-2 leading-relaxed flex-1 overflow-hidden">{renderWithTags(prompt.description)}</p>
+      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
+        <h3 className="text-[12px] md:text-base font-bold leading-tight mb-2 md:mb-3 min-h-[2.5em]">{renderWithTags(prompt.title)}</h3>
+        <div className="text-gray-400 text-[10px] md:text-xs font-light mb-4 line-clamp-3 leading-relaxed flex-1 overflow-hidden">
+          {prompt.description.replace(/\[[^\]]+\]/g, '')}
+        </div>
         <Button 
           onClick={onView}
-          className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-xl h-8 md:h-10 text-[10px] md:text-xs font-medium transition-all shadow-lg shadow-black/5"
+          className="w-full bg-black text-white hover:bg-black/90 rounded-xl h-9 md:h-11 text-[11px] md:text-sm font-bold transition-all shadow-lg shadow-black/5 active:scale-95"
         >
           Visualizar
         </Button>
@@ -618,7 +693,7 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
       {/* Universal Header */}
       <div className="flex items-center justify-between px-4 h-16 border-b border-black/[0.05] bg-white flex-shrink-0 z-10">
         <div className="flex-1 min-w-0 pr-4">
-          <h3 className="text-xs md:text-lg font-bold uppercase tracking-tight break-words leading-tight">{prompt.title}</h3>
+          <h3 className="text-xs md:text-lg font-bold uppercase tracking-tight break-words leading-tight">{renderWithTags(prompt.title)}</h3>
         </div>
         <button 
           onClick={onClose}
@@ -728,11 +803,11 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
             <X className="w-6 h-6" />
           </button>
           
-          <div className="w-full h-full flex items-center justify-center overflow-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full h-full flex items-center justify-center overflow-auto p-4" onClick={(e) => e.stopPropagation()}>
             <img 
               src={expandedImage} 
               alt="Expanded" 
-              className="max-w-none min-w-full md:min-w-0 md:max-w-full md:max-h-full object-contain cursor-zoom-out"
+              className="max-w-full max-h-full object-contain cursor-zoom-out shadow-2xl transition-transform duration-300"
               onClick={() => setExpandedImage(null)}
             />
           </div>
@@ -743,5 +818,27 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
         </div>
       )}
     </div>
+  );
+}
+
+export default function Index() {
+  return (
+    <ErrorBoundary>
+      <style dangerouslySetInnerHTML={{ __html: `
+        :root { --vh: 1vh; }
+        .min-h-screen { min-height: 100vh; min-height: calc(var(--vh, 1vh) * 100); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        * { -webkit-tap-highlight-color: transparent; }
+        body { overflow-x: hidden; width: 100%; position: relative; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        @media (max-width: 640px) {
+          .container { padding-left: 1rem; padding-right: 1rem; }
+        }
+      `}} />
+      <MainApp />
+    </ErrorBoundary>
   );
 }
