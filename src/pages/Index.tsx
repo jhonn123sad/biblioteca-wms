@@ -379,9 +379,9 @@ export default function Index() {
         </div>
 
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
-          <div className="mb-12 relative">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
+          <div className="mb-8 md:mb-12 relative w-full">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
@@ -389,53 +389,53 @@ export default function Index() {
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[10px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2">
+                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2 h-7 md:h-8">
                   <span>Ver Todos</span>
-                  <ExternalLink className="w-3 h-3 ml-1" />
+                  <ExternalLink className="w-2.5 h-2.5 ml-1" />
                 </Button>
               </div>
             </div>
             
-            <div ref={scrollContainerRef} className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none -mx-4 px-4">
+            <div ref={scrollContainerRef} className="flex gap-2.5 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none -mx-3 px-3 md:-mx-4 md:px-4">
               {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
+                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
-                    <PromptModal prompt={prompt} trigger={<Button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-4 h-4 text-white" /></Button>} />
+                    <PromptModal prompt={prompt} trigger={<Button className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" /></Button>} />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
+                    <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
                   </div>
                 </div>
               ))}
-              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] snap-start">
-                <Grid className="w-6 h-6 text-black/20" />
-                <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
+              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-black/[0.02] snap-start">
+                <Grid className="w-5 h-5 md:w-6 md:h-6 text-black/20" />
+                <span className="text-[9px] md:text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
               </button>
             </div>
           </div>
         )}
 
         {!isLoading && (
-          <div className="mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/90 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-3 px-3 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 max-w-full">
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
-                className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
               >Início</Button>
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
-                className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
               >Todos (#)</Button>
-              <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
+              <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
               {allTags.map(tag => (
                 <Button
                   key={tag}
                   variant={selectedTag === tag ? "default" : "outline"}
                   onClick={() => { setSelectedTag(selectedTag === tag ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                  className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                  className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
                 >{tag}</Button>
               ))}
             </div>
