@@ -565,10 +565,10 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
           </Button>
         </div>
 
-        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden relative custom-scrollbar">
+        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden relative custom-scrollbar bg-white">
           
           {/* Section 1: Images & Description */}
-          <div className="bg-[#F9F9F9] p-4 md:p-12 md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+          <div className="bg-[#F9F9F9] p-4 md:p-12 md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] min-h-[300px]">
             <div className="space-y-6 md:space-y-8">
               {/* Image Gallery */}
               <div className="grid grid-cols-2 gap-2 md:gap-4">
