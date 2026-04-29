@@ -540,7 +540,7 @@ function MainApp() {
                     key={tag}
                     variant={isSelected ? "default" : "outline"}
                     onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all ${
+                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all whitespace-nowrap snap-center ${
                       isSelected 
                         ? "bg-black text-white shadow-md shadow-black/10" 
                         : isSpecial 
