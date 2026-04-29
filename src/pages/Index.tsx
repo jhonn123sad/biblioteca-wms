@@ -114,7 +114,7 @@ const renderWithTags = (text: string) => {
 };
 
 export default function Index() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -130,7 +130,7 @@ export default function Index() {
     const auth = localStorage.getItem("wms_member_auth");
     const name = localStorage.getItem("wms_member_name");
     if (auth === "true") {
-      setIsAuthenticated(false);
+      setIsAuthenticated(true);
       if (name) setUserName(name);
     } else {
       setIsAuthenticated(false);
