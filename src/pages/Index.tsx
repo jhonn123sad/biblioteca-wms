@@ -194,7 +194,7 @@ export default function Index() {
     });
   };
 
-  const { data: prompts, isLoading } = useQuery({
+  const { data: prompts, isLoading, refetch } = useQuery({
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
       try {
@@ -206,7 +206,9 @@ export default function Index() {
         console.error(err);
         return [];
       }
-    }
+    },
+    refetchInterval: 30000, // Sync every 30 seconds
+    staleTime: 10000,
   });
 
   const allTags = Array.from(new Set(
