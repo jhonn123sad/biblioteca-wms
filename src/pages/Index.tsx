@@ -167,7 +167,7 @@ const linkify = (text: string) => {
   });
 };
 
-export default function Index() {
+function MainApp() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
