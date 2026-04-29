@@ -803,11 +803,11 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
             <X className="w-6 h-6" />
           </button>
           
-          <div className="w-full h-full flex items-center justify-center overflow-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full h-full flex items-center justify-center overflow-auto p-4" onClick={(e) => e.stopPropagation()}>
             <img 
               src={expandedImage} 
               alt="Expanded" 
-              className="max-w-none min-w-full md:min-w-0 md:max-w-full md:max-h-full object-contain cursor-zoom-out"
+              className="max-w-full max-h-full object-contain cursor-zoom-out shadow-2xl transition-transform duration-300"
               onClick={() => setExpandedImage(null)}
             />
           </div>
