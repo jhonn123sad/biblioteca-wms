@@ -457,9 +457,9 @@ export default function Index() {
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.02]">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-2 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.02]">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 <Button
                   variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                   onClick={() => {
@@ -467,7 +467,7 @@ export default function Index() {
                     setViewAllOrder(false);
                     setShowCarousel(true);
                   }}
-                  className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                  className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
                     (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
                   }`}
                 >
@@ -480,7 +480,7 @@ export default function Index() {
                     setSelectedTag(null);
                     setShowCarousel(false);
                   }}
-                  className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                  className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
                     viewAllOrder ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
                   }`}
                 >
@@ -496,7 +496,7 @@ export default function Index() {
                       setViewAllOrder(false);
                       setShowCarousel(false);
                     }}
-                    className={`rounded-xl px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                    className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
                       selectedTag === tag 
                         ? "bg-black text-white shadow-lg shadow-black/20" 
                         : "bg-white hover:bg-black/5"
@@ -525,13 +525,13 @@ export default function Index() {
             <p className="text-sm">Tente outros termos ou atualize a página.</p>
           </div>
         ) : searchTerm ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
             {(filteredPrompts as Prompt[])?.map((prompt) => (
               <PromptItem key={`${prompt.id}-search`} prompt={prompt} />
             ))}
           </div>
         ) : (selectedTag || viewAllOrder) ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
             {(organizedPrompts as Prompt[])?.map((prompt) => (
               <PromptItem key={`${prompt.id}-tag-or-order`} prompt={prompt} />
             ))}
@@ -546,7 +546,7 @@ export default function Index() {
                   </h3>
                   <div className="h-px flex-1 bg-black/[0.05]" />
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                   {group.prompts.map((prompt) => (
                     <PromptItem key={`${group.tag}-${prompt.id}`} prompt={prompt} />
                   ))}
@@ -654,7 +654,7 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
           <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
             <div className="flex flex-col h-full overflow-hidden">
               <DialogHeader className="mb-6 md:mb-8 text-left">
-                <DialogTitle className="text-xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
+                <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
               </DialogHeader>
               <div className="flex-1 flex flex-col min-h-0">
                 <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
@@ -799,7 +799,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
                   <div className="flex flex-col h-full overflow-hidden">
                     <DialogHeader className="mb-6 md:mb-8 text-left">
-                      <DialogTitle className="text-xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
+                      <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
                     </DialogHeader>
 
                     <div className="flex-1 flex flex-col min-h-0">
