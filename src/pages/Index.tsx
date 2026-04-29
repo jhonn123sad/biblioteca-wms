@@ -743,7 +743,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
           {renderWithTags(prompt.description)}
         </p>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-auto">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-xl h-10 text-xs font-medium transition-all shadow-lg shadow-black/5">
