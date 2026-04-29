@@ -873,7 +873,7 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
       <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
         <h3 className="text-[12px] md:text-base font-bold leading-tight mb-2 md:mb-3 min-h-[2.5em]">{renderWithTags(prompt.title)}</h3>
         <div className="text-gray-400 text-[10px] md:text-xs font-light mb-4 line-clamp-3 leading-relaxed flex-1 overflow-hidden">
-          {prompt.description.replace(/\[[^\]]+\]/g, '')}
+          {prompt.description.replace(/\[([^\]]+)\](?!\()/g, '')}
         </div>
         <Button 
           onClick={onView}
