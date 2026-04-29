@@ -89,6 +89,9 @@ const neonColors = [
 ];
 
 const getTagColor = (content: string) => {
+  if (content.toLowerCase() === "curso dentro") {
+    return "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A] border-2";
+  }
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
     hash = content.charCodeAt(i) + ((hash << 5) - hash);
@@ -109,6 +112,28 @@ const renderWithTags = (text: string) => {
         >
           {tagContent}
         </span>
+      );
+    }
+    return part;
+  });
+};
+
+const linkify = (text: string) => {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a 
+          key={i} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-[#FF007A] hover:underline break-all font-bold"
+        >
+          {part}
+        </a>
       );
     }
     return part;
@@ -457,14 +482,24 @@ export default function Index() {
                 className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
               >Ordem Numérica</Button>
               <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
-              {allTags.map(tag => (
-                <Button
-                  key={tag}
-                  variant={selectedTag === tag ? "default" : "outline"}
-                  onClick={() => { setSelectedTag(selectedTag === tag ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                  className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
-                >{tag}</Button>
-              ))}
+              {allTags.map(tag => {
+                const isSpecial = tag.toLowerCase() === "curso dentro";
+                const isSelected = selectedTag === tag;
+                return (
+                  <Button
+                    key={tag}
+                    variant={isSelected ? "default" : "outline"}
+                    onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
+                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all ${
+                      isSelected 
+                        ? "bg-black text-white shadow-md shadow-black/10" 
+                        : isSpecial 
+                          ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] border-2 hover:bg-[#FF007A]/10" 
+                          : "bg-white hover:bg-black/5"
+                    }`}
+                  >{tag}</Button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -581,7 +616,7 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
       {/* Universal Header */}
       <div className="flex items-center justify-between px-4 h-16 border-b border-black/[0.05] bg-white flex-shrink-0 z-10">
         <div className="flex-1 min-w-0 pr-4">
-          <h3 className="text-sm md:text-lg font-bold uppercase tracking-tight line-clamp-1">{prompt.title}</h3>
+          <h3 className="text-xs md:text-lg font-bold uppercase tracking-tight break-words leading-tight">{prompt.title}</h3>
         </div>
         <button 
           onClick={onClose}
@@ -617,7 +652,7 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Detalhes do Prompt</span>
                   </div>
-                  <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black">
+                  <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-a:text-[#FF007A] prose-a:no-underline hover:prose-a:underline prose-a:font-bold">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
                   </div>
                 </div>
@@ -648,7 +683,7 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
 
                 <div className="relative group flex-1 bg-black/[0.02] rounded-[2rem] border border-black/[0.03] overflow-hidden min-h-[200px] md:min-h-0 mb-6">
                   <div className="h-full p-6 md:p-8 overflow-y-auto custom-scrollbar">
-                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{linkify(prompt.content)}</pre>
                   </div>
                 </div>
 
