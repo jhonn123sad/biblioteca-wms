@@ -152,7 +152,7 @@ export default function Index() {
         setShowWelcome(true);
         
         setTimeout(() => {
-          setIsAuthenticated(false);
+          setIsAuthenticated(true);
           localStorage.setItem("wms_member_auth", "true");
           localStorage.setItem("wms_member_name", finalName);
           setShowWelcome(false);
