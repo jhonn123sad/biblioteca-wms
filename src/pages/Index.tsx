@@ -600,6 +600,8 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
 }
 
 function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => void }) {
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
+
   const copyToClipboard = () => {
     if (!prompt.content) return;
     navigator.clipboard.writeText(prompt.content);
@@ -635,8 +637,15 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
                 {/* Image Grid */}
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                   {prompt.images.map((img, i) => (
-                    <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                    <div 
+                      key={i} 
+                      onClick={() => setExpandedImage(img)}
+                      className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white cursor-zoom-in group/img relative"
+                    >
                       <img src={img} alt="Preview" className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                        <Search className="w-6 h-6 text-white drop-shadow-md" />
+                      </div>
                     </div>
                   ))}
                   {prompt.images.length === 0 && (
@@ -699,6 +708,33 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
           </div>
         </div>
       </div>
+      {/* Image Zoom Overlay */}
+      {expandedImage && (
+        <div 
+          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setExpandedImage(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all active:scale-90"
+            onClick={(e) => { e.stopPropagation(); setExpandedImage(null); }}
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          <div className="w-full h-full flex items-center justify-center overflow-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={expandedImage} 
+              alt="Expanded" 
+              className="max-w-none min-w-full md:min-w-0 md:max-w-full md:max-h-full object-contain cursor-zoom-out"
+              onClick={() => setExpandedImage(null)}
+            />
+          </div>
+          
+          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-[10px] uppercase tracking-widest font-medium md:hidden">
+            Arraste para ver detalhes
+          </p>
+        </div>
+      )}
     </div>
   );
 }
