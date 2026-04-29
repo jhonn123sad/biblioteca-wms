@@ -182,6 +182,16 @@ function MainApp() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Correção para Safari Mobile em dispositivos antigos
+    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    const handleResize = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     const auth = localStorage.getItem("wms_member_auth");
     const name = localStorage.getItem("wms_member_name");
     if (auth === "true") {
