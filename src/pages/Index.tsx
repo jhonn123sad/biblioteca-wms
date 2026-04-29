@@ -708,7 +708,9 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
       {/* Universal Header */}
       <div className="flex items-center justify-between px-4 h-16 border-b border-black/[0.05] bg-white flex-shrink-0 z-10">
         <div className="flex-1 min-w-0 pr-4">
-          <h3 className="text-xs md:text-lg font-bold uppercase tracking-tight break-words leading-tight">{renderWithTags(prompt.title)}</h3>
+          <div className="text-xs md:text-lg font-black tracking-tight break-words leading-tight flex flex-wrap gap-1 items-center">
+            {renderWithTags(prompt.title)}
+          </div>
         </div>
         <button 
           onClick={onClose}
