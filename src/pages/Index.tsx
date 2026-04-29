@@ -537,10 +537,11 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
     toast.success("Prompt copiado!");
   };
 
-  // Prevent background scroll when modal is open on mobile
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Force repaint
+      window.dispatchEvent(new Event('resize'));
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -548,113 +549,159 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
   }, [isOpen]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl w-full md:w-[95vw] bg-white p-0 overflow-hidden rounded-none md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-full md:h-auto md:max-h-[90dvh] top-0 left-0 translate-x-0 translate-y-0 md:top-[50%] md:left-[50%] md:translate-x-[-50%] md:translate-y-[-50%] fixed inset-0 z-[100]">
-        
-        {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between px-4 h-14 border-b border-black/[0.05] bg-white sticky top-0 z-50">
-          <h3 className="text-xs font-bold uppercase tracking-tight line-clamp-1 pr-10">{prompt.title}</h3>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsOpen(false)}
-            className="absolute right-2 top-2 w-10 h-10 rounded-full bg-black flex items-center justify-center shadow-lg active:scale-95 transition-transform"
-          >
-            <X className="h-5 w-5 text-white" />
-          </Button>
-        </div>
+    <>
+      <div onClick={() => setIsOpen(true)}>
+        {trigger}
+      </div>
 
-        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden relative custom-scrollbar bg-white">
-          
-          {/* Section 1: Images & Description */}
-          <div className="bg-[#F9F9F9] p-4 md:p-12 md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] min-h-[300px]">
-            <div className="space-y-6 md:space-y-8">
-              {/* Image Gallery */}
-              <div className="grid grid-cols-2 gap-2 md:gap-4">
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-[9999] bg-white flex flex-col md:hidden antialiased"
+          style={{ height: '100dvh', width: '100vw' }}
+        >
+          {/* Mobile Header - Ultra Simple */}
+          <div className="flex items-center justify-between px-4 h-14 border-b border-black/[0.05] bg-white flex-shrink-0">
+            <h3 className="text-xs font-bold uppercase tracking-tight line-clamp-1 pr-10">{prompt.title}</h3>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+              className="absolute right-2 top-2 w-10 h-10 rounded-full bg-black flex items-center justify-center shadow-lg active:scale-90"
+            >
+              <X className="h-5 w-5 text-white" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto bg-white custom-scrollbar pb-10">
+            {/* Section 1: Images */}
+            <div className="bg-[#F9F9F9] p-4 border-b border-black/[0.03]">
+              <div className="grid grid-cols-2 gap-2 mb-6">
                 {prompt.images.map((img, i) => (
-                  <div key={i} className="aspect-square rounded-xl md:rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
                     <img src={img} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 ))}
                 {prompt.images.length === 0 && (
                   <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
-                    <ImageIcon className="w-6 h-6 md:w-8 md:h-8 opacity-20" />
+                    <ImageIcon className="w-6 h-6 opacity-20" />
                   </div>
                 )}
               </div>
 
               {/* Description Section */}
-              <div className="space-y-3 bg-white p-4 md:p-0 rounded-2xl md:rounded-none border border-black/[0.03] md:border-none shadow-sm md:shadow-none">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] md:text-[10px] font-bold border-b border-black/[0.03] pb-2 mb-3">
+              <div className="space-y-3 bg-white p-4 rounded-2xl border border-black/[0.03] shadow-sm">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] font-bold border-b border-black/[0.03] pb-2 mb-3">
                   <BookOpen className="w-3 h-3" />
                   <span>Descrição & Contexto</span>
                 </div>
-                <div className="prose prose-xs md:prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-[12px] md:text-sm">
+                <div className="prose prose-xs prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-[12px]">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* Section 2: Prompt Content */}
-          <div className="p-4 md:p-12 flex flex-col bg-white md:overflow-hidden min-h-0">
-            <div className="flex flex-col h-full">
-              <div className="hidden md:block mb-8 pr-12">
-                <DialogHeader className="text-left">
-                  <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">
-                    {renderWithTags(prompt.title)}
-                  </DialogTitle>
-                </DialogHeader>
+            
+            {/* Section 2: Prompt Content */}
+            <div className="p-4 flex flex-col bg-white">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] font-bold">
+                  <Terminal className="w-3 h-3" />
+                  <span>Prompt Completo</span>
+                </div>
+                <button 
+                  onClick={copyToClipboard}
+                  className="h-7 text-[10px] font-bold bg-black text-white rounded-lg px-3 shadow-md"
+                >
+                  COPIAR
+                </button>
+              </div>
+              
+              <div className="bg-black/[0.02] rounded-2xl border border-black/[0.03] p-4 mb-6">
+                <pre className="text-[11px] font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
               </div>
 
-              <div className="flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-3 md:mb-4">
-                  <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] md:text-[10px] font-bold">
-                    <Terminal className="w-3 h-3" />
-                    <span>Prompt Completo</span>
+              <button 
+                onClick={copyToClipboard} 
+                className="w-full bg-black text-white rounded-xl h-14 text-[12px] font-bold shadow-xl active:scale-95 flex items-center justify-center gap-2"
+              >
+                <Copy className="w-4 h-4" />
+                COPIAR PROMPT PARA USAR
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Modal - Remains using Dialog for best experience */}
+      <div className="hidden md:block">
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col md:h-auto md:max-h-[90dvh] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[100]">
+            <div className="md:grid md:grid-cols-2 h-full overflow-hidden relative">
+              {/* Section 1: Images & Description */}
+              <div className="bg-[#F9F9F9] p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+                <div className="space-y-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    {prompt.images.map((img, i) => (
+                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                        <img src={img} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                    {prompt.images.length === 0 && (
+                      <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
+                        <ImageIcon className="w-8 h-8 opacity-20" />
+                      </div>
+                    )}
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={copyToClipboard}
-                    className="md:hidden h-7 text-[10px] font-bold bg-black text-white hover:bg-black/90 rounded-lg px-3"
-                  >
-                    <Copy className="w-3 h-3 mr-1" /> COPIAR
-                  </Button>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold border-b border-black/[0.03] pb-2 mb-3">
+                      <BookOpen className="w-3 h-3" />
+                      <span>Descrição & Contexto</span>
+                    </div>
+                    <div className="prose prose-sm prose-neutral max-w-none text-sm">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="relative flex-1 bg-black/[0.02] rounded-2xl border border-black/[0.03] overflow-hidden min-h-[200px] md:min-h-0">
-                  <div className="h-full p-4 md:p-8 overflow-y-auto custom-scrollbar">
-                    <pre className="text-[11px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+              </div>
+              
+              {/* Section 2: Prompt Content */}
+              <div className="p-12 flex flex-col bg-white overflow-hidden">
+                <div className="flex flex-col h-full">
+                  <div className="mb-8 pr-12">
+                    <DialogHeader className="text-left">
+                      <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">
+                        {renderWithTags(prompt.title)}
+                      </DialogTitle>
+                    </DialogHeader>
                   </div>
-                  {/* Desktop Copy Button overlay */}
-                  <div className="hidden md:block absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="secondary" size="sm" onClick={copyToClipboard} className="bg-white/90 backdrop-blur shadow-sm rounded-lg h-9 text-xs px-3">
-                      <Copy className="w-3 h-3 mr-2" />Copiar
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
+                      <Terminal className="w-3 h-3" />
+                      <span>Prompt Completo</span>
+                    </div>
+                    <div className="relative group flex-1 bg-black/[0.02] rounded-3xl border border-black/[0.03] overflow-hidden">
+                      <div className="h-full p-8 overflow-y-auto custom-scrollbar">
+                        <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+                      </div>
+                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button variant="secondary" size="sm" onClick={copyToClipboard} className="bg-white/90 backdrop-blur shadow-sm rounded-lg h-9 text-xs px-3">
+                          <Copy className="w-3 h-3 mr-2" />Copiar
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <Button onClick={copyToClipboard} className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+                      <Copy className="w-5 h-5" />
+                      COPIAR PROMPT PARA USAR
                     </Button>
                   </div>
                 </div>
               </div>
-
-              <div className="mt-6 md:mt-8 pb-4 md:pb-0">
-                <Button 
-                  onClick={copyToClipboard} 
-                  className="w-full bg-black text-white hover:bg-black/90 rounded-xl md:rounded-2xl h-12 md:h-16 text-[11px] md:text-base font-bold shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                >
-                  <Copy className="w-4 h-4 md:w-5 md:h-5" />
-                  COPIAR PROMPT PARA USAR
-                </Button>
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Desktop Close Button */}
-        <DialogClose className="hidden md:flex absolute right-8 top-8 rounded-full w-12 h-12 items-center justify-center bg-black shadow-lg hover:bg-black/80 transition-all focus:outline-none z-50 group/close">
-          <X className="h-6 w-6 text-white transition-transform group-hover/close:rotate-90" />
-        </DialogClose>
-      </DialogContent>
-    </Dialog>
+            <DialogClose className="absolute right-8 top-8 rounded-full w-12 h-12 flex items-center justify-center bg-black shadow-lg hover:bg-black/80 transition-all focus:outline-none z-50 group/close">
+              <X className="h-6 w-6 text-white transition-transform group-hover/close:rotate-90" />
+            </DialogClose>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </>
   );
 }
