@@ -354,8 +354,8 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full">
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full">
+    <div className="min-h-[100dvh] bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full antialiased">
+      <header className="sticky top-0 z-[60] bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full">
         <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
             <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
@@ -565,10 +565,10 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
           </Button>
         </div>
 
-        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden relative custom-scrollbar">
+        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden relative custom-scrollbar bg-white">
           
           {/* Section 1: Images & Description */}
-          <div className="bg-[#F9F9F9] p-4 md:p-12 md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+          <div className="bg-[#F9F9F9] p-4 md:p-12 md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] min-h-[300px]">
             <div className="space-y-6 md:space-y-8">
               {/* Image Gallery */}
               <div className="grid grid-cols-2 gap-2 md:gap-4">
