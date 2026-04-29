@@ -130,10 +130,10 @@ export default function Index() {
     const auth = localStorage.getItem("wms_member_auth");
     const name = localStorage.getItem("wms_member_name");
     if (auth === "true") {
-      setIsAuthenticated(true);
+      setIsAuthenticated(false);
       if (name) setUserName(name);
     } else {
-      setIsAuthenticated(true);
+      setIsAuthenticated(false);
     }
   }, []);
 
@@ -152,7 +152,7 @@ export default function Index() {
         setShowWelcome(true);
         
         setTimeout(() => {
-          setIsAuthenticated(true);
+          setIsAuthenticated(false);
           localStorage.setItem("wms_member_auth", "true");
           localStorage.setItem("wms_member_name", finalName);
           setShowWelcome(false);
@@ -175,7 +175,7 @@ export default function Index() {
       onClick={() => {
         localStorage.removeItem("wms_member_auth");
         localStorage.removeItem("wms_member_name");
-        setIsAuthenticated(true);
+        setIsAuthenticated(false);
         toast.info("Você saiu do sistema.");
       }}
       className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 px-2 flex-shrink-0"
