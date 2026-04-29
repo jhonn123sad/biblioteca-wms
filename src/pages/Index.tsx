@@ -410,21 +410,22 @@ export default function Index() {
               className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none"
             >
               {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-28 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
+                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img 
                     src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
                     alt={prompt.title} 
-                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110 pointer-events-none"
+                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/40 md:opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
                     <PromptItemOnlyDialog prompt={prompt} />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                     <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">
                       {prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}
                     </span>
                   </div>
                 </div>
+
               ))}
               <button 
                 onClick={() => {
