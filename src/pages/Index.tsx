@@ -639,7 +639,8 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
               </div>
             </div>
           </div>
-          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
+          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden min-h-0">
+
             <div className="flex flex-col h-full overflow-hidden">
               <DialogHeader className="mb-6 md:mb-8 text-left">
                 <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
