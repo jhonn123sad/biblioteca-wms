@@ -329,7 +329,7 @@ export default function Index() {
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top">
-        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-3">
+        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-3 safe-top">
           <div className="flex items-center gap-2 flex-shrink-0">
             <img 
               src="/logo-wms.png" 
