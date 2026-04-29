@@ -586,7 +586,7 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       <div className="p-2.5 md:p-5 flex flex-col flex-1 min-w-0">
-        <h3 className="text-[11px] md:text-base font-bold leading-tight mb-1.5 md:mb-2 line-clamp-3 min-h-[3.3em] md:min-h-[3.5em]">{renderWithTags(prompt.title)}</h3>
+        <h3 className="text-[11px] md:text-base font-bold leading-tight mb-1.5 md:mb-2">{renderWithTags(prompt.title)}</h3>
         <p className="text-gray-400 text-[9px] md:text-xs font-light mb-3 md:mb-4 line-clamp-2 leading-relaxed flex-1 overflow-hidden">{renderWithTags(prompt.description)}</p>
         <Button 
           onClick={onView}
