@@ -683,7 +683,7 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
 
                 <div className="relative group flex-1 bg-black/[0.02] rounded-[2rem] border border-black/[0.03] overflow-hidden min-h-[200px] md:min-h-0 mb-6">
                   <div className="h-full p-6 md:p-8 overflow-y-auto custom-scrollbar">
-                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{linkify(prompt.content)}</pre>
                   </div>
                 </div>
 
