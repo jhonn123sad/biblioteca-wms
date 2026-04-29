@@ -271,8 +271,8 @@ export default function Index() {
           <h2 className="text-gray-400 text-sm font-medium uppercase tracking-[0.3em] animate-pulse">
             Acesso Autorizado
           </h2>
-          <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
-            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{userName}</span>
+          <h1 className="text-3xl md:text-6xl font-bold text-white tracking-tight">
+            Bem-vindo(a), <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 leading-tight">{userName}</span>
           </h1>
           <div className="flex justify-center mt-8">
             <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -287,11 +287,11 @@ export default function Index() {
       <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 selection:bg-black selection:text-white">
         <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
-              <Lock className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-3xl bg-black shadow-2xl shadow-black/20 mb-4">
+              <Lock className="w-6 h-6 md:w-8 md:h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
-            <p className="text-gray-400 font-light leading-relaxed">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Área de Membros WMS</h1>
+            <p className="text-gray-400 font-light leading-relaxed text-sm md:text-base">
               Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado no onboarding para entrar.
             </p>
           </div>
@@ -305,13 +305,13 @@ export default function Index() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isVerifying}
-                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-16 pl-12 pr-4 text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+                className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-14 md:h-16 pl-12 pr-4 text-base md:text-lg focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
               />
             </div>
             <Button 
               type="submit" 
               disabled={isVerifying || !phoneNumber}
-              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
+              className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-base md:text-lg font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {isVerifying ? (
                 <Loader2 className="w-6 h-6 animate-spin" />
@@ -560,7 +560,7 @@ export default function Index() {
       <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03]">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">
-            &copy; {new Date().getFullYear()} Bíblioteca de Prompts WMS
+            &copy; {new Date().getFullYear()} Biblioteca de Prompts WMS
           </p>
           <div className="flex gap-8">
             <span className="text-xs text-gray-300 font-medium uppercase tracking-widest">Minimalist Design</span>
@@ -829,10 +829,10 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                   </div>
 
                   <div className="mt-8">
-                    <Button 
-                      onClick={copyToClipboard}
-                      className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
-                    >
+              <Button 
+                onClick={copyToClipboard}
+                className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-14 md:h-16 text-sm md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+              >
                       <Copy className="w-5 h-5" /> COPIAR PROMPT COMPLETO
                     </Button>
                   </div>
