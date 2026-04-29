@@ -125,6 +125,7 @@ export default function Index() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [viewAllOrder, setViewAllOrder] = useState(false);
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -422,7 +423,12 @@ export default function Index() {
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
-                    <PromptModal prompt={prompt} trigger={<Button className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" /></Button>} />
+                    <Button 
+                      onClick={() => setSelectedPrompt(prompt)}
+                      className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"
+                    >
+                      <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
+                    </Button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
                     <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
@@ -478,11 +484,23 @@ export default function Index() {
           <div className="space-y-12">
             {searchTerm ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
-                {(filteredPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-search`} prompt={prompt} />)}
+                {(filteredPrompts as Prompt[])?.map((prompt) => (
+                  <PromptCard 
+                    key={`${prompt.id}-search`} 
+                    prompt={prompt} 
+                    onView={() => setSelectedPrompt(prompt)}
+                  />
+                ))}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
-                {(organizedPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-list`} prompt={prompt} />)}
+                {(organizedPrompts as Prompt[])?.map((prompt) => (
+                  <PromptCard 
+                    key={`${prompt.id}-list`} 
+                    prompt={prompt} 
+                    onView={() => setSelectedPrompt(prompt)}
+                  />
+                ))}
               </div>
             ) : (
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
@@ -492,7 +510,13 @@ export default function Index() {
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
-                    {group.prompts.map((prompt) => <PromptCard key={`${group.tag}-${prompt.id}`} prompt={prompt} />)}
+                    {group.prompts.map((prompt) => (
+                      <PromptCard 
+                        key={`${group.tag}-${prompt.id}`} 
+                        prompt={prompt} 
+                        onView={() => setSelectedPrompt(prompt)}
+                      />
+                    ))}
                   </div>
                 </div>
               ))
@@ -507,11 +531,18 @@ export default function Index() {
           <div className="flex gap-8"><span className="text-[10px] font-medium uppercase tracking-widest">Minimalist</span><span className="text-[10px] font-medium uppercase tracking-widest">Sync</span></div>
         </div>
       </footer>
+
+      {selectedPrompt && (
+        <PromptDetailView 
+          prompt={selectedPrompt} 
+          onClose={() => setSelectedPrompt(null)} 
+        />
+      )}
     </div>
   );
 }
 
-function PromptCard({ prompt }: { prompt: Prompt }) {
+function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) {
   const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
   return (
     <div className="group bg-white rounded-xl md:rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full">
@@ -522,15 +553,18 @@ function PromptCard({ prompt }: { prompt: Prompt }) {
       <div className="p-2.5 md:p-5 flex flex-col flex-1 min-w-0">
         <h3 className="text-[11px] md:text-base font-bold leading-tight mb-1.5 md:mb-2 line-clamp-3 min-h-[3.3em] md:min-h-[3.5em]">{renderWithTags(prompt.title)}</h3>
         <p className="text-gray-400 text-[9px] md:text-xs font-light mb-3 md:mb-4 line-clamp-2 leading-relaxed flex-1 overflow-hidden">{renderWithTags(prompt.description)}</p>
-        <PromptModal prompt={prompt} trigger={<Button className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-xl h-8 md:h-10 text-[10px] md:text-xs font-medium transition-all shadow-lg shadow-black/5">Visualizar</Button>} />
+        <Button 
+          onClick={onView}
+          className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-xl h-8 md:h-10 text-[10px] md:text-xs font-medium transition-all shadow-lg shadow-black/5"
+        >
+          Visualizar
+        </Button>
       </div>
     </div>
   );
 }
 
-function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
-  
+function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => void }) {
   const copyToClipboard = () => {
     if (!prompt.content) return;
     navigator.clipboard.writeText(prompt.content);
@@ -538,170 +572,98 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
   };
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      // Force repaint
-      window.dispatchEvent(new Event('resize'));
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
-  }, [isOpen]);
+  }, []);
 
   return (
-    <>
-      <div onClick={() => setIsOpen(true)}>
-        {trigger}
+    <div className="fixed inset-0 z-[100] bg-white flex flex-col antialiased animate-in fade-in duration-200">
+      {/* Universal Header */}
+      <div className="flex items-center justify-between px-4 h-16 border-b border-black/[0.05] bg-white flex-shrink-0 z-10">
+        <div className="flex-1 min-w-0 pr-4">
+          <h3 className="text-sm md:text-lg font-bold uppercase tracking-tight line-clamp-1">{prompt.title}</h3>
+        </div>
+        <button 
+          onClick={onClose}
+          className="w-10 h-10 rounded-full bg-black flex items-center justify-center shadow-lg active:scale-90 transition-transform hover:scale-105"
+        >
+          <X className="h-5 w-5 text-white" />
+        </button>
       </div>
 
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-[9999] bg-white flex flex-col md:hidden antialiased"
-          style={{ height: '100dvh', width: '100vw' }}
-        >
-          {/* Mobile Header - Ultra Simple */}
-          <div className="flex items-center justify-between px-4 h-14 border-b border-black/[0.05] bg-white flex-shrink-0">
-            <h3 className="text-xs font-bold uppercase tracking-tight line-clamp-1 pr-10">{prompt.title}</h3>
-            <button 
-              onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
-              className="absolute right-2 top-2 w-10 h-10 rounded-full bg-black flex items-center justify-center shadow-lg active:scale-90"
-            >
-              <X className="h-5 w-5 text-white" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto bg-white custom-scrollbar pb-10">
-            {/* Section 1: Images */}
-            <div className="bg-[#F9F9F9] p-4 border-b border-black/[0.03]">
-              <div className="grid grid-cols-2 gap-2 mb-6">
-                {prompt.images.map((img, i) => (
-                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
-                    <img src={img} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-                {prompt.images.length === 0 && (
-                  <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
-                    <ImageIcon className="w-6 h-6 opacity-20" />
-                  </div>
-                )}
-              </div>
-
-              {/* Description Section */}
-              <div className="space-y-3 bg-white p-4 rounded-2xl border border-black/[0.03] shadow-sm">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] font-bold border-b border-black/[0.03] pb-2 mb-3">
-                  <BookOpen className="w-3 h-3" />
-                  <span>Descrição & Contexto</span>
+      <div className="flex-1 overflow-y-auto bg-white">
+        <div className="container mx-auto max-w-6xl h-full">
+          <div className="flex flex-col md:flex-row h-full">
+            {/* Left Column: Visual & Info */}
+            <div className="w-full md:w-1/2 p-4 md:p-8 bg-[#F9F9F9] md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+              <div className="space-y-6 md:space-y-8">
+                {/* Image Grid */}
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  {prompt.images.map((img, i) => (
+                    <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
+                      <img src={img} alt="Preview" className="w-full h-full object-cover" loading="lazy" />
+                    </div>
+                  ))}
+                  {prompt.images.length === 0 && (
+                    <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
+                      <ImageIcon className="w-10 h-10 opacity-10" />
+                    </div>
+                  )}
                 </div>
-                <div className="prose prose-xs prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-[12px]">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
+
+                {/* Info Card */}
+                <div className="bg-white p-5 md:p-8 rounded-[2rem] border border-black/[0.03] shadow-sm space-y-4">
+                  <div className="flex items-center gap-2 text-black/30 uppercase tracking-[0.2em] text-[10px] font-bold border-b border-black/[0.03] pb-3">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Detalhes do Prompt</span>
+                  </div>
+                  <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
+                  </div>
+                </div>
+
+                <div className="hidden md:block py-4">
+                  <p className="text-center text-black/20 text-[10px] uppercase tracking-widest font-medium italic">
+                    Role para ver o prompt abaixo em dispositivos móveis
+                  </p>
                 </div>
               </div>
             </div>
-            
-            {/* Section 2: Prompt Content */}
-            <div className="p-4 flex flex-col bg-white">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] font-bold">
-                  <Terminal className="w-3 h-3" />
-                  <span>Prompt Completo</span>
+
+            {/* Right Column: Prompt Content */}
+            <div className="w-full md:w-1/2 p-4 md:p-8 flex flex-col bg-white">
+              <div className="flex-1 flex flex-col min-h-0">
+                <div className="flex items-center justify-between mb-4 md:mb-6">
+                  <div className="flex items-center gap-2 text-black/30 uppercase tracking-[0.2em] text-[10px] font-bold">
+                    <Terminal className="w-3.5 h-3.5" />
+                    <span>Conteúdo para Copiar</span>
+                  </div>
+                  <button 
+                    onClick={copyToClipboard}
+                    className="h-8 text-[11px] font-bold bg-black text-white rounded-xl px-4 shadow-lg hover:bg-black/80 transition-all active:scale-95"
+                  >
+                    COPIAR
+                  </button>
                 </div>
+
+                <div className="relative group flex-1 bg-black/[0.02] rounded-[2rem] border border-black/[0.03] overflow-hidden min-h-[200px] md:min-h-0 mb-6">
+                  <div className="h-full p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+                  </div>
+                </div>
+
                 <button 
-                  onClick={copyToClipboard}
-                  className="h-7 text-[10px] font-bold bg-black text-white rounded-lg px-3 shadow-md"
+                  onClick={copyToClipboard} 
+                  className="w-full bg-black text-white rounded-2xl h-16 text-sm font-bold shadow-2xl shadow-black/10 active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-auto"
                 >
-                  COPIAR
+                  <Copy className="w-5 h-5" />
+                  COPIAR PROMPT PARA USAR
                 </button>
               </div>
-              
-              <div className="bg-black/[0.02] rounded-2xl border border-black/[0.03] p-4 mb-6">
-                <pre className="text-[11px] font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
-              </div>
-
-              <button 
-                onClick={copyToClipboard} 
-                className="w-full bg-black text-white rounded-xl h-14 text-[12px] font-bold shadow-xl active:scale-95 flex items-center justify-center gap-2"
-              >
-                <Copy className="w-4 h-4" />
-                COPIAR PROMPT PARA USAR
-              </button>
             </div>
           </div>
         </div>
-      )}
-
-      {/* Desktop Modal - Remains using Dialog for best experience */}
-      <div className="hidden md:block">
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col md:h-auto md:max-h-[90dvh] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[100]">
-            <div className="md:grid md:grid-cols-2 h-full overflow-hidden relative">
-              {/* Section 1: Images & Description */}
-              <div className="bg-[#F9F9F9] p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
-                <div className="space-y-8">
-                  <div className="grid grid-cols-2 gap-4">
-                    {prompt.images.map((img, i) => (
-                      <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white">
-                        <img src={img} alt="Preview" className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                    {prompt.images.length === 0 && (
-                      <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
-                        <ImageIcon className="w-8 h-8 opacity-20" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold border-b border-black/[0.03] pb-2 mb-3">
-                      <BookOpen className="w-3 h-3" />
-                      <span>Descrição & Contexto</span>
-                    </div>
-                    <div className="prose prose-sm prose-neutral max-w-none text-sm">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Section 2: Prompt Content */}
-              <div className="p-12 flex flex-col bg-white overflow-hidden">
-                <div className="flex flex-col h-full">
-                  <div className="mb-8 pr-12">
-                    <DialogHeader className="text-left">
-                      <DialogTitle className="text-3xl font-semibold tracking-tight leading-tight">
-                        {renderWithTags(prompt.title)}
-                      </DialogTitle>
-                    </DialogHeader>
-                  </div>
-                  <div className="flex-1 flex flex-col">
-                    <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[10px] font-bold mb-4">
-                      <Terminal className="w-3 h-3" />
-                      <span>Prompt Completo</span>
-                    </div>
-                    <div className="relative group flex-1 bg-black/[0.02] rounded-3xl border border-black/[0.03] overflow-hidden">
-                      <div className="h-full p-8 overflow-y-auto custom-scrollbar">
-                        <pre className="text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
-                      </div>
-                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="secondary" size="sm" onClick={copyToClipboard} className="bg-white/90 backdrop-blur shadow-sm rounded-lg h-9 text-xs px-3">
-                          <Copy className="w-3 h-3 mr-2" />Copiar
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-8">
-                    <Button onClick={copyToClipboard} className="w-full bg-black text-white hover:bg-black/90 rounded-2xl h-16 text-base font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3">
-                      <Copy className="w-5 h-5" />
-                      COPIAR PROMPT PARA USAR
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <DialogClose className="absolute right-8 top-8 rounded-full w-12 h-12 flex items-center justify-center bg-black shadow-lg hover:bg-black/80 transition-all focus:outline-none z-50 group/close">
-              <X className="h-6 w-6 text-white transition-transform group-hover/close:rotate-90" />
-            </DialogClose>
-          </DialogContent>
-        </Dialog>
       </div>
-    </>
+    </div>
   );
 }
