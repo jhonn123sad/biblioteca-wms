@@ -614,8 +614,8 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
           <ImageIcon className="w-4 h-4 text-white" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
-        <div className="grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[92vh] md:max-h-[90vh]">
+      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none">
+        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[85vh] md:max-h-[90vh]">
           <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
             <div className="space-y-6 md:space-y-8">
               <div className="grid grid-cols-2 gap-3 md:gap-4">
