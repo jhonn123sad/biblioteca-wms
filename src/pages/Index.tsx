@@ -542,9 +542,8 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
           {/* Section 2: Prompt Content */}
           <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-hidden flex-1 min-h-0">
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="flex justify-between items-start gap-4 mb-4 md:mb-8">
+              <div className="flex justify-between items-start gap-4 mb-4 md:mb-8 pr-8">
                 <DialogHeader className="text-left"><DialogTitle className="text-base md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle></DialogHeader>
-                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="md:hidden h-8 w-8 rounded-full bg-black/5"><X className="h-4 w-4" /></Button>
               </div>
 
               <div className="flex-1 flex flex-col min-h-0">
