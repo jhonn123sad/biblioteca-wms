@@ -328,45 +328,30 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-black/[0.03]">
-        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/[0.03]">
+        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <img 
               src="/logo-wms.png" 
               alt="WMS Logo" 
               className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm"
             />
-            <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1">Biblioteca WMS</h1>
+            <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden sm:block">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative flex-1 max-w-md mx-1 md:mx-4 group">
+          <div className="relative flex-1 max-w-md group">
             <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 group-focus-within:text-black transition-colors" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.03] border border-transparent rounded-xl md:rounded-2xl h-9 md:h-11 pl-9 md:pl-11 pr-4 text-xs md:text-sm focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+              className="w-full bg-black/[0.04] border border-transparent rounded-xl md:rounded-2xl h-10 md:h-11 pl-9 md:pl-11 pr-4 text-sm md:text-sm focus:bg-white focus:border-black/10 focus:ring-2 focus:ring-black/5 transition-all outline-none"
             />
           </div>
 
           <div className="flex items-center gap-1 md:gap-4 flex-shrink-0">
             <LogoutButton />
-            {/* O botão de sincronização agora só aparece se estivermos em ambiente de desenvolvimento (LOVABLE) */}
-            {window.location.hostname.includes("lovable") && (
-              <Button 
-                variant="ghost" 
-                onClick={() => {
-                  refetch();
-                  toast.success("Sincronizando biblioteca...");
-                }}
-                disabled={isFetching}
-                className="rounded-xl hover:bg-black/5 transition-all h-10 w-10 p-0"
-                title="Sincronizar Sheets (Apenas Editor)"
-              >
-                <RefreshCcw className={`w-4 h-4 text-gray-400 ${isFetching ? 'animate-spin text-black' : ''}`} />
-              </Button>
-            )}
           </div>
         </div>
       </header>
@@ -375,8 +360,8 @@ export default function Index() {
         {/* Intro */}
         <div className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
-            <h2 className="text-xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
-              Prompts exclusivos para membros WMS
+            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
+              Prompts WMS
             </h2>
             <p className="text-gray-400 max-w-2xl text-xs md:text-lg font-light text-center md:text-left leading-relaxed">
               Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
@@ -388,7 +373,7 @@ export default function Index() {
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-12 relative group/carousel">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Ordem Numérica</h3>
+              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
               <div className="flex items-center gap-2">
                 <Button 
                   variant="ghost" 
@@ -459,9 +444,9 @@ export default function Index() {
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-2 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.02]">
+          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
             <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
                 <Button
                   variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                   onClick={() => {
@@ -469,11 +454,11 @@ export default function Index() {
                     setViewAllOrder(false);
                     setShowCarousel(true);
                   }}
-                  className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
-                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
+                  className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
+                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white hover:bg-black/5"
                   }`}
                 >
-                  Categorias
+                  Início
                 </Button>
                 <Button
                   variant={viewAllOrder ? "default" : "outline"}
@@ -482,13 +467,13 @@ export default function Index() {
                     setSelectedTag(null);
                     setShowCarousel(false);
                   }}
-                  className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
-                    viewAllOrder ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
+                  className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
+                    viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white hover:bg-black/5"
                   }`}
                 >
-                  Ordem Numérica
+                  Todos (#)
                 </Button>
-                <div className="w-px h-4 bg-black/10 flex-none mx-2" />
+                <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
                 {allTags.map(tag => (
                   <Button
                     key={tag}
@@ -498,9 +483,9 @@ export default function Index() {
                       setViewAllOrder(false);
                       setShowCarousel(false);
                     }}
-                    className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                    className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
                       selectedTag === tag 
-                        ? "bg-black text-white shadow-lg shadow-black/20" 
+                        ? "bg-black text-white shadow-md shadow-black/10" 
                         : "bg-white hover:bg-black/5"
                     }`}
                   >
@@ -629,8 +614,8 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
           <ImageIcon className="w-4 h-4 text-white" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
-        <div className="grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[92vh] md:max-h-[90vh]">
+      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none">
+        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[85vh] md:max-h-[90vh]">
           <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
             <div className="space-y-6 md:space-y-8">
               <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -763,8 +748,8 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 Visualizar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
-              <div className="grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[92vh] md:max-h-[90vh]">
+            <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none">
+              <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[85vh] md:max-h-[90vh]">
                 {/* Lado Esquerdo: Imagens e Tutorial */}
                 <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
                   <div className="space-y-6 md:space-y-8">
