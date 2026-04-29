@@ -547,47 +547,64 @@ function MainApp() {
         )}
 
         {!isLoading && (
-          <div className="mb-6 md:mb-10 sticky top-[64px] md:top-[80px] z-30 bg-white/98 md:bg-white/80 backdrop-blur-md -mx-4 px-4 md:-mx-6 md:px-6 py-3 border-b border-black/[0.03] transition-all">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 md:mx-0 md:px-0">
-                <Button
-                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-xl shadow-black/20" : "bg-white border-black/5 hover:bg-black/5"}`}
-                >Início</Button>
-                
-                <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
-                
-                <Button
-                  variant={viewAllOrder ? "default" : "outline"}
-                  onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all ${viewAllOrder ? "bg-black text-white shadow-xl shadow-black/20" : "bg-white border-black/5 hover:bg-black/5"}`}
-                ># Numérica</Button>
+          <div className="mb-8 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-black/40" />
+                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-black/60">Filtros da Biblioteca</h3>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="md:hidden text-[10px] font-bold uppercase tracking-wider bg-black/5 rounded-lg px-3 h-8"
+              >
+                {isFilterOpen ? "Fechar" : "Ver Categorias"}
+              </Button>
+            </div>
 
-                {allTags.map(tag => {
-                  const isSpecial = tag.toLowerCase() === "curso dentro";
-                  const isSelected = selectedTag === tag;
-                  return (
-                    <Button
-                      key={tag}
-                      variant={isSelected ? "default" : "outline"}
-                      onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                      className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all whitespace-nowrap ${
-                        isSelected 
-                          ? "bg-black text-white shadow-xl shadow-black/20" 
-                          : isSpecial 
-                            ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] border-[2px] hover:bg-[#FF007A]/10" 
-                            : "bg-white border-black/5 hover:bg-black/5"
-                      }`}
-                    >{tag}</Button>
-                  );
-                })}
-              </div>
+            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-3 transition-all duration-300`}>
+              <Button
+                variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
+                onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
+                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+              >
+                <Grid className="w-3.5 h-3.5 mr-2" />
+                Início
+              </Button>
               
-              <div className="hidden md:flex items-center gap-2 text-black/20 text-[10px] font-bold uppercase tracking-widest bg-black/[0.02] px-3 py-1.5 rounded-full">
-                <Grid className="w-3 h-3" />
-                <span>{selectedTag ? `Filtrando: ${selectedTag}` : viewAllOrder ? "Ordem Numérica" : "Navegação Livre"}</span>
-              </div>
+              <Button
+                variant={viewAllOrder ? "default" : "outline"}
+                onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
+                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+              >
+                <span className="mr-2">#</span>
+                Ordem Numérica
+              </Button>
+
+              <div className="w-full md:w-px h-px md:h-11 bg-black/5 my-1 md:my-0" />
+
+              {allTags.map(tag => {
+                const isSpecial = tag.toLowerCase() === "curso dentro";
+                const isSelected = selectedTag === tag;
+                return (
+                  <Button
+                    key={tag}
+                    variant={isSelected ? "default" : "outline"}
+                    onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
+                    className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${
+                      isSelected 
+                        ? "bg-black text-white border-black shadow-lg shadow-black/20" 
+                        : isSpecial 
+                          ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
+                          : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"
+                    }`}
+                  >
+                    {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
+                    {tag}
+                  </Button>
+                );
+              })}
             </div>
           </div>
         )}
