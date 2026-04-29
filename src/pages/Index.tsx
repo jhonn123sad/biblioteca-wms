@@ -345,12 +345,23 @@ function MainApp() {
 
   const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
+    
+    const getPromptTags = (p: Prompt) => {
+      const matches = [
+        ...(p.title.match(/\[([^\]]+)\]/g) || []),
+        ...(p.description.match(/\[([^\]]+)\]/g) || [])
+      ].map(t => t.slice(1, -1).trim().toLowerCase());
+      return Array.from(new Set(matches));
+    };
+
     if (viewAllOrder) {
       return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     }
+
     if (selectedTag) {
+      const targetTag = selectedTag.toLowerCase();
       return prompts
-        .filter(p => p.title.includes(`[${selectedTag}]`) || p.description.includes(`[${selectedTag}]`))
+        .filter(p => getPromptTags(p).includes(targetTag))
         .sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     }
 
@@ -358,17 +369,19 @@ function MainApp() {
     const uncategorized: Prompt[] = [];
 
     prompts.forEach(p => {
-      const tags = Array.from(new Set([
-        ...(p.title.match(/\[([^\]]+)\]/g) || []),
-        ...(p.description.match(/\[([^\]]+)\]/g) || [])
-      ].map(tag => tag.slice(1, -1))));
-
+      const tags = getPromptTags(p);
       if (tags.length === 0) {
         uncategorized.push(p);
       } else {
-        tags.forEach(tag => {
-          if (!categories[tag]) categories[tag] = [];
-          categories[tag].push(p);
+        // Para evitar duplicatas infinitas na visualização geral, 
+        // podemos colocar o prompt apenas na sua primeira categoria ou em todas.
+        // O usuário reclamou de "bugs de tags", talvez as duplicatas sejam parte disso.
+        // Vamos manter em todas as categorias mas garantir que a tag seja limpa.
+        tags.forEach(tagLower => {
+          // Encontrar o nome original da tag em allTags
+          const originalTag = allTags.find(t => t.toLowerCase() === tagLower) || tagLower;
+          if (!categories[originalTag]) categories[originalTag] = [];
+          categories[originalTag].push(p);
         });
       }
     });
