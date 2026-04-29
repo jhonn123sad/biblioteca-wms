@@ -614,6 +614,14 @@ function MainApp() {
               {allTags.map(tag => {
                 const isSpecial = tag.toLowerCase() === "curso dentro";
                 const isSelected = selectedTag === tag;
+                const count = prompts?.filter(p => {
+                  const matches = [
+                    ...(p.title.match(/\[([^\]]+)\]/g) || []),
+                    ...(p.description.match(/\[([^\]]+)\]/g) || [])
+                  ].map(t => t.slice(1, -1).trim().toLowerCase());
+                  return matches.includes(tag.toLowerCase());
+                }).length || 0;
+
                 return (
                   <Button
                     key={tag}
@@ -629,6 +637,7 @@ function MainApp() {
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
                     {tag}
+                    <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
                   </Button>
                 );
               })}
