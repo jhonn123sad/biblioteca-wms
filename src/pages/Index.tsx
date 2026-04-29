@@ -719,7 +719,7 @@ function MainApp() {
                   <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#FF007A] to-[#8A2BE2] animate-pulse opacity-20 group-hover:opacity-40 transition-opacity" />
                   <div className="w-full h-full rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100 flex items-center justify-center relative z-10">
                     <img 
-                      src="/jota.png" 
+                      src="/jota.jpg" 
                       alt="Jota" 
                       className="w-full h-full object-cover"
                       onError={(e) => {
@@ -746,7 +746,7 @@ function MainApp() {
                   <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#00D1FF] to-[#39FF14] animate-pulse opacity-20 group-hover:opacity-40 transition-opacity" />
                   <div className="w-full h-full rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100 flex items-center justify-center relative z-10">
                     <img 
-                      src="/agostini.png" 
+                      src="/agostini.jpg" 
                       alt="Agostini" 
                       className="w-full h-full object-cover"
                       onError={(e) => {
