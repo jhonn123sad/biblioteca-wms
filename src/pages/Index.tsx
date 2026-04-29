@@ -336,8 +336,16 @@ function MainApp() {
       const descTags = p.description.match(tagRegex) || [];
       [...titleTags, ...descTags].forEach(t => {
         const cleanTag = t.slice(1, -1).trim();
-        // Ignorar se for apenas números (provável nota de rodapé ou ID)
-        if (cleanTag && !/^\d+$/.test(cleanTag) && cleanTag.length > 1) {
+        // Ignorar se for apenas números, se tiver pontos (links), se for vazio ou muito curto
+        // e se contiver caracteres que geralmente indicam IDs ou links internos
+        if (
+          cleanTag && 
+          !/^\d+$/.test(cleanTag) && 
+          cleanTag.length > 2 && 
+          !cleanTag.includes('.') && 
+          !cleanTag.includes('/') &&
+          !/^#?\d+$/.test(cleanTag)
+        ) {
           tags.add(cleanTag);
         }
       });
