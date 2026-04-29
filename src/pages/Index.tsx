@@ -6,7 +6,8 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
-  DialogTrigger 
+  DialogTrigger,
+  DialogClose
 } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import { 
@@ -103,7 +104,7 @@ const renderWithTags = (text: string) => {
       return (
         <span 
           key={index} 
-          className={`${colorClass} text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+          className={`${colorClass} text-[8px] md:text-[10px] font-bold px-1 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
         >
           {tagContent}
         </span>
@@ -178,7 +179,7 @@ export default function Index() {
         setIsAuthenticated(false);
         toast.info("Você saiu do sistema.");
       }}
-      className="text-[10px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-8 px-2 flex-shrink-0"
+      className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
     >
       Sair
     </Button>
@@ -347,22 +348,22 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col">
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top">
-        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <img src="/logo-wms.png" alt="WMS Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
-            <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
+    <div className="min-h-[100dvh] bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full">
+        <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
+          <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
+            <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
+            <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative flex-1 max-w-md group min-w-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-black" />
+          <div className="relative flex-1 max-w-[180px] xs:max-w-md group min-w-0">
+            <Search className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3 md:w-3.5 h-3 md:h-3.5 text-gray-400 group-focus-within:text-black" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-10 pl-9 pr-4 text-sm focus:bg-white focus:border-black/10 transition-all outline-none"
+              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-9 md:h-10 pl-8 md:pl-9 pr-3 md:pr-4 text-[11px] md:text-sm focus:bg-white focus:border-black/10 transition-all outline-none"
             />
           </div>
 
@@ -370,18 +371,18 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 md:px-6 py-6 flex-1">
-        <div className="mb-8 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-3">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
-          <p className="text-gray-400 max-w-2xl text-sm md:text-lg font-light leading-relaxed px-2 md:px-0">
+      <main className="container mx-auto px-3 md:px-6 py-4 md:py-6 flex-1 w-full max-w-full overflow-x-hidden">
+        <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
+          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
+          <p className="text-gray-400 max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
             Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
         </div>
 
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
-          <div className="mb-12 relative">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
+          <div className="mb-8 md:mb-12 relative w-full">
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
@@ -389,53 +390,53 @@ export default function Index() {
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[10px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2">
+                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2 h-7 md:h-8">
                   <span>Ver Todos</span>
-                  <ExternalLink className="w-3 h-3 ml-1" />
+                  <ExternalLink className="w-2.5 h-2.5 ml-1" />
                 </Button>
               </div>
             </div>
             
-            <div ref={scrollContainerRef} className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none -mx-4 px-4">
+            <div ref={scrollContainerRef} className="flex gap-2.5 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none -mx-3 px-3 md:-mx-4 md:px-4">
               {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
+                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
-                    <PromptModal prompt={prompt} trigger={<Button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-4 h-4 text-white" /></Button>} />
+                    <PromptModal prompt={prompt} trigger={<Button className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"><ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" /></Button>} />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
+                    <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">{prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}</span>
                   </div>
                 </div>
               ))}
-              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] snap-start">
-                <Grid className="w-6 h-6 text-black/20" />
-                <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
+              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-black/[0.02] snap-start">
+                <Grid className="w-5 h-5 md:w-6 md:h-6 text-black/20" />
+                <span className="text-[9px] md:text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
               </button>
             </div>
           </div>
         )}
 
         {!isLoading && (
-          <div className="mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/90 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-3 px-3 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 max-w-full">
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
-                className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
               >Início</Button>
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
-                className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
               >Todos (#)</Button>
-              <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
+              <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
               {allTags.map(tag => (
                 <Button
                   key={tag}
                   variant={selectedTag === tag ? "default" : "outline"}
                   onClick={() => { setSelectedTag(selectedTag === tag ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                  className={`rounded-full px-4 h-8 text-[10px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
+                  className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
                 >{tag}</Button>
               ))}
             </div>
@@ -456,21 +457,21 @@ export default function Index() {
         ) : (
           <div className="space-y-12">
             {searchTerm ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
                 {(filteredPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-search`} prompt={prompt} />)}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
                 {(organizedPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-list`} prompt={prompt} />)}
               </div>
             ) : (
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
-                <div key={group.tag || 'uncategorized'} className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <h3 className="text-lg md:text-xl font-bold uppercase tracking-widest text-black/80">{group.tag || "Sem Categoria"}</h3>
+                <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-black/80">{group.tag || "Sem Categoria"}</h3>
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
                     {group.prompts.map((prompt) => <PromptCard key={`${group.tag}-${prompt.id}`} prompt={prompt} />)}
                   </div>
                 </div>
@@ -493,15 +494,15 @@ export default function Index() {
 function PromptCard({ prompt }: { prompt: Prompt }) {
   const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
   return (
-    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full">
+    <div className="group bg-white rounded-xl md:rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full">
       <div className="aspect-[3/4] overflow-hidden relative">
         <img src={mainImage} alt={prompt.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
-        <h3 className="text-[13px] md:text-base font-bold leading-tight mb-2 line-clamp-2 min-h-[2.6em] md:min-h-[2.5em]">{renderWithTags(prompt.title)}</h3>
-        <p className="text-gray-400 text-[10px] md:text-xs font-light mb-4 line-clamp-2 leading-relaxed flex-1">{renderWithTags(prompt.description)}</p>
-        <PromptModal prompt={prompt} trigger={<Button className="w-full bg-black text-white hover:bg-black/90 rounded-xl h-10 text-xs font-medium transition-all shadow-lg shadow-black/5">Visualizar</Button>} />
+      <div className="p-2.5 md:p-5 flex flex-col flex-1 min-w-0">
+        <h3 className="text-[11px] md:text-base font-bold leading-tight mb-1.5 md:mb-2 line-clamp-2 min-h-[2.4em] md:min-h-[2.5em]">{renderWithTags(prompt.title)}</h3>
+        <p className="text-gray-400 text-[9px] md:text-xs font-light mb-3 md:mb-4 line-clamp-2 leading-relaxed flex-1 overflow-hidden">{renderWithTags(prompt.description)}</p>
+        <PromptModal prompt={prompt} trigger={<Button className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-xl h-8 md:h-10 text-[10px] md:text-xs font-medium transition-all shadow-lg shadow-black/5">Visualizar</Button>} />
       </div>
     </div>
   );
@@ -510,6 +511,7 @@ function PromptCard({ prompt }: { prompt: Prompt }) {
 function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const copyToClipboard = () => {
+    if (!prompt.content) return;
     navigator.clipboard.writeText(prompt.content);
     toast.success("Prompt copiado!");
   };
@@ -517,50 +519,58 @@ function PromptModal({ prompt, trigger }: { prompt: Prompt, trigger: React.React
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col max-h-[92dvh] md:h-auto translate-y-[-50%] md:translate-y-[-50%]">
+      <DialogContent className="max-w-5xl w-[98vw] md:w-[95vw] bg-white p-0 overflow-hidden rounded-[1.25rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-[90dvh] md:h-auto max-h-[95dvh] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
         <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden">
-          {/* Section 1: Images & Tutorial */}
-          <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] max-h-[45vh] md:max-h-[85vh]">
-            <div className="space-y-6 md:space-y-8">
-              <div className="grid grid-cols-2 gap-3 md:gap-4">
+          {/* Section 1: Images & Tutorial (Top on Mobile, Left on Desktop) */}
+          <div className="bg-[#F9F9F9] p-4 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03] flex-shrink-0 md:flex-shrink h-[40%] md:h-full md:max-h-[85vh]">
+            <div className="space-y-4 md:space-y-8">
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
                 {prompt.images.map((img, i) => (
-                  <div key={i} className="aspect-square rounded-xl md:rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
+                  <div key={i} className="aspect-square rounded-lg md:rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white group/img">
                     <img src={img} alt="Preview" className="w-full h-full object-cover transition-transform group-hover/img:scale-105 duration-500" />
                   </div>
                 ))}
-                {prompt.images.length === 0 && <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10"><ImageIcon className="w-8 h-8 opacity-20" /></div>}
+                {prompt.images.length === 0 && <div className="col-span-2 aspect-video bg-black/[0.02] rounded-xl flex items-center justify-center text-gray-300 border border-dashed border-black/10"><ImageIcon className="w-6 h-6 md:w-8 md:h-8 opacity-20" /></div>}
               </div>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] md:text-[10px] font-bold"><BookOpen className="w-3 h-3" /><span>Tutorial & Contexto</span></div>
-                <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-xs md:text-sm">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[8px] md:text-[10px] font-bold"><BookOpen className="w-2.5 md:w-3 h-2.5 md:h-3" /><span>Tutorial & Contexto</span></div>
+                <div className="prose prose-xs md:prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-strong:text-black text-[11px] md:text-sm">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.description}</ReactMarkdown>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Section 2: Prompt Content */}
-          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-hidden flex-1 min-h-0">
+          {/* Section 2: Prompt Content (Bottom on Mobile, Right on Desktop) */}
+          <div className="p-4 md:p-12 flex flex-col justify-between bg-white overflow-hidden flex-1 min-h-0 h-[60%] md:h-full">
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="flex justify-between items-start gap-4 mb-4 md:mb-8 pr-8">
-                <DialogHeader className="text-left"><DialogTitle className="text-base md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle></DialogHeader>
+              <div className="flex justify-between items-start gap-4 mb-3 md:mb-8 pr-6 md:pr-8">
+                <DialogHeader className="text-left"><DialogTitle className="text-sm md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle></DialogHeader>
               </div>
 
               <div className="flex-1 flex flex-col min-h-0">
-                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[9px] md:text-[10px] font-bold mb-3 md:mb-4"><Terminal className="w-3 h-3" /><span>Prompt de Alta Performance</span></div>
+                <div className="flex items-center gap-2 text-black/40 uppercase tracking-widest text-[8px] md:text-[10px] font-bold mb-2 md:mb-4"><Terminal className="w-2.5 md:w-3 h-2.5 md:h-3" /><span>Prompt de Alta Performance</span></div>
                 <div className="relative group flex-1 min-h-0 bg-black/[0.02] rounded-xl md:rounded-3xl border border-black/[0.03] overflow-hidden">
-                  <div className="h-full p-4 md:p-8 overflow-y-auto custom-scrollbar">
-                    <pre className="text-[12px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
+                  <div className="h-full p-3 md:p-8 overflow-y-auto custom-scrollbar">
+                    <pre className="text-[10px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{prompt.content}</pre>
                   </div>
-                  <div className="absolute top-2 right-2 md:top-4 md:right-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                    <Button variant="secondary" size="sm" onClick={copyToClipboard} className="bg-white/90 backdrop-blur shadow-sm rounded-lg h-8 md:h-9 text-[10px] md:text-xs"><Copy className="w-3 h-3 mr-2" />Copiar</Button>
+                  <div className="absolute top-1.5 right-1.5 md:top-4 md:right-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                    <Button variant="secondary" size="sm" onClick={copyToClipboard} className="bg-white/90 backdrop-blur shadow-sm rounded-lg h-7 md:h-9 text-[9px] md:text-xs px-2 md:px-3"><Copy className="w-2.5 md:w-3 h-2.5 md:h-3 mr-1.5 md:mr-2" />Copiar</Button>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="mt-4 md:mt-8"><Button onClick={copyToClipboard} className="w-full bg-black text-white hover:bg-black/90 rounded-xl md:rounded-2xl h-12 md:h-16 text-xs md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3"><Copy className="w-4 h-4 md:w-5 md:h-5" />COPIAR PROMPT COMPLETO</Button></div>
+            <div className="mt-3 md:mt-8 flex-shrink-0">
+              <Button onClick={copyToClipboard} className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-2xl h-10 md:h-16 text-[10px] md:text-base font-medium shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-2 md:gap-3">
+                <Copy className="w-3 md:w-5 h-3 md:h-5" />
+                COPIAR PROMPT COMPLETO
+              </Button>
+            </div>
           </div>
         </div>
+        <DialogClose className="absolute right-3 top-3 md:right-6 md:top-6 rounded-full p-1.5 bg-black/5 hover:bg-black/10 transition-colors focus:outline-none">
+          <X className="h-4 w-4 md:h-6 md:w-6 text-black/40" />
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
