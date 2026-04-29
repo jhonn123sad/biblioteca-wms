@@ -329,12 +329,17 @@ function MainApp() {
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
+    const tagRegex = /\[([^\]]+)\](?!\()/g;
+    
     prompts?.forEach(p => {
-      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
-      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+      const titleTags = p.title.match(tagRegex) || [];
+      const descTags = p.description.match(tagRegex) || [];
       [...titleTags, ...descTags].forEach(t => {
         const cleanTag = t.slice(1, -1).trim();
-        if (cleanTag) tags.add(cleanTag);
+        // Ignorar se for apenas números (provável nota de rodapé ou ID)
+        if (cleanTag && !/^\d+$/.test(cleanTag) && cleanTag.length > 1) {
+          tags.add(cleanTag);
+        }
       });
     });
     // Deduplicar mantendo o primeiro caso encontrado mas agrupando por case-insensitive
@@ -359,10 +364,12 @@ function MainApp() {
     if (!prompts) return [];
     
     const getPromptTags = (p: Prompt) => {
+      const tagRegex = /\[([^\]]+)\](?!\()/g;
       const matches = [
-        ...(p.title.match(/\[([^\]]+)\]/g) || []),
-        ...(p.description.match(/\[([^\]]+)\]/g) || [])
-      ].map(t => t.slice(1, -1).trim().toLowerCase());
+        ...(p.title.match(tagRegex) || []),
+        ...(p.description.match(tagRegex) || [])
+      ].map(t => t.slice(1, -1).trim().toLowerCase())
+       .filter(t => t && !/^\d+$/.test(t) && t.length > 1);
       return Array.from(new Set(matches));
     };
 
