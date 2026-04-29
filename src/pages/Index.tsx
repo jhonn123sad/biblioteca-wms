@@ -795,3 +795,11 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
     </div>
   );
 }
+
+export default function Index() {
+  return (
+    <ErrorBoundary>
+      <MainApp />
+    </ErrorBoundary>
+  );
+}
