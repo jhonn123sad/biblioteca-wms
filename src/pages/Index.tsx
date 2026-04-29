@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, Component, ReactNode } from "react";
+import { useState, useRef, useEffect, Component, ReactNode, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -117,7 +117,7 @@ const neonColors = [
 const getTagColor = (content: string) => {
   const normalized = content.toLowerCase().trim();
   if (normalized === "curso dentro") {
-    return "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A] border-2 shadow-[0_0_10px_rgba(255,0,122,0.2)]";
+    return "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A] border-[3px] shadow-[0_0_15px_rgba(255,0,122,0.3)] font-black uppercase";
   }
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
@@ -192,12 +192,17 @@ function MainApp() {
   }, []);
 
   useEffect(() => {
-    const auth = localStorage.getItem("wms_member_auth");
-    const name = localStorage.getItem("wms_member_name");
-    if (auth === "true") {
-      setIsAuthenticated(true);
-      if (name) setUserName(name);
-    } else {
+    try {
+      const auth = localStorage.getItem("wms_member_auth");
+      const name = localStorage.getItem("wms_member_name");
+      if (auth === "true") {
+        setIsAuthenticated(true);
+        if (name) setUserName(name);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (e) {
+      console.warn("Storage access failed:", e);
       setIsAuthenticated(false);
     }
   }, []);
@@ -269,10 +274,15 @@ function MainApp() {
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
-    scrollContainerRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
-    });
+    try {
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    } catch (e) {
+      // Fallback para navegadores antigos
+      scrollContainerRef.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
+    }
   };
 
   const { data: prompts, isLoading, refetch, isError } = useQuery({
@@ -298,20 +308,22 @@ function MainApp() {
     staleTime: 30000,
   });
 
-  const allTags = Array.from(new Set(
-    prompts?.flatMap(p => {
-      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
-      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
-      return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
-    }) || []
-  )).sort();
+  const allTags = useMemo(() => {
+    return Array.from(new Set(
+      prompts?.flatMap(p => {
+        const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
+        const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+        return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
+      }) || []
+    )).sort();
+  }, [prompts]);
 
   const getSortNumber = (title: string) => {
     const match = title.match(/#(\d+)/);
     return match ? parseInt(match[1]) : Infinity;
   };
 
-  const organizedPrompts = (() => {
+  const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
     if (viewAllOrder) {
       return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
@@ -346,7 +358,7 @@ function MainApp() {
       if (categories[tag]) {
         result.push({
           tag,
-          prompts: categories[tag].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+          prompts: [...categories[tag]].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
         });
       }
     });
@@ -354,12 +366,12 @@ function MainApp() {
     if (uncategorized.length > 0) {
       result.push({
         tag: null,
-        prompts: uncategorized.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+        prompts: [...uncategorized].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
       });
     }
 
     return result;
-  })();
+  }, [prompts, viewAllOrder, selectedTag, allTags]);
 
   const filteredPrompts = (() => {
     const search = searchTerm.toLowerCase();
@@ -372,7 +384,7 @@ function MainApp() {
     return null;
   })();
 
-  const previewPrompts = prompts?.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) || [];
+  const previewPrompts = prompts ? [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) : [];
 
   if (isAuthenticated === null) return null;
 
@@ -503,7 +515,7 @@ function MainApp() {
               </div>
             </div>
             
-            <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-4 md:px-6">
+            <div ref={scrollContainerRef} className="flex gap-5 md:gap-8 overflow-x-auto pb-8 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-4 md:px-12 -mx-4 md:-mx-12">
               {previewPrompts.map((prompt) => (
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
@@ -529,37 +541,47 @@ function MainApp() {
         )}
 
         {!isLoading && (
-          <div className="mb-6 md:mb-8 sticky top-[64px] md:top-[80px] z-30 bg-white/95 backdrop-blur-md py-2 md:py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex items-center gap-1.5 md:gap-2 max-w-full overflow-x-auto scrollbar-hide pb-2 snap-x px-4 md:px-0">
-              <Button
-                variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
-                className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
-              >Início</Button>
-              <Button
-                variant={viewAllOrder ? "default" : "outline"}
-                onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
-                className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
-              >Ordem Numérica</Button>
-              <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
-              {allTags.map(tag => {
-                const isSpecial = tag.toLowerCase() === "curso dentro";
-                const isSelected = selectedTag === tag;
-                return (
-                  <Button
-                    key={tag}
-                    variant={isSelected ? "default" : "outline"}
-                    onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all whitespace-nowrap snap-center ${
-                      isSelected 
-                        ? "bg-black text-white shadow-md shadow-black/10" 
-                        : isSpecial 
-                          ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] border-2 hover:bg-[#FF007A]/10" 
-                          : "bg-white hover:bg-black/5"
-                    }`}
-                  >{tag}</Button>
-                );
-              })}
+          <div className="mb-6 md:mb-10 sticky top-[64px] md:top-[80px] z-30 bg-white/98 md:bg-white/80 backdrop-blur-md -mx-4 px-4 md:-mx-6 md:px-6 py-3 border-b border-black/[0.03] transition-all">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 md:mx-0 md:px-0">
+                <Button
+                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
+                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-xl shadow-black/20" : "bg-white border-black/5 hover:bg-black/5"}`}
+                >Início</Button>
+                
+                <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
+                
+                <Button
+                  variant={viewAllOrder ? "default" : "outline"}
+                  onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all ${viewAllOrder ? "bg-black text-white shadow-xl shadow-black/20" : "bg-white border-black/5 hover:bg-black/5"}`}
+                ># Numérica</Button>
+
+                {allTags.map(tag => {
+                  const isSpecial = tag.toLowerCase() === "curso dentro";
+                  const isSelected = selectedTag === tag;
+                  return (
+                    <Button
+                      key={tag}
+                      variant={isSelected ? "default" : "outline"}
+                      onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all whitespace-nowrap ${
+                        isSelected 
+                          ? "bg-black text-white shadow-xl shadow-black/20" 
+                          : isSpecial 
+                            ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] border-[2px] hover:bg-[#FF007A]/10" 
+                            : "bg-white border-black/5 hover:bg-black/5"
+                      }`}
+                    >{tag}</Button>
+                  );
+                })}
+              </div>
+              
+              <div className="hidden md:flex items-center gap-2 text-black/20 text-[10px] font-bold uppercase tracking-widest bg-black/[0.02] px-3 py-1.5 rounded-full">
+                <Grid className="w-3 h-3" />
+                <span>{selectedTag ? `Filtrando: ${selectedTag}` : viewAllOrder ? "Ordem Numérica" : "Navegação Livre"}</span>
+              </div>
             </div>
           </div>
         )}
@@ -676,6 +698,8 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
 
 function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => void }) {
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [dragPos, setDragPos] = useState({ x: 0, y: 0 });
 
   const copyToClipboard = () => {
     if (!prompt.content) return;
@@ -693,7 +717,9 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
       {/* Universal Header */}
       <div className="flex items-center justify-between px-4 h-16 border-b border-black/[0.05] bg-white flex-shrink-0 z-10">
         <div className="flex-1 min-w-0 pr-4">
-          <h3 className="text-xs md:text-lg font-bold uppercase tracking-tight break-words leading-tight">{renderWithTags(prompt.title)}</h3>
+          <div className="text-xs md:text-lg font-black tracking-tight break-words leading-tight flex flex-wrap gap-1 items-center">
+            {renderWithTags(prompt.title)}
+          </div>
         </div>
         <button 
           onClick={onClose}
@@ -793,28 +819,45 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
       {/* Image Zoom Overlay */}
       {expandedImage && (
         <div 
-          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-200"
-          onClick={() => setExpandedImage(null)}
+          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-0 md:p-4 animate-in fade-in duration-200 overflow-hidden touch-none"
+          onClick={() => { setExpandedImage(null); setZoomScale(1); }}
+          onWheel={(e) => {
+            if (e.deltaY < 0) setZoomScale(s => Math.min(s + 0.2, 5));
+            else setZoomScale(s => Math.max(s - 0.2, 1));
+          }}
         >
           <button 
-            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all active:scale-90"
-            onClick={(e) => { e.stopPropagation(); setExpandedImage(null); }}
+            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all active:scale-90 z-[210]"
+            onClick={(e) => { e.stopPropagation(); setExpandedImage(null); setZoomScale(1); }}
           >
             <X className="w-6 h-6" />
           </button>
           
-          <div className="w-full h-full flex items-center justify-center overflow-auto p-4" onClick={(e) => e.stopPropagation()}>
+          <div 
+            className="w-full h-full flex items-center justify-center cursor-zoom-out relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <img 
               src={expandedImage} 
               alt="Expanded" 
-              className="max-w-full max-h-full object-contain cursor-zoom-out shadow-2xl transition-transform duration-300"
-              onClick={() => setExpandedImage(null)}
+              className="max-w-full max-h-full object-contain shadow-2xl transition-transform duration-200 select-none pointer-events-none"
+              style={{ 
+                transform: `scale(${zoomScale})`,
+                cursor: zoomScale > 1 ? 'move' : 'zoom-in'
+              }}
             />
           </div>
           
-          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-[10px] uppercase tracking-widest font-medium md:hidden">
-            Arraste para ver detalhes
-          </p>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-[210]">
+            <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+              <button onClick={() => setZoomScale(s => Math.max(s - 0.5, 1))} className="text-white font-bold p-2">-</button>
+              <span className="text-white text-[10px] font-mono w-8 text-center">{Math.round(zoomScale * 100)}%</span>
+              <button onClick={() => setZoomScale(s => Math.min(s + 0.5, 5))} className="text-white font-bold p-2">+</button>
+            </div>
+            <p className="text-white/40 text-[9px] uppercase tracking-widest font-medium">
+              Use o scroll ou botões para zoom
+            </p>
+          </div>
         </div>
       )}
     </div>
