@@ -970,6 +970,15 @@ export default function Index() {
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        
+        /* Garantir que o header seja fixo e tenha prioridade visual */
+        header { 
+          position: sticky !important; 
+          top: 0 !important; 
+          z-index: 100 !important;
+          width: 100%;
+        }
+
         @media (max-width: 640px) {
           .container { padding-left: 1rem; padding-right: 1rem; }
         }
