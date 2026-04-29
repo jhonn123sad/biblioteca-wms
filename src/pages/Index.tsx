@@ -460,14 +460,24 @@ export default function Index() {
                 className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
               >Ordem Numérica</Button>
               <div className="hidden xs:block w-[1px] h-4 bg-black/10 flex-none mx-0.5 md:mx-1" />
-              {allTags.map(tag => (
-                <Button
-                  key={tag}
-                  variant={selectedTag === tag ? "default" : "outline"}
-                  onClick={() => { setSelectedTag(selectedTag === tag ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
-                  className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none ${selectedTag === tag ? "bg-black text-white shadow-md shadow-black/10" : "bg-white"}`}
-                >{tag}</Button>
-              ))}
+              {allTags.map(tag => {
+                const isSpecial = tag.toLowerCase() === "curso dentro";
+                const isSelected = selectedTag === tag;
+                return (
+                  <Button
+                    key={tag}
+                    variant={isSelected ? "default" : "outline"}
+                    onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
+                    className={`rounded-full px-3 md:px-4 h-7 md:h-8 text-[9px] md:text-[11px] font-bold uppercase tracking-wider flex-none transition-all ${
+                      isSelected 
+                        ? "bg-black text-white shadow-md shadow-black/10" 
+                        : isSpecial 
+                          ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] border-2 hover:bg-[#FF007A]/10" 
+                          : "bg-white hover:bg-black/5"
+                    }`}
+                  >{tag}</Button>
+                );
+              })}
             </div>
           </div>
         )}
