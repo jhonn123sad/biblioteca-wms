@@ -194,14 +194,26 @@ export default function Index() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phoneNumber.trim()) return;
+    const sanitizedPhone = phoneNumber.replace(/\D/g, '');
+    if (!sanitizedPhone) {
+      toast.error("Por favor, insira o número do seu WhatsApp.");
+      return;
+    }
 
     setIsVerifying(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
     try {
-      const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(phoneNumber.replace(/\D/g, ''))}`);
+      const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(sanitizedPhone)}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) throw new Error(`Status: ${response.status}`);
       const data = await response.json();
 
-      if (data.authorized) {
+      if (data && data.authorized) {
         const finalName = data.name || "Membro";
         setUserName(finalName);
         setShowWelcome(true);
@@ -216,9 +228,14 @@ export default function Index() {
       } else {
         toast.error("Número não autorizado. Verifique se você já fez o onboarding.");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao validar acesso. Tente novamente.");
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      console.error("Login error:", error);
+      if (error.name === 'AbortError') {
+        toast.error("Tempo de conexão esgotado. Verifique sua internet.");
+      } else {
+        toast.error("Erro ao validar acesso. Verifique sua conexão e tente novamente.");
+      }
     } finally {
       setIsVerifying(false);
     }
