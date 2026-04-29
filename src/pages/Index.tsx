@@ -132,15 +132,16 @@ const getTagColor = (content: string) => {
 };
 
 const renderWithTags = (text: string) => {
+  if (!text) return null;
   const parts = text.split(/(\[[^\]]+\])/g);
   return parts.map((part, index) => {
     if (part.startsWith('[') && part.endsWith(']')) {
-      const tagContent = part.slice(1, -1);
+      const tagContent = part.slice(1, -1).trim();
       const colorClass = getTagColor(tagContent);
       return (
         <span 
           key={index} 
-          className={`${colorClass} text-[8px] md:text-[10px] font-bold px-1 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+          className={`${colorClass} text-[8px] md:text-[10px] font-extrabold px-1.5 md:px-2.5 py-0.5 rounded-md border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-all hover:scale-110 select-none`}
         >
           {tagContent}
         </span>
@@ -315,13 +316,26 @@ function MainApp() {
   });
 
   const allTags = useMemo(() => {
-    return Array.from(new Set(
-      prompts?.flatMap(p => {
-        const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
-        const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
-        return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
-      }) || []
-    )).sort();
+    const tags = new Set<string>();
+    prompts?.forEach(p => {
+      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
+      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+      [...titleTags, ...descTags].forEach(t => {
+        const cleanTag = t.slice(1, -1).trim();
+        if (cleanTag) tags.add(cleanTag);
+      });
+    });
+    // Deduplicar mantendo o primeiro caso encontrado mas agrupando por case-insensitive
+    const uniqueTags: string[] = [];
+    const seenLower = new Set<string>();
+    Array.from(tags).forEach(tag => {
+      const lower = tag.toLowerCase();
+      if (!seenLower.has(lower)) {
+        seenLower.add(lower);
+        uniqueTags.push(tag);
+      }
+    });
+    return uniqueTags.sort((a, b) => a.localeCompare(b));
   }, [prompts]);
 
   const getSortNumber = (title: string) => {
@@ -331,12 +345,23 @@ function MainApp() {
 
   const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
+    
+    const getPromptTags = (p: Prompt) => {
+      const matches = [
+        ...(p.title.match(/\[([^\]]+)\]/g) || []),
+        ...(p.description.match(/\[([^\]]+)\]/g) || [])
+      ].map(t => t.slice(1, -1).trim().toLowerCase());
+      return Array.from(new Set(matches));
+    };
+
     if (viewAllOrder) {
       return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     }
+
     if (selectedTag) {
+      const targetTag = selectedTag.toLowerCase();
       return prompts
-        .filter(p => p.title.includes(`[${selectedTag}]`) || p.description.includes(`[${selectedTag}]`))
+        .filter(p => getPromptTags(p).includes(targetTag))
         .sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     }
 
@@ -344,17 +369,19 @@ function MainApp() {
     const uncategorized: Prompt[] = [];
 
     prompts.forEach(p => {
-      const tags = Array.from(new Set([
-        ...(p.title.match(/\[([^\]]+)\]/g) || []),
-        ...(p.description.match(/\[([^\]]+)\]/g) || [])
-      ].map(tag => tag.slice(1, -1))));
-
+      const tags = getPromptTags(p);
       if (tags.length === 0) {
         uncategorized.push(p);
       } else {
-        tags.forEach(tag => {
-          if (!categories[tag]) categories[tag] = [];
-          categories[tag].push(p);
+        // Para evitar duplicatas infinitas na visualização geral, 
+        // podemos colocar o prompt apenas na sua primeira categoria ou em todas.
+        // O usuário reclamou de "bugs de tags", talvez as duplicatas sejam parte disso.
+        // Vamos manter em todas as categorias mas garantir que a tag seja limpa.
+        tags.forEach(tagLower => {
+          // Encontrar o nome original da tag em allTags
+          const originalTag = allTags.find(t => t.toLowerCase() === tagLower) || tagLower;
+          if (!categories[originalTag]) categories[originalTag] = [];
+          categories[originalTag].push(p);
         });
       }
     });
@@ -458,9 +485,9 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full antialiased">
-      <header className="sticky top-0 z-[60] bg-white/70 backdrop-blur-xl border-b border-black/[0.02] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(20px)' }}>
-        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white flex flex-col w-full antialiased">
+      <header className="sticky top-0 z-[60] bg-white/80 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
+        <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
           <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
             <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
             <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
@@ -495,7 +522,7 @@ function MainApp() {
         </div>
       </header>
 
-      <main className="container mx-auto px-3 md:px-6 py-4 md:py-6 flex-1 w-full max-w-full overflow-x-hidden">
+      <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
         <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
           <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
           <p className="text-gray-400 max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
@@ -521,7 +548,7 @@ function MainApp() {
               </div>
             </div>
             
-            <div ref={scrollContainerRef} className="flex gap-5 md:gap-8 overflow-x-auto pb-8 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-4 md:px-0">
+            <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-1">
               {previewPrompts.map((prompt) => (
                 <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
@@ -563,11 +590,11 @@ function MainApp() {
               </Button>
             </div>
 
-            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-3 transition-all duration-300`}>
+            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-2.5 transition-all duration-300`}>
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
               >
                 <Grid className="w-3.5 h-3.5 mr-2" />
                 Início
@@ -576,35 +603,55 @@ function MainApp() {
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
               >
-                <span className="mr-2">#</span>
+                <span className="mr-2 font-black">#</span>
                 Ordem Numérica
               </Button>
 
-              <div className="w-full md:w-px h-px md:h-11 bg-black/5 my-1 md:my-0" />
+              <div className="hidden md:block w-px h-10 bg-black/[0.05] mx-1" />
 
               {allTags.map(tag => {
                 const isSpecial = tag.toLowerCase() === "curso dentro";
                 const isSelected = selectedTag === tag;
+                const count = prompts?.filter(p => {
+                  const matches = [
+                    ...(p.title.match(/\[([^\]]+)\]/g) || []),
+                    ...(p.description.match(/\[([^\]]+)\]/g) || [])
+                  ].map(t => t.slice(1, -1).trim().toLowerCase());
+                  return matches.includes(tag.toLowerCase());
+                }).length || 0;
+
                 return (
                   <Button
                     key={tag}
                     variant={isSelected ? "default" : "outline"}
                     onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
-                    className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${
+                    className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
                       isSelected 
-                        ? "bg-black text-white border-black shadow-lg shadow-black/20" 
+                        ? "bg-black text-white border-black shadow-md shadow-black/10" 
                         : isSpecial 
                           ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"
+                          : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
                     {tag}
+                    <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
                   </Button>
                 );
               })}
+
+              {(selectedTag || viewAllOrder) && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
+                  className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl ml-auto"
+                >
+                  <X className="w-3 h-3" />
+                  Limpar
+                </Button>
+              )}
             </div>
           </div>
         )}
