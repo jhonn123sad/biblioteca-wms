@@ -265,21 +265,27 @@ export default function Index() {
     });
   };
 
-  const { data: prompts, isLoading, refetch } = useQuery({
+  const { data: prompts, isLoading, refetch, isError } = useQuery({
     queryKey: ["prompts-sheets"],
     queryFn: async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+      
       try {
-        const response = await fetch(PROMPTS_SCRIPT_URL);
-        if (!response.ok) throw new Error("Não foi possível carregar os dados.");
+        const response = await fetch(PROMPTS_SCRIPT_URL, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!response.ok) throw new Error("Falha na resposta do servidor.");
         const json = await response.json();
         return formatSheetData(json.data || []);
       } catch (err: any) {
-        console.error(err);
-        return [];
+        clearTimeout(timeoutId);
+        console.error("Fetch prompts error:", err);
+        throw err;
       }
     },
-    refetchInterval: 30000, // Sync every 30 seconds
-    staleTime: 10000,
+    retry: 2,
+    refetchInterval: 60000, // Sync every minute
+    staleTime: 30000,
   });
 
   const allTags = Array.from(new Set(
