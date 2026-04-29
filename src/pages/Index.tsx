@@ -326,31 +326,31 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/[0.03]">
-        <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between gap-2">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top">
+        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-3 safe-top">
           <div className="flex items-center gap-2 flex-shrink-0">
             <img 
               src="/logo-wms.png" 
               alt="WMS Logo" 
               className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm"
             />
-            <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden sm:block">Biblioteca WMS</h1>
+            <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative flex-1 max-w-md group">
-            <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 group-focus-within:text-black transition-colors" />
+          <div className="relative flex-1 max-w-md group min-w-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-black transition-colors" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.04] border border-transparent rounded-xl md:rounded-2xl h-10 md:h-11 pl-9 md:pl-11 pr-4 text-sm md:text-sm focus:bg-white focus:border-black/10 focus:ring-2 focus:ring-black/5 transition-all outline-none"
+              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-10 pl-9 pr-4 text-sm focus:bg-white focus:border-black/10 focus:ring-2 focus:ring-black/5 transition-all outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-1 md:gap-4 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <LogoutButton />
           </div>
         </div>
@@ -358,15 +358,13 @@ export default function Index() {
 
       <main className="container mx-auto px-4 md:px-6 py-4 md:py-6">
         {/* Intro */}
-        <div className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="flex-1">
-            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
-              Prompts WMS
-            </h2>
-            <p className="text-gray-400 max-w-2xl text-xs md:text-lg font-light text-center md:text-left leading-relaxed">
-              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-            </p>
-          </div>
+        <div className="mb-6 md:mb-10 flex flex-col items-center md:items-start text-center md:text-left gap-3">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+            Prompts WMS
+          </h2>
+          <p className="text-gray-400 max-w-2xl text-sm md:text-lg font-light leading-relaxed px-4 md:px-0">
+            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+          </p>
         </div>
 
         {/* Bloco de Preview em Ordem Numérica */}
@@ -412,28 +410,29 @@ export default function Index() {
               className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none"
             >
               {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-28 md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
+                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-black/[0.03] shadow-sm snap-start">
                   <img 
                     src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} 
                     alt={prompt.title} 
-                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110 pointer-events-none"
+                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/40 md:opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
                     <PromptItemOnlyDialog prompt={prompt} />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                     <span className="text-[10px] font-bold text-white uppercase tracking-tighter line-clamp-1">
                       {prompt.title.match(/#\d+/) ? prompt.title.match(/#\d+/)?.[0] : ""}
                     </span>
                   </div>
                 </div>
+
               ))}
               <button 
                 onClick={() => {
                   setViewAllOrder(true);
                   setShowCarousel(false);
                 }}
-                className="flex-none w-28 md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors group snap-start"
+                className="flex-none w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-black/10 flex flex-col items-center justify-center gap-2 hover:bg-black/[0.02] transition-colors group snap-start"
               >
                 <Grid className="w-6 h-6 text-black/20 group-hover:scale-110 transition-transform" />
                 <span className="text-[10px] font-bold uppercase text-black/40">Ver Todos</span>
@@ -444,8 +443,9 @@ export default function Index() {
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex flex-col gap-3">
+          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/90 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex flex-col gap-3 min-w-0">
+
               <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
                 <Button
                   variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
@@ -614,9 +614,10 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
           <ImageIcon className="w-4 h-4 text-white" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none">
-        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[85vh] md:max-h-[90vh]">
-          <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+      <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-[90vh] md:h-auto">
+        <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden">
+          <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+
             <div className="space-y-6 md:space-y-8">
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 {prompt.images.map((img, i) => (
@@ -638,7 +639,8 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
               </div>
             </div>
           </div>
-          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
+          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden min-h-0">
+
             <div className="flex flex-col h-full overflow-hidden">
               <DialogHeader className="mb-6 md:mb-8 text-left">
                 <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
@@ -723,7 +725,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
   };
 
   return (
-    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1">
+    <div className="group bg-white rounded-2xl border border-black/[0.03] overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 flex flex-col h-full">
       <div className="aspect-[3/4] overflow-hidden relative">
         <img 
           src={mainImage} 
@@ -733,7 +735,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      <div className="p-3 md:p-5">
+      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
         <h3 className="text-sm md:text-base font-bold leading-tight mb-2 min-h-[1.25em]">
           {renderWithTags(prompt.title)}
         </h3>
@@ -741,17 +743,18 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
           {renderWithTags(prompt.description)}
         </p>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-auto">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button className="flex-1 bg-black text-white hover:bg-black/90 rounded-xl h-10 text-xs font-medium transition-all shadow-lg shadow-black/5">
                 Visualizar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none">
-              <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[85vh] md:max-h-[90vh]">
+            <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl focus:outline-none flex flex-col h-[90vh] md:h-auto">
+              <div className="flex flex-col md:grid md:grid-cols-2 h-full overflow-hidden">
                 {/* Lado Esquerdo: Imagens e Tutorial */}
-                <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+                <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+
                   <div className="space-y-6 md:space-y-8">
                     {/* Galeria de Imagens */}
                     <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -783,7 +786,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 </div>
                 
                 {/* Lado Direito: Prompt */}
-                <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
+                <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden min-h-0">
                   <div className="flex flex-col h-full overflow-hidden">
                     <DialogHeader className="mb-6 md:mb-8 text-left">
                       <DialogTitle className="text-lg md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
