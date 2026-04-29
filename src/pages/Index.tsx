@@ -316,13 +316,26 @@ function MainApp() {
   });
 
   const allTags = useMemo(() => {
-    return Array.from(new Set(
-      prompts?.flatMap(p => {
-        const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
-        const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
-        return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
-      }) || []
-    )).sort();
+    const tags = new Set<string>();
+    prompts?.forEach(p => {
+      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
+      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+      [...titleTags, ...descTags].forEach(t => {
+        const cleanTag = t.slice(1, -1).trim();
+        if (cleanTag) tags.add(cleanTag);
+      });
+    });
+    // Deduplicar mantendo o primeiro caso encontrado mas agrupando por case-insensitive
+    const uniqueTags: string[] = [];
+    const seenLower = new Set<string>();
+    Array.from(tags).forEach(tag => {
+      const lower = tag.toLowerCase();
+      if (!seenLower.has(lower)) {
+        seenLower.add(lower);
+        uniqueTags.push(tag);
+      }
+    });
+    return uniqueTags.sort((a, b) => a.localeCompare(b));
   }, [prompts]);
 
   const getSortNumber = (title: string) => {
