@@ -358,15 +358,13 @@ export default function Index() {
 
       <main className="container mx-auto px-4 md:px-6 py-4 md:py-6">
         {/* Intro */}
-        <div className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="flex-1">
-            <h2 className="text-2xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
-              Prompts WMS
-            </h2>
-            <p className="text-gray-400 max-w-2xl text-xs md:text-lg font-light text-center md:text-left leading-relaxed">
-              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-            </p>
-          </div>
+        <div className="mb-6 md:mb-10 flex flex-col items-center md:items-start text-center md:text-left gap-3">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+            Prompts WMS
+          </h2>
+          <p className="text-gray-400 max-w-2xl text-sm md:text-lg font-light leading-relaxed px-4 md:px-0">
+            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+          </p>
         </div>
 
         {/* Bloco de Preview em Ordem Numérica */}
