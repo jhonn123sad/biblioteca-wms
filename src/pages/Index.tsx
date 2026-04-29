@@ -339,14 +339,14 @@ export default function Index() {
             <h1 className="text-lg md:text-xl font-bold tracking-tight line-clamp-1">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative hidden md:block w-72 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-black transition-colors" />
+          <div className="relative flex-1 max-w-md mx-4 group">
+            <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 group-focus-within:text-black transition-colors" />
             <input 
               type="text" 
-              placeholder="Pesquisar inspirações..." 
+              placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.03] border border-transparent rounded-2xl h-11 pl-11 pr-4 text-sm focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
+              className="w-full bg-black/[0.03] border border-transparent rounded-xl md:rounded-2xl h-9 md:h-11 pl-9 md:pl-11 pr-4 text-xs md:text-sm focus:bg-white focus:border-black/10 focus:ring-0 transition-all outline-none"
             />
           </div>
 
@@ -375,10 +375,10 @@ export default function Index() {
         {/* Intro */}
         <div className="mb-6 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
-            <h2 className="text-2xl md:text-5xl font-bold mb-3 tracking-tight text-center md:text-left leading-tight">
+            <h2 className="text-xl md:text-5xl font-bold mb-2 md:mb-3 tracking-tight text-center md:text-left leading-tight">
               Prompts exclusivos para membros WMS
             </h2>
-            <p className="text-gray-400 max-w-2xl text-base md:text-lg font-light text-center md:text-left leading-relaxed">
+            <p className="text-gray-400 max-w-2xl text-xs md:text-lg font-light text-center md:text-left leading-relaxed">
               Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
             </p>
           </div>
@@ -628,8 +628,8 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
-        <div className="grid md:grid-cols-2 h-full max-h-[92vh] md:max-h-[90vh]">
-          <div className="bg-[#F9F9F9] p-6 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+        <div className="grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[92vh] md:max-h-[90vh]">
+          <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
             <div className="space-y-6 md:space-y-8">
               <div className="grid grid-cols-2 gap-4">
                 {prompt.images.map((img, i) => (
@@ -651,7 +651,7 @@ function PromptItemOnlyDialog({ prompt }: { prompt: Prompt }) {
               </div>
             </div>
           </div>
-          <div className="p-6 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+          <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
             <div className="flex flex-col h-full overflow-hidden">
               <DialogHeader className="mb-6 md:mb-8 text-left">
                 <DialogTitle className="text-xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
@@ -762,9 +762,9 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-5xl w-[95vw] md:w-full bg-white p-0 overflow-hidden rounded-[1.5rem] md:rounded-[2rem] border-none shadow-2xl">
-              <div className="grid md:grid-cols-2 h-full max-h-[92vh] md:max-h-[90vh]">
+              <div className="grid md:grid-cols-2 h-full overflow-y-auto md:overflow-hidden max-h-[92vh] md:max-h-[90vh]">
                 {/* Lado Esquerdo: Imagens e Tutorial */}
-                <div className="bg-[#F9F9F9] p-6 md:p-12 overflow-y-auto custom-scrollbar border-r border-black/[0.03]">
+                <div className="bg-[#F9F9F9] p-5 md:p-12 overflow-y-auto md:custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
                   <div className="space-y-6 md:space-y-8">
                     {/* Galeria de Imagens */}
                     <div className="grid grid-cols-2 gap-4">
@@ -796,7 +796,7 @@ function PromptItem({ prompt }: { prompt: Prompt }) {
                 </div>
                 
                 {/* Lado Direito: Prompt */}
-                <div className="p-6 md:p-12 flex flex-col justify-between bg-white overflow-hidden">
+                <div className="p-5 md:p-12 flex flex-col justify-between bg-white overflow-y-auto md:overflow-hidden">
                   <div className="flex flex-col h-full overflow-hidden">
                     <DialogHeader className="mb-6 md:mb-8 text-left">
                       <DialogTitle className="text-xl md:text-3xl font-semibold tracking-tight leading-tight">{renderWithTags(prompt.title)}</DialogTitle>
