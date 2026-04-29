@@ -347,22 +347,22 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col">
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top">
-        <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <img src="/logo-wms.png" alt="WMS Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
-            <h1 className="text-sm md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
+    <div className="min-h-[100dvh] bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col w-full">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full">
+        <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
+          <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
+            <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
+            <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
           </div>
           
-          <div className="relative flex-1 max-w-md group min-w-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-black" />
+          <div className="relative flex-1 max-w-[180px] xs:max-w-md group min-w-0">
+            <Search className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3 md:w-3.5 h-3 md:h-3.5 text-gray-400 group-focus-within:text-black" />
             <input 
               type="text" 
               placeholder="Pesquisar..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-10 pl-9 pr-4 text-sm focus:bg-white focus:border-black/10 transition-all outline-none"
+              className="w-full bg-black/[0.04] border border-transparent rounded-xl h-9 md:h-10 pl-8 md:pl-9 pr-3 md:pr-4 text-[11px] md:text-sm focus:bg-white focus:border-black/10 transition-all outline-none"
             />
           </div>
 
@@ -370,10 +370,10 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 md:px-6 py-6 flex-1">
-        <div className="mb-8 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-3">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
-          <p className="text-gray-400 max-w-2xl text-sm md:text-lg font-light leading-relaxed px-2 md:px-0">
+      <main className="container mx-auto px-3 md:px-6 py-4 md:py-6 flex-1 w-full max-w-full overflow-x-hidden">
+        <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
+          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
+          <p className="text-gray-400 max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
             Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
         </div>
