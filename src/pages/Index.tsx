@@ -817,28 +817,45 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
       {/* Image Zoom Overlay */}
       {expandedImage && (
         <div 
-          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-200"
-          onClick={() => setExpandedImage(null)}
+          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-0 md:p-4 animate-in fade-in duration-200 overflow-hidden touch-none"
+          onClick={() => { setExpandedImage(null); setZoomScale(1); }}
+          onWheel={(e) => {
+            if (e.deltaY < 0) setZoomScale(s => Math.min(s + 0.2, 5));
+            else setZoomScale(s => Math.max(s - 0.2, 1));
+          }}
         >
           <button 
-            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all active:scale-90"
-            onClick={(e) => { e.stopPropagation(); setExpandedImage(null); }}
+            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all active:scale-90 z-[210]"
+            onClick={(e) => { e.stopPropagation(); setExpandedImage(null); setZoomScale(1); }}
           >
             <X className="w-6 h-6" />
           </button>
           
-          <div className="w-full h-full flex items-center justify-center overflow-auto p-4" onClick={(e) => e.stopPropagation()}>
+          <div 
+            className="w-full h-full flex items-center justify-center cursor-zoom-out relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <img 
               src={expandedImage} 
               alt="Expanded" 
-              className="max-w-full max-h-full object-contain cursor-zoom-out shadow-2xl transition-transform duration-300"
-              onClick={() => setExpandedImage(null)}
+              className="max-w-full max-h-full object-contain shadow-2xl transition-transform duration-200 select-none pointer-events-none"
+              style={{ 
+                transform: `scale(${zoomScale})`,
+                cursor: zoomScale > 1 ? 'move' : 'zoom-in'
+              }}
             />
           </div>
           
-          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-[10px] uppercase tracking-widest font-medium md:hidden">
-            Arraste para ver detalhes
-          </p>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-[210]">
+            <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+              <button onClick={() => setZoomScale(s => Math.max(s - 0.5, 1))} className="text-white font-bold p-2">-</button>
+              <span className="text-white text-[10px] font-mono w-8 text-center">{Math.round(zoomScale * 100)}%</span>
+              <button onClick={() => setZoomScale(s => Math.min(s + 0.5, 5))} className="text-white font-bold p-2">+</button>
+            </div>
+            <p className="text-white/40 text-[9px] uppercase tracking-widest font-medium">
+              Use o scroll ou botões para zoom
+            </p>
+          </div>
         </div>
       )}
     </div>
