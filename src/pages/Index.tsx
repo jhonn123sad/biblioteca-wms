@@ -132,15 +132,16 @@ const getTagColor = (content: string) => {
 };
 
 const renderWithTags = (text: string) => {
+  if (!text) return null;
   const parts = text.split(/(\[[^\]]+\])/g);
   return parts.map((part, index) => {
     if (part.startsWith('[') && part.endsWith(']')) {
-      const tagContent = part.slice(1, -1);
+      const tagContent = part.slice(1, -1).trim();
       const colorClass = getTagColor(tagContent);
       return (
         <span 
           key={index} 
-          className={`${colorClass} text-[8px] md:text-[10px] font-bold px-1 md:px-2 py-0.5 rounded-full border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-transform hover:scale-105`}
+          className={`${colorClass} text-[8px] md:text-[10px] font-extrabold px-1.5 md:px-2.5 py-0.5 rounded-md border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-all hover:scale-110 select-none`}
         >
           {tagContent}
         </span>
