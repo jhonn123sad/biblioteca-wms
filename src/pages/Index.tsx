@@ -528,7 +528,12 @@ function PromptCard({ prompt }: { prompt: Prompt }) {
       <div className="p-2.5 md:p-5 flex flex-col flex-1 min-w-0">
         <h3 className="text-[11px] md:text-base font-bold leading-tight mb-1.5 md:mb-2 line-clamp-3 min-h-[3.3em] md:min-h-[3.5em]">{renderWithTags(prompt.title)}</h3>
         <p className="text-gray-400 text-[9px] md:text-xs font-light mb-3 md:mb-4 line-clamp-2 leading-relaxed flex-1 overflow-hidden">{renderWithTags(prompt.description)}</p>
-        <PromptModal prompt={prompt} trigger={<Button className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-xl h-8 md:h-10 text-[10px] md:text-xs font-medium transition-all shadow-lg shadow-black/5">Visualizar</Button>} />
+        <Button 
+          onClick={() => setSelectedPrompt(prompt)}
+          className="w-full bg-black text-white hover:bg-black/90 rounded-lg md:rounded-xl h-8 md:h-10 text-[10px] md:text-xs font-medium transition-all shadow-lg shadow-black/5"
+        >
+          Visualizar
+        </Button>
       </div>
     </div>
   );
