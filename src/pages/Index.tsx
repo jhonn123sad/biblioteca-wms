@@ -484,11 +484,23 @@ export default function Index() {
           <div className="space-y-12">
             {searchTerm ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
-                {(filteredPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-search`} prompt={prompt} />)}
+                {(filteredPrompts as Prompt[])?.map((prompt) => (
+                  <PromptCard 
+                    key={`${prompt.id}-search`} 
+                    prompt={prompt} 
+                    onView={() => setSelectedPrompt(prompt)}
+                  />
+                ))}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
-                {(organizedPrompts as Prompt[])?.map((prompt) => <PromptCard key={`${prompt.id}-list`} prompt={prompt} />)}
+                {(organizedPrompts as Prompt[])?.map((prompt) => (
+                  <PromptCard 
+                    key={`${prompt.id}-list`} 
+                    prompt={prompt} 
+                    onView={() => setSelectedPrompt(prompt)}
+                  />
+                ))}
               </div>
             ) : (
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
@@ -498,7 +510,13 @@ export default function Index() {
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
-                    {group.prompts.map((prompt) => <PromptCard key={`${group.tag}-${prompt.id}`} prompt={prompt} />)}
+                    {group.prompts.map((prompt) => (
+                      <PromptCard 
+                        key={`${group.tag}-${prompt.id}`} 
+                        prompt={prompt} 
+                        onView={() => setSelectedPrompt(prompt)}
+                      />
+                    ))}
                   </div>
                 </div>
               ))
