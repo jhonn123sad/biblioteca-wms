@@ -192,12 +192,17 @@ function MainApp() {
   }, []);
 
   useEffect(() => {
-    const auth = localStorage.getItem("wms_member_auth");
-    const name = localStorage.getItem("wms_member_name");
-    if (auth === "true") {
-      setIsAuthenticated(true);
-      if (name) setUserName(name);
-    } else {
+    try {
+      const auth = localStorage.getItem("wms_member_auth");
+      const name = localStorage.getItem("wms_member_name");
+      if (auth === "true") {
+        setIsAuthenticated(true);
+        if (name) setUserName(name);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (e) {
+      console.warn("Storage access failed:", e);
       setIsAuthenticated(false);
     }
   }, []);
