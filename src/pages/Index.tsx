@@ -89,6 +89,9 @@ const neonColors = [
 ];
 
 const getTagColor = (content: string) => {
+  if (content.toLowerCase() === "curso dentro") {
+    return "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A] border-2";
+  }
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
     hash = content.charCodeAt(i) + ((hash << 5) - hash);
