@@ -443,8 +443,9 @@ export default function Index() {
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
-            <div className="flex flex-col gap-3">
+          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/90 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
+            <div className="flex flex-col gap-3 min-w-0">
+
               <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
                 <Button
                   variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
