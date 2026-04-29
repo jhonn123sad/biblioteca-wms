@@ -373,7 +373,7 @@ export default function Index() {
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-12 relative group/carousel">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Ordem Numérica</h3>
+              <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
               <div className="flex items-center gap-2">
                 <Button 
                   variant="ghost" 
