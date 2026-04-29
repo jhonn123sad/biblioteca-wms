@@ -183,6 +183,7 @@ function MainApp() {
   const [showCarousel, setShowCarousel] = useState(true);
   const [viewAllOrder, setViewAllOrder] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
