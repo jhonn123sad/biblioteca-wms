@@ -133,9 +133,13 @@ const getTagColor = (content: string) => {
 
 const renderWithTags = (text: string) => {
   if (!text) return null;
-  const parts = text.split(/(\[[^\]]+\])/g);
+  // Regex atualizada para ignorar links markdown [texto](url)
+  // Ela procura por [algo] que NÃO seja seguido por (
+  const parts = text.split(/(\[[^\]]+\](?!\()|!\[[^\]]+\](?!\()|#\d+)/g);
+  
   return parts.map((part, index) => {
-    if (part.startsWith('[') && part.endsWith(']')) {
+    // Se for uma tag [Conteúdo]
+    if (part.startsWith('[') && part.endsWith(']') && !text.includes(part + '(')) {
       const tagContent = part.slice(1, -1).trim();
       const colorClass = getTagColor(tagContent);
       return (
@@ -144,6 +148,14 @@ const renderWithTags = (text: string) => {
           className={`${colorClass} text-[8px] md:text-[10px] font-extrabold px-1.5 md:px-2.5 py-0.5 rounded-md border shadow-sm uppercase tracking-wider inline-flex items-center align-middle mx-0.5 leading-none transition-all hover:scale-110 select-none`}
         >
           {tagContent}
+        </span>
+      );
+    }
+    // Se for um ID numérico como #123
+    if (part.startsWith('#') && /^\d+$/.test(part.slice(1))) {
+      return (
+        <span key={index} className="text-[#FF007A] font-black mr-1">
+          {part}
         </span>
       );
     }
@@ -317,12 +329,17 @@ function MainApp() {
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
+    const tagRegex = /\[([^\]]+)\](?!\()/g;
+    
     prompts?.forEach(p => {
-      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
-      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+      const titleTags = p.title.match(tagRegex) || [];
+      const descTags = p.description.match(tagRegex) || [];
       [...titleTags, ...descTags].forEach(t => {
         const cleanTag = t.slice(1, -1).trim();
-        if (cleanTag) tags.add(cleanTag);
+        // Ignorar se for apenas números (provável nota de rodapé ou ID)
+        if (cleanTag && !/^\d+$/.test(cleanTag) && cleanTag.length > 1) {
+          tags.add(cleanTag);
+        }
       });
     });
     // Deduplicar mantendo o primeiro caso encontrado mas agrupando por case-insensitive
@@ -347,10 +364,12 @@ function MainApp() {
     if (!prompts) return [];
     
     const getPromptTags = (p: Prompt) => {
+      const tagRegex = /\[([^\]]+)\](?!\()/g;
       const matches = [
-        ...(p.title.match(/\[([^\]]+)\]/g) || []),
-        ...(p.description.match(/\[([^\]]+)\]/g) || [])
-      ].map(t => t.slice(1, -1).trim().toLowerCase());
+        ...(p.title.match(tagRegex) || []),
+        ...(p.description.match(tagRegex) || [])
+      ].map(t => t.slice(1, -1).trim().toLowerCase())
+       .filter(t => t && !/^\d+$/.test(t) && t.length > 1);
       return Array.from(new Set(matches));
     };
 
@@ -616,8 +635,8 @@ function MainApp() {
                 const isSelected = selectedTag === tag;
                 const count = prompts?.filter(p => {
                   const matches = [
-                    ...(p.title.match(/\[([^\]]+)\]/g) || []),
-                    ...(p.description.match(/\[([^\]]+)\]/g) || [])
+                    ...(p.title.match(/\[([^\]]+)\](?!\()/g) || []),
+                    ...(p.description.match(/\[([^\]]+)\](?!\()/g) || [])
                   ].map(t => t.slice(1, -1).trim().toLowerCase());
                   return matches.includes(tag.toLowerCase());
                 }).length || 0;
@@ -854,7 +873,7 @@ function PromptCard({ prompt, onView }: { prompt: Prompt, onView: () => void }) 
       <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0">
         <h3 className="text-[12px] md:text-base font-bold leading-tight mb-2 md:mb-3 min-h-[2.5em]">{renderWithTags(prompt.title)}</h3>
         <div className="text-gray-400 text-[10px] md:text-xs font-light mb-4 line-clamp-3 leading-relaxed flex-1 overflow-hidden">
-          {prompt.description.replace(/\[[^\]]+\]/g, '')}
+          {prompt.description.replace(/\[([^\]]+)\](?!\()/g, '')}
         </div>
         <Button 
           onClick={onView}
