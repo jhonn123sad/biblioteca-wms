@@ -25,7 +25,12 @@ import {
   Phone,
   X,
   RotateCw,
-  AlertCircle
+  AlertCircle,
+  Instagram,
+  Youtube,
+  Users,
+  Filter,
+  Check
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
