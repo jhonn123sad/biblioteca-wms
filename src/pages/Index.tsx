@@ -308,20 +308,22 @@ function MainApp() {
     staleTime: 30000,
   });
 
-  const allTags = Array.from(new Set(
-    prompts?.flatMap(p => {
-      const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
-      const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
-      return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
-    }) || []
-  )).sort();
+  const allTags = useMemo(() => {
+    return Array.from(new Set(
+      prompts?.flatMap(p => {
+        const titleTags = p.title.match(/\[([^\]]+)\]/g) || [];
+        const descTags = p.description.match(/\[([^\]]+)\]/g) || [];
+        return [...titleTags, ...descTags].map(tag => tag.slice(1, -1));
+      }) || []
+    )).sort();
+  }, [prompts]);
 
   const getSortNumber = (title: string) => {
     const match = title.match(/#(\d+)/);
     return match ? parseInt(match[1]) : Infinity;
   };
 
-  const organizedPrompts = (() => {
+  const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
     if (viewAllOrder) {
       return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
@@ -356,7 +358,7 @@ function MainApp() {
       if (categories[tag]) {
         result.push({
           tag,
-          prompts: categories[tag].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+          prompts: [...categories[tag]].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
         });
       }
     });
@@ -364,12 +366,12 @@ function MainApp() {
     if (uncategorized.length > 0) {
       result.push({
         tag: null,
-        prompts: uncategorized.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+        prompts: [...uncategorized].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
       });
     }
 
     return result;
-  })();
+  }, [prompts, viewAllOrder, selectedTag, allTags]);
 
   const filteredPrompts = (() => {
     const search = searchTerm.toLowerCase();
