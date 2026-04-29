@@ -274,10 +274,15 @@ function MainApp() {
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
-    scrollContainerRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
-    });
+    try {
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    } catch (e) {
+      // Fallback para navegadores antigos
+      scrollContainerRef.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
+    }
   };
 
   const { data: prompts, isLoading, refetch, isError } = useQuery({
