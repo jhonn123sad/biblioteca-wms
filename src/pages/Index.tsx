@@ -635,8 +635,8 @@ function MainApp() {
                 const isSelected = selectedTag === tag;
                 const count = prompts?.filter(p => {
                   const matches = [
-                    ...(p.title.match(/\[([^\]]+)\]/g) || []),
-                    ...(p.description.match(/\[([^\]]+)\]/g) || [])
+                    ...(p.title.match(/\[([^\]]+)\](?!\()/g) || []),
+                    ...(p.description.match(/\[([^\]]+)\](?!\()/g) || [])
                   ].map(t => t.slice(1, -1).trim().toLowerCase());
                   return matches.includes(tag.toLowerCase());
                 }).length || 0;
