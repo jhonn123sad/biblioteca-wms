@@ -444,9 +444,9 @@ export default function Index() {
 
         {/* Filtro de Tags - Redesenhado */}
         {!isLoading && (
-          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-2 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.02]">
+          <div className="mb-6 sticky top-[64px] md:top-[80px] z-30 bg-white/80 backdrop-blur-md py-3 -mx-4 px-4 md:-mx-6 md:px-6 border-b border-black/[0.03]">
             <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
                 <Button
                   variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                   onClick={() => {
@@ -454,11 +454,11 @@ export default function Index() {
                     setViewAllOrder(false);
                     setShowCarousel(true);
                   }}
-                  className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
-                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
+                  className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
+                    (!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-md shadow-black/10" : "bg-white hover:bg-black/5"
                   }`}
                 >
-                  Categorias
+                  Início
                 </Button>
                 <Button
                   variant={viewAllOrder ? "default" : "outline"}
@@ -467,13 +467,13 @@ export default function Index() {
                     setSelectedTag(null);
                     setShowCarousel(false);
                   }}
-                  className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
-                    viewAllOrder ? "bg-black text-white shadow-lg shadow-black/20" : "bg-white hover:bg-black/5"
+                  className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
+                    viewAllOrder ? "bg-black text-white shadow-md shadow-black/10" : "bg-white hover:bg-black/5"
                   }`}
                 >
-                  Ordem Numérica
+                  Todos (#)
                 </Button>
-                <div className="w-px h-4 bg-black/10 flex-none mx-2" />
+                <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
                 {allTags.map(tag => (
                   <Button
                     key={tag}
@@ -483,9 +483,9 @@ export default function Index() {
                       setViewAllOrder(false);
                       setShowCarousel(false);
                     }}
-                    className={`rounded-lg md:rounded-xl px-3 md:px-4 h-8 md:h-9 text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/10 ${
+                    className={`rounded-full px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all flex-none border-black/5 ${
                       selectedTag === tag 
-                        ? "bg-black text-white shadow-lg shadow-black/20" 
+                        ? "bg-black text-white shadow-md shadow-black/10" 
                         : "bg-white hover:bg-black/5"
                     }`}
                   >
