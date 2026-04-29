@@ -370,7 +370,21 @@ export default function Index() {
             />
           </div>
 
-          <LogoutButton />
+          <div className="flex items-center gap-1 md:gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => {
+                refetch();
+                toast.success("Sincronizando biblioteca...");
+              }}
+              className="w-8 h-8 rounded-full text-gray-400 hover:text-black hover:bg-black/5"
+              title="Sincronizar"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+            </Button>
+            <LogoutButton />
+          </div>
         </div>
       </header>
 
