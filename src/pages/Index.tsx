@@ -25,7 +25,12 @@ import {
   Phone,
   X,
   RotateCw,
-  AlertCircle
+  AlertCircle,
+  Instagram,
+  Youtube,
+  Users,
+  Filter,
+  Check
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -178,6 +183,7 @@ function MainApp() {
   const [showCarousel, setShowCarousel] = useState(true);
   const [viewAllOrder, setViewAllOrder] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -541,47 +547,64 @@ function MainApp() {
         )}
 
         {!isLoading && (
-          <div className="mb-6 md:mb-10 sticky top-[64px] md:top-[80px] z-30 bg-white/98 md:bg-white/80 backdrop-blur-md -mx-4 px-4 md:-mx-6 md:px-6 py-3 border-b border-black/[0.03] transition-all">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 md:mx-0 md:px-0">
-                <Button
-                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all ${(!selectedTag && !viewAllOrder) ? "bg-black text-white shadow-xl shadow-black/20" : "bg-white border-black/5 hover:bg-black/5"}`}
-                >Início</Button>
-                
-                <div className="w-[1px] h-4 bg-black/10 flex-none mx-1" />
-                
-                <Button
-                  variant={viewAllOrder ? "default" : "outline"}
-                  onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all ${viewAllOrder ? "bg-black text-white shadow-xl shadow-black/20" : "bg-white border-black/5 hover:bg-black/5"}`}
-                ># Numérica</Button>
+          <div className="mb-8 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-black/40" />
+                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-black/60">Filtros da Biblioteca</h3>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="md:hidden text-[10px] font-bold uppercase tracking-wider bg-black/5 rounded-lg px-3 h-8"
+              >
+                {isFilterOpen ? "Fechar" : "Ver Categorias"}
+              </Button>
+            </div>
 
-                {allTags.map(tag => {
-                  const isSpecial = tag.toLowerCase() === "curso dentro";
-                  const isSelected = selectedTag === tag;
-                  return (
-                    <Button
-                      key={tag}
-                      variant={isSelected ? "default" : "outline"}
-                      onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                      className={`rounded-xl px-4 h-9 text-[10px] md:text-[11px] font-black uppercase tracking-widest flex-none transition-all whitespace-nowrap ${
-                        isSelected 
-                          ? "bg-black text-white shadow-xl shadow-black/20" 
-                          : isSpecial 
-                            ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] border-[2px] hover:bg-[#FF007A]/10" 
-                            : "bg-white border-black/5 hover:bg-black/5"
-                      }`}
-                    >{tag}</Button>
-                  );
-                })}
-              </div>
+            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-3 transition-all duration-300`}>
+              <Button
+                variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
+                onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
+                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+              >
+                <Grid className="w-3.5 h-3.5 mr-2" />
+                Início
+              </Button>
               
-              <div className="hidden md:flex items-center gap-2 text-black/20 text-[10px] font-bold uppercase tracking-widest bg-black/[0.02] px-3 py-1.5 rounded-full">
-                <Grid className="w-3 h-3" />
-                <span>{selectedTag ? `Filtrando: ${selectedTag}` : viewAllOrder ? "Ordem Numérica" : "Navegação Livre"}</span>
-              </div>
+              <Button
+                variant={viewAllOrder ? "default" : "outline"}
+                onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
+                className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-lg shadow-black/20" : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"}`}
+              >
+                <span className="mr-2">#</span>
+                Ordem Numérica
+              </Button>
+
+              <div className="w-full md:w-px h-px md:h-11 bg-black/5 my-1 md:my-0" />
+
+              {allTags.map(tag => {
+                const isSpecial = tag.toLowerCase() === "curso dentro";
+                const isSelected = selectedTag === tag;
+                return (
+                  <Button
+                    key={tag}
+                    variant={isSelected ? "default" : "outline"}
+                    onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
+                    className={`rounded-xl px-4 h-10 md:h-11 text-[10px] md:text-xs font-black uppercase tracking-widest flex-none transition-all border-2 ${
+                      isSelected 
+                        ? "bg-black text-white border-black shadow-lg shadow-black/20" 
+                        : isSpecial 
+                          ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
+                          : "bg-white border-black/5 hover:border-black/20 hover:bg-black/5"
+                    }`}
+                  >
+                    {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
+                    {tag}
+                  </Button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -649,10 +672,80 @@ function MainApp() {
         )}
       </main>
 
-      <footer className="container mx-auto px-6 py-12 border-t border-black/[0.03] mt-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 opacity-40">
-          <p className="text-[10px] font-medium tracking-wider uppercase">&copy; {new Date().getFullYear()} WMS</p>
-          <div className="flex gap-8"><span className="text-[10px] font-medium uppercase tracking-widest">Minimalist</span><span className="text-[10px] font-medium uppercase tracking-widest">Sync</span></div>
+      <footer className="container mx-auto px-4 md:px-12 py-16 border-t border-black/[0.05] mt-20 bg-black/[0.01]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <img src="/logo-wms.png" alt="WMS Logo" className="h-10 w-10 object-contain rounded-xl" />
+              <h2 className="text-xl font-black uppercase tracking-tighter">WMS Society</h2>
+            </div>
+            <p className="text-gray-400 text-sm font-light leading-relaxed max-w-xs">
+              A maior comunidade de tecnologia e lifestyle para quem busca a liberdade através da internet.
+            </p>
+          </div>
+          
+          <div className="space-y-6">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Nossa Comunidade
+            </h3>
+            <div className="flex flex-col gap-4">
+              <a href="https://www.instagram.com/webmoneysociety/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-all">
+                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <Instagram className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Instagram</span>
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Siga a Comunidade</span>
+                </div>
+              </a>
+              <a href="https://www.youtube.com/@WMoneySociety" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-all">
+                <div className="w-10 h-10 rounded-xl bg-[#FF0000] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <Youtube className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">YouTube</span>
+                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Inscreva-se</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">Fundadores</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <a href="https://www.instagram.com/jota.wms/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-black/[0.03] shadow-sm hover:shadow-md transition-all group">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#FF007A] to-[#8A2BE2] p-[2px] group-hover:rotate-12 transition-transform">
+                  <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                    <span className="text-xs font-black">J</span>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Jota</span>
+                  <span className="text-[10px] text-[#FF007A] font-bold uppercase tracking-wider">@jota.wms</span>
+                </div>
+              </a>
+              <a href="https://www.instagram.com/ia.gostini/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-black/[0.03] shadow-sm hover:shadow-md transition-all group">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#00D1FF] to-[#39FF14] p-[2px] group-hover:-rotate-12 transition-transform">
+                  <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                    <span className="text-xs font-black">A</span>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Agostini</span>
+                  <span className="text-[10px] text-[#00D1FF] font-bold uppercase tracking-wider">@ia.gostini</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-black/[0.03] opacity-40">
+          <p className="text-[10px] font-black tracking-widest uppercase">&copy; {new Date().getFullYear()} WEB MONEY SOCIETY</p>
+          <div className="flex gap-8">
+            <span className="text-[10px] font-black uppercase tracking-widest">Premium Resource</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">Official Library</span>
+          </div>
         </div>
       </footer>
 
@@ -708,8 +801,14 @@ function PromptDetailView({ prompt, onClose }: { prompt: Prompt, onClose: () => 
   };
 
   useEffect(() => {
+    // Bloquear scroll e garantir que o modal cubra tudo
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    return () => { 
+      document.body.style.overflow = 'unset';
+      document.body.style.position = 'relative';
+    };
   }, []);
 
   return (
@@ -877,6 +976,15 @@ export default function Index() {
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        
+        /* Garantir que o header seja fixo e tenha prioridade visual */
+        header { 
+          position: sticky !important; 
+          top: 0 !important; 
+          z-index: 100 !important;
+          width: 100%;
+        }
+
         @media (max-width: 640px) {
           .container { padding-left: 1rem; padding-right: 1rem; }
         }
