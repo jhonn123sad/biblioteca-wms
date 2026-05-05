@@ -398,7 +398,7 @@ function MainApp() {
                       <PromptCard 
                         key={`${group.tag}-${prompt.id}`} 
                         prompt={prompt} 
-                        onView={() => setSelectedPrompt(prompt)}
+                        onView={() => handleViewPrompt(prompt)}
                       />
                     ))}
                   </div>
