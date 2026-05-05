@@ -203,6 +203,8 @@ function MainApp() {
         isLoading={isLoading} 
         refetch={refetch} 
         onLogout={handleLogout} 
+        isAuthenticated={isAuthenticated}
+        onLogin={() => setShowAuthOverlay(true)}
       />
 
       <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
