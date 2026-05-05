@@ -7,6 +7,8 @@ interface AppHeaderProps {
   isLoading: boolean;
   refetch: () => void;
   onLogout: () => void;
+  isAuthenticated: boolean;
+  onLogin: () => void;
 }
 
 export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout }: AppHeaderProps) {
