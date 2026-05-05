@@ -178,7 +178,7 @@ function MainApp() {
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => setShowAuthOverlay(false)}
+          onClick={() => { setShowAuthOverlay(false); setPendingPrompt(null); }}
           className="absolute top-6 left-6 z-50 w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 transition-colors"
         >
           <ChevronLeft className="w-6 h-6" />
