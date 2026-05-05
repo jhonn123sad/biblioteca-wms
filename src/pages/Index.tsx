@@ -56,6 +56,7 @@ function MainApp() {
   const [viewAllOrder, setViewAllOrder] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showAuthOverlay, setShowAuthOverlay] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
