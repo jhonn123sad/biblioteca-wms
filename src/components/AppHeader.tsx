@@ -41,13 +41,23 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
           >
             <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
-          <Button 
-            variant="ghost" 
-            onClick={onLogout}
-            className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
-          >
-            Sair
-          </Button>
+          {isAuthenticated ? (
+            <Button 
+              variant="ghost" 
+              onClick={onLogout}
+              className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
+            >
+              Sair
+            </Button>
+          ) : (
+            <Button 
+              variant="default" 
+              onClick={onLogin}
+              className="text-[9px] md:text-xs bg-black text-white hover:bg-black/90 transition-colors h-7 md:h-8 px-2 md:px-4 rounded-xl flex-shrink-0 shadow-sm"
+            >
+              Entrar
+            </Button>
+          )}
         </div>
       </div>
     </header>
