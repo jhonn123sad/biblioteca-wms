@@ -85,6 +85,7 @@ function MainApp() {
 
   const handleViewPrompt = (prompt: Prompt) => {
     if (!isAuthenticated) {
+      setPendingPrompt(prompt);
       setShowAuthOverlay(true);
       return;
     }
