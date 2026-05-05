@@ -47,6 +47,17 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
           >
             {isVerifying ? <Loader2 className="w-6 h-6 animate-spin" /> : "Entrar na Biblioteca"}
           </Button>
+
+          <div className="text-center pt-2">
+            <a 
+              href="https://pay.kiwify.com.br/3790" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs md:text-sm text-gray-400 hover:text-black transition-colors font-medium"
+            >
+              Ainda não é um membro? <span className="underline decoration-black/20 hover:decoration-black underline-offset-4">Libere seu acesso aqui.</span>
+            </a>
+          </div>
         </form>
       </div>
     </div>

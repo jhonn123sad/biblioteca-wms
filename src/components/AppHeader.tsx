@@ -7,9 +7,11 @@ interface AppHeaderProps {
   isLoading: boolean;
   refetch: () => void;
   onLogout: () => void;
+  isAuthenticated: boolean;
+  onLogin: () => void;
 }
 
-export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout }: AppHeaderProps) {
+export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout, isAuthenticated, onLogin }: AppHeaderProps) {
   return (
     <header className="sticky top-0 z-[60] bg-white/80 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
       <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
@@ -39,13 +41,23 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
           >
             <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
-          <Button 
-            variant="ghost" 
-            onClick={onLogout}
-            className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
-          >
-            Sair
-          </Button>
+          {isAuthenticated ? (
+            <Button 
+              variant="ghost" 
+              onClick={onLogout}
+              className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
+            >
+              Sair
+            </Button>
+          ) : (
+            <Button 
+              variant="default" 
+              onClick={onLogin}
+              className="text-[9px] md:text-xs bg-black text-white hover:bg-black/90 transition-colors h-7 md:h-8 px-2 md:px-4 rounded-xl flex-shrink-0 shadow-sm"
+            >
+              Entrar
+            </Button>
+          )}
         </div>
       </div>
     </header>

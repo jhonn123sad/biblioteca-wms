@@ -56,6 +56,8 @@ function MainApp() {
   const [viewAllOrder, setViewAllOrder] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showAuthOverlay, setShowAuthOverlay] = useState(false);
+  const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +82,16 @@ function MainApp() {
       scrollContainerRef.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
     }
   };
+
+  const handleViewPrompt = (prompt: Prompt) => {
+    if (!isAuthenticated) {
+      setPendingPrompt(prompt);
+      setShowAuthOverlay(true);
+      return;
+    }
+    setSelectedPrompt(prompt);
+  };
+
 
   const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
@@ -157,8 +169,37 @@ function MainApp() {
   }, [prompts]);
 
   if (isAuthenticated === null) return null;
+  
   if (showWelcome) return <WelcomeScreen userName={userName} />;
-  if (!isAuthenticated) return <AuthView onLogin={handleLogin} isVerifying={isVerifying} />;
+
+  if (showAuthOverlay && !isAuthenticated) {
+    return (
+      <div className="relative">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => { setShowAuthOverlay(false); setPendingPrompt(null); }}
+          className="absolute top-6 left-6 z-50 w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </Button>
+        <AuthView 
+          onLogin={async (phone) => {
+            const success = await handleLogin(phone);
+            if (success) {
+              setShowAuthOverlay(false);
+              if (pendingPrompt) {
+                setSelectedPrompt(pendingPrompt);
+                setPendingPrompt(null);
+              }
+            }
+            return success;
+          }} 
+          isVerifying={isVerifying} 
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white flex flex-col w-full antialiased">
@@ -168,6 +209,8 @@ function MainApp() {
         isLoading={isLoading} 
         refetch={refetch} 
         onLogout={handleLogout} 
+        isAuthenticated={isAuthenticated}
+        onLogin={() => setShowAuthOverlay(true)}
       />
 
       <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
@@ -202,7 +245,7 @@ function MainApp() {
                   <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
                     <Button 
-                      onClick={() => setSelectedPrompt(prompt)}
+                      onClick={() => handleViewPrompt(prompt)}
                       className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"
                     >
                       <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
@@ -335,7 +378,7 @@ function MainApp() {
                   <PromptCard 
                     key={`${prompt.id}-search`} 
                     prompt={prompt} 
-                    onView={() => setSelectedPrompt(prompt)}
+                    onView={() => handleViewPrompt(prompt)}
                   />
                 ))}
               </div>
@@ -345,7 +388,7 @@ function MainApp() {
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 
-                    onView={() => setSelectedPrompt(prompt)}
+                    onView={() => handleViewPrompt(prompt)}
                   />
                 ))}
               </div>
@@ -361,7 +404,7 @@ function MainApp() {
                       <PromptCard 
                         key={`${group.tag}-${prompt.id}`} 
                         prompt={prompt} 
-                        onView={() => setSelectedPrompt(prompt)}
+                        onView={() => handleViewPrompt(prompt)}
                       />
                     ))}
                   </div>
