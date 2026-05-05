@@ -167,8 +167,33 @@ function MainApp() {
   }, [prompts]);
 
   if (isAuthenticated === null) return null;
+  
   if (showWelcome) return <WelcomeScreen userName={userName} />;
-  if (!isAuthenticated) return <AuthView onLogin={handleLogin} isVerifying={isVerifying} />;
+
+  if (showAuthOverlay && !isAuthenticated) {
+    return (
+      <div className="relative">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setShowAuthOverlay(false)}
+          className="absolute top-6 left-6 z-50 w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </Button>
+        <AuthView 
+          onLogin={async (phone) => {
+            const success = await handleLogin(phone);
+            if (success) {
+              setShowAuthOverlay(false);
+            }
+            return success;
+          }} 
+          isVerifying={isVerifying} 
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white flex flex-col w-full antialiased">
