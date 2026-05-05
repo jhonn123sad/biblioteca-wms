@@ -382,7 +382,7 @@ function MainApp() {
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 
-                    onView={() => setSelectedPrompt(prompt)}
+                    onView={() => handleViewPrompt(prompt)}
                   />
                 ))}
               </div>
