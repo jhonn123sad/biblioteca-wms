@@ -57,6 +57,7 @@ function MainApp() {
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
+  const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
