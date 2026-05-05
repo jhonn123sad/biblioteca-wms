@@ -80,7 +80,14 @@ function MainApp() {
     } catch (e) {
       scrollContainerRef.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
     }
+  const handleViewPrompt = (prompt: Prompt) => {
+    if (!isAuthenticated) {
+      setShowAuthOverlay(true);
+      return;
+    }
+    setSelectedPrompt(prompt);
   };
+
 
   const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
