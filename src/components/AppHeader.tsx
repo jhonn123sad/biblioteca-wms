@@ -11,7 +11,7 @@ interface AppHeaderProps {
   onLogin: () => void;
 }
 
-export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout }: AppHeaderProps) {
+export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout, isAuthenticated, onLogin }: AppHeaderProps) {
   return (
     <header className="sticky top-0 z-[60] bg-white/80 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
       <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
