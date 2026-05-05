@@ -188,6 +188,10 @@ function MainApp() {
             const success = await handleLogin(phone);
             if (success) {
               setShowAuthOverlay(false);
+              if (pendingPrompt) {
+                setSelectedPrompt(pendingPrompt);
+                setPendingPrompt(null);
+              }
             }
             return success;
           }} 
