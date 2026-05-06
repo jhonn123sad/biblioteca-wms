@@ -136,21 +136,21 @@ function MainApp() {
     } else if (sortBy === 'numeric') {
       basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     } else if (sortBy === 'popular') {
-      // Usando uma lógica determinística baseada no ID para simular popularidade
-      // já que não temos tráfego real no frontend
+      // Simulação determinística de popularidade usando hash do ID
       basePrompts.sort((a, b) => {
         const hashA = a.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         const hashB = b.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         return (hashB % 100) - (hashA % 100);
       });
     } else {
-      // recent: descending ID (supondo que IDs maiores são mais novos)
+      // recent: descending ID
       basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
     if (selectedTag) {
       const targetTag = selectedTag.toLowerCase();
-      return basePrompts.filter(p => getPromptTags(p).includes(targetTag));
+      const filtered = basePrompts.filter(p => getPromptTags(p).includes(targetTag));
+      return [{ tag: selectedTag, prompts: filtered }];
     }
 
     const categories: { [key: string]: Prompt[] } = {};
