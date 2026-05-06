@@ -302,11 +302,6 @@ function MainApp() {
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => setSortBy('numeric')} className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8 gap-1">
-                  <Hash className="w-3 h-3" />
-                  <span>Ordem Numérica</span>
-                  <ExternalLink className="w-2.5 h-2.5 ml-1" />
-                </Button>
               </div>
             </div>
             
@@ -329,10 +324,6 @@ function MainApp() {
                   </div>
                 </div>
               ))}
-              <button onClick={() => setSortBy('numeric')} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-secondary/50 transition-colors snap-start">
-                <Hash className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground/40" />
-                <span className="text-[9px] md:text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">Ordem Numérica</span>
-              </button>
             </div>
             </motion.div>
           )}
