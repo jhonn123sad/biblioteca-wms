@@ -360,7 +360,7 @@ function MainApp() {
                 Ordem Numérica
               </Button>
 
-              <div className="hidden md:block w-px h-10 bg-black/[0.05] mx-1" />
+              <div className="hidden md:block w-px h-10 bg-border/50 mx-1" />
 
               {allTags.map(tag => {
                 const isSpecial = tag.toLowerCase() === "curso dentro";
