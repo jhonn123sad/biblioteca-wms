@@ -287,7 +287,7 @@ function MainApp() {
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
               >
                 <Grid className="w-3.5 h-3.5 mr-2" />
                 Início
@@ -296,7 +296,7 @@ function MainApp() {
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
               >
                 <span className="mr-2 font-black">#</span>
                 Ordem Numérica
