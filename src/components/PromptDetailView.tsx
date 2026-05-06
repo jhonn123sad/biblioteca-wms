@@ -51,14 +51,14 @@ export function PromptDetailView({ prompt, onClose }: PromptDetailViewProps) {
       <div className="flex-1 overflow-y-auto bg-background">
         <div className="container mx-auto max-w-6xl h-full">
           <div className="flex flex-col md:flex-row h-full">
-            <div className="w-full md:w-1/2 p-4 md:p-8 bg-[#F9F9F9] md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
+            <div className="w-full md:w-1/2 p-4 md:p-8 bg-secondary/30 md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-border">
               <div className="space-y-6 md:space-y-8">
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                   {prompt.images.map((img, i) => (
                     <div 
                       key={i} 
                       onClick={() => setExpandedImage(img)}
-                      className="aspect-square rounded-2xl overflow-hidden border border-black/[0.03] shadow-sm bg-white cursor-zoom-in group/img relative"
+                      className="aspect-square rounded-2xl overflow-hidden border border-border shadow-sm bg-card cursor-zoom-in group/img relative"
                     >
                       <img src={img} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
@@ -67,18 +67,18 @@ export function PromptDetailView({ prompt, onClose }: PromptDetailViewProps) {
                     </div>
                   ))}
                   {prompt.images.length === 0 && (
-                    <div className="col-span-2 aspect-video bg-black/[0.02] rounded-2xl flex items-center justify-center text-gray-300 border border-dashed border-black/10">
+                    <div className="col-span-2 aspect-video bg-secondary/50 rounded-2xl flex items-center justify-center text-muted-foreground border border-dashed border-border">
                       <ImageIcon className="w-10 h-10 opacity-10" />
                     </div>
                   )}
                 </div>
 
-                <div className="bg-white p-5 md:p-8 rounded-[2rem] border border-black/[0.03] shadow-sm space-y-4">
-                  <div className="flex items-center gap-2 text-black/30 uppercase tracking-[0.2em] text-[10px] font-bold border-b border-black/[0.03] pb-3">
+                <div className="bg-card p-5 md:p-8 rounded-[2rem] border border-border shadow-sm space-y-4">
+                  <div className="flex items-center gap-2 text-muted-foreground uppercase tracking-[0.2em] text-[10px] font-bold border-b border-border pb-3">
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Detalhes do Prompt</span>
                   </div>
-                  <div className="prose prose-sm prose-neutral max-w-none prose-p:leading-relaxed prose-p:text-gray-600 prose-headings:text-black prose-a:text-[#FF007A] prose-a:no-underline hover:prose-a:underline prose-a:font-bold">
+                  <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:text-muted-foreground prose-headings:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-bold">
                     <ReactMarkdown 
                       remarkPlugins={[remarkGfm]}
                       components={{
@@ -92,30 +92,30 @@ export function PromptDetailView({ prompt, onClose }: PromptDetailViewProps) {
               </div>
             </div>
 
-            <div className="w-full md:w-1/2 p-4 md:p-8 flex flex-col bg-white">
+            <div className="w-full md:w-1/2 p-4 md:p-8 flex flex-col bg-background">
               <div className="flex-1 flex flex-col min-h-0">
                 <div className="flex items-center justify-between mb-4 md:mb-6">
-                  <div className="flex items-center gap-2 text-black/30 uppercase tracking-[0.2em] text-[10px] font-bold">
+                  <div className="flex items-center gap-2 text-muted-foreground uppercase tracking-[0.2em] text-[10px] font-bold">
                     <Terminal className="w-3.5 h-3.5" />
                     <span>Conteúdo para Copiar</span>
                   </div>
                   <button 
                     onClick={copyToClipboard}
-                    className="h-8 text-[11px] font-bold bg-black text-white rounded-xl px-4 shadow-lg hover:bg-black/80 transition-all active:scale-95"
+                    className="h-8 text-[11px] font-bold bg-primary text-primary-foreground rounded-xl px-4 shadow-lg hover:bg-primary/80 transition-all active:scale-95"
                   >
                     COPIAR
                   </button>
                 </div>
 
-                <div className="relative group flex-1 bg-black/[0.02] rounded-[2rem] border border-black/[0.03] overflow-hidden min-h-[200px] md:min-h-0 mb-6">
+                <div className="relative group flex-1 bg-secondary/20 rounded-[2rem] border border-border overflow-hidden min-h-[200px] md:min-h-0 mb-6">
                   <div className="h-full p-6 md:p-8 overflow-y-auto custom-scrollbar">
-                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-gray-800 break-words">{linkify(prompt.content)}</pre>
+                    <pre className="text-[13px] md:text-sm font-mono whitespace-pre-wrap leading-relaxed text-foreground break-words">{linkify(prompt.content)}</pre>
                   </div>
                 </div>
 
                 <button 
                   onClick={copyToClipboard} 
-                  className="w-full bg-black text-white rounded-2xl h-16 text-sm font-bold shadow-2xl shadow-black/10 active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-auto"
+                  className="w-full bg-primary text-primary-foreground rounded-2xl h-16 text-sm font-bold shadow-2xl shadow-primary/10 active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-auto"
                 >
                   <Copy className="w-5 h-5" />
                   COPIAR PROMPT PARA USAR
