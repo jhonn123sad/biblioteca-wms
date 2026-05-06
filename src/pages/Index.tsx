@@ -342,7 +342,11 @@ function MainApp() {
                     variant="ghost" 
                     size="icon" 
                     onClick={() => setGridCols(4)}
-                    className={`w-7 h-7 rounded-md transition-all ${gridCols === 4 ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    className={`w-7 h-7 rounded-md transition-all backdrop-blur-md border ${
+                      gridCols === 4 
+                        ? 'bg-primary/90 text-primary-foreground border-primary/50 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
+                        : 'bg-white/40 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/60 dark:hover:bg-black/60'
+                    }`}
                     title="Grade de 4"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -351,7 +355,11 @@ function MainApp() {
                     variant="ghost" 
                     size="icon" 
                     onClick={() => setGridCols(5)}
-                    className={`w-7 h-7 rounded-md transition-all ${gridCols === 5 ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    className={`w-7 h-7 rounded-md transition-all backdrop-blur-md border ${
+                      gridCols === 5 
+                        ? 'bg-primary/90 text-primary-foreground border-primary/50 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
+                        : 'bg-white/40 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/60 dark:hover:bg-black/60'
+                    }`}
                     title="Grade de 5"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="5" height="7"></rect><rect x="9.5" y="3" width="5" height="7"></rect><rect x="17" y="3" width="5" height="7"></rect><rect x="2" y="14" width="5" height="7"></rect><rect x="9.5" y="14" width="5" height="7"></rect><rect x="17" y="14" width="5" height="7"></rect></svg>
@@ -363,9 +371,13 @@ function MainApp() {
             <div className="relative group/filters overflow-hidden">
               <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 custom-scrollbar cursor-grab active:cursor-grabbing select-none px-1">
                 <Button
-                  variant={(!selectedTag) ? "default" : "outline"}
+                  variant="ghost"
                   onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
-                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
+                    (!selectedTag) 
+                      ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
+                      : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
+                  }`}
                 >
                   <Grid className="w-3.5 h-3.5 mr-2" />
                   Início
@@ -374,8 +386,12 @@ function MainApp() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      variant={sortBy !== 'recent' ? "default" : "outline"}
-                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 gap-2 ${sortBy !== 'recent' ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                      variant="ghost"
+                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] gap-2 ${
+                        sortBy !== 'recent' 
+                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
+                          : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
+                      }`}
                     >
                       {sortBy === 'az' && <SortAsc className="w-3.5 h-3.5" />}
                       {sortBy === 'numeric' && <Hash className="w-3.5 h-3.5" />}
@@ -425,14 +441,14 @@ function MainApp() {
                   return (
                     <Button
                       key={tag}
-                      variant={isSelected ? "default" : "outline"}
+                      variant="ghost"
                       onClick={() => { setSelectedTag(isSelected ? null : tag); setShowCarousel(false); }}
-                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
+                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
                         isSelected 
-                          ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
+                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
                           : isSpecial 
-                            ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                            : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"
+                            ? "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A]/30 hover:bg-[#FF007A]/20" 
+                            : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
