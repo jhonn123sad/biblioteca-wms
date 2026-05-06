@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { Prompt } from "../hooks/usePrompts";
-import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 const neonColors = [
   'bg-[#FF00FF] text-white border-transparent', 
