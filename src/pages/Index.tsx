@@ -115,6 +115,10 @@ function MainApp() {
   };
 
 
+  /**
+   * Memoização dos prompts organizados por categoria ou filtrados por tag/busca.
+   * Inclui lógica de ordenação (Recentes, A a Z, Ordem Numérica, Mais Vistos).
+   */
   const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
     
@@ -128,24 +132,34 @@ function MainApp() {
       return Array.from(new Set(matches));
     };
 
-    let basePrompts = prompts ? [...prompts] : [];
+    let basePrompts = [...prompts];
 
-    // Sorting logic
+    // Lógica de Ordenação
     if (sortBy === 'az') {
       basePrompts.sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === 'numeric') {
       basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     } else if (sortBy === 'popular') {
-      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+      // Ordena pelas visualizações simuladas salvas no localStorage
+      basePrompts.sort((a, b) => {
+        const viewsA = parseInt(localStorage.getItem(`views_${a.id}`) || "0");
+        const viewsB = parseInt(localStorage.getItem(`views_${b.id}`) || "0");
+        if (viewsB !== viewsA) return viewsB - viewsA;
+        return parseInt(b.id) - parseInt(a.id);
+      });
     } else {
+      // Padrão: Recentes (IDs maiores primeiro)
       basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
+    // Se uma tag estiver selecionada, retorna apenas a lista flat para aquela tag
     if (selectedTag) {
       const targetTag = selectedTag.toLowerCase();
-      return basePrompts.filter(p => getPromptTags(p).includes(targetTag));
+      const filtered = basePrompts.filter(p => getPromptTags(p).includes(targetTag));
+      return [{ tag: selectedTag, prompts: filtered }];
     }
 
+    // Caso contrário, agrupa por categorias baseadas nas tags conhecidas
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
@@ -510,7 +524,7 @@ function MainApp() {
           <div className="space-y-12">
             {searchTerm || selectedTag ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(searchTerm ? filteredPrompts : organizedPrompts as Prompt[])?.map((prompt) => prompt ? (
+                {(searchTerm ? filteredPrompts : (organizedPrompts as {tag: string|null, prompts: Prompt[]}[])[0]?.prompts)?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 

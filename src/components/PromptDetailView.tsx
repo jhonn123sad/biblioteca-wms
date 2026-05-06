@@ -19,6 +19,10 @@ export function PromptDetailView({ prompt, onClose }: PromptDetailViewProps) {
     if (!prompt.content) return;
     navigator.clipboard.writeText(prompt.content);
     toast.success("Prompt copiado!");
+    
+    // Tracking de visualizações/popularidade simulado
+    const views = parseInt(localStorage.getItem(`views_${prompt.id}`) || "0");
+    localStorage.setItem(`views_${prompt.id}`, (views + 1).toString());
   };
 
   useEffect(() => {
