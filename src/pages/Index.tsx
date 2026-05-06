@@ -441,14 +441,14 @@ function MainApp() {
                   return (
                     <Button
                       key={tag}
-                      variant={isSelected ? "default" : "outline"}
+                      variant="ghost"
                       onClick={() => { setSelectedTag(isSelected ? null : tag); setShowCarousel(false); }}
-                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
+                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
                         isSelected 
-                          ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
+                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
                           : isSpecial 
-                            ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                            : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"
+                            ? "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A]/30 hover:bg-[#FF007A]/20" 
+                            : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
