@@ -30,15 +30,15 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
     <header className="sticky top-0 z-[60] bg-background/80 backdrop-blur-xl border-b border-border safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
       <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-          <div className="h-10 w-10 md:h-16 md:w-16 flex items-center justify-center">
+          <div className="h-10 w-10 md:h-16 md:w-16 flex items-center justify-center overflow-hidden">
             <img 
               src="https://lovable-uploads.s3.us-west-2.amazonaws.com/97486e9e-56e2-4545-978d-966952e46e8c.png" 
-              alt="" 
+              alt="WMS Logo" 
               className="h-full w-full object-contain transition-all hover:scale-110 duration-500 drop-shadow-sm dark:block hidden" 
             />
             <img 
               src="https://lovable-uploads.s3.us-west-2.amazonaws.com/994dd462-eb09-41db-bdb2-58d7fe833713.png" 
-              alt="" 
+              alt="WMS Logo" 
               className="h-full w-full object-contain transition-all hover:scale-110 duration-500 block dark:hidden" 
             />
           </div>
