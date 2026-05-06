@@ -1,18 +1,8 @@
-import { Search, RotateCw, Menu, Moon, Sun, LogIn, LogOut, Monitor } from "lucide-react";
+import { Search, RotateCw, Moon, Sun, LogIn, LogOut } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-  DropdownMenuPortal,
-} from "./ui/dropdown-menu";
+import { useEffect, useState } from "react";
 
 interface AppHeaderProps {
   searchTerm: string;
@@ -25,7 +15,17 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout, isAuthenticated, onLogin }: AppHeaderProps) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <header className="sticky top-0 z-[60] bg-background/80 backdrop-blur-xl border-b border-border safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
@@ -57,51 +57,40 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
             <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="w-8 h-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
-              >
-                <Menu className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-background border-border animate-in fade-in slide-in-from-top-2 duration-200">
-              {isAuthenticated ? (
-                <DropdownMenuItem onClick={onLogout} className="text-destructive focus:text-destructive cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sair</span>
-                </DropdownMenuItem>
+          {mounted && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleTheme}
+              className="w-8 h-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform duration-300 active:rotate-45"
+              title="Alternar Tema"
+            >
+              {resolvedTheme === 'dark' ? (
+                <Moon className="w-4 h-4 text-white" />
               ) : (
-                <DropdownMenuItem onClick={onLogin} className="cursor-pointer">
-                  <LogIn className="mr-2 h-4 w-4" />
-                  <span>Entrar</span>
-                </DropdownMenuItem>
+                <Sun className="w-4 h-4 text-foreground" />
               )}
-              
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer">
-                  {theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-                  <span>Modo</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="bg-background border-border animate-in fade-in slide-in-from-left-2 duration-200">
-                    <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
-                      <Sun className="mr-2 h-4 w-4" />
-                      <span>Claro</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
-                      <Moon className="mr-2 h-4 w-4" />
-                      <span>Escuro</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </Button>
+          )}
+
+          {isAuthenticated ? (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onLogout}
+              className="w-8 h-8 rounded-full text-destructive hover:bg-destructive/10"
+              title="Sair"
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          ) : (
+            <Button 
+              onClick={onLogin}
+              className="rounded-full px-4 h-8 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
+            >
+              Entrar
+            </Button>
+          )}
         </div>
       </div>
     </header>
