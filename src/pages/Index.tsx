@@ -78,7 +78,7 @@ function MainApp() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
-  const [gridCols, setGridCols] = useState<4 | 5>(5);
+  // Grid selection removed per user request, defaulting to 5 columns
   const [sortBy, setSortBy] = useState<SortOption>('recent');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
