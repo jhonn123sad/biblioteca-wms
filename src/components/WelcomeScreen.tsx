@@ -6,7 +6,7 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ userName }: WelcomeScreenProps) {
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 transition-all duration-1000">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 transition-all duration-1000 select-none">
       <div className="text-center space-y-6 animate-in fade-in zoom-in duration-1000 slide-in-from-bottom-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
