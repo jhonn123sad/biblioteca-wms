@@ -462,7 +462,7 @@ function MainApp() {
                     >
                       {group.tag || "Sem Categoria"}
                     </motion.h3>
-                    <div className="h-px flex-1 bg-black/[0.05]" />
+                    <div className="h-px flex-1 bg-border/50" />
                   </div>
                   <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                     {group.prompts.map((prompt) => (
