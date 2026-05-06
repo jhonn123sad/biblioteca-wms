@@ -366,12 +366,7 @@ function MainApp() {
                   Início
                 </Button>
                 
-                <div
-                  className="rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex items-center transition-all duration-300 border backdrop-blur-xl shadow-lg gap-2 bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70"
-                >
-                  <Hash className="w-3.5 h-3.5" />
-                  <span>Ordem Numérica</span>
-                </div>
+                {/* Bloco de Ordem Numérica removido por solicitação do usuário */}
 
                 {allTags.map(tag => {
                   const isSpecial = tag.toLowerCase() === "curso dentro";
