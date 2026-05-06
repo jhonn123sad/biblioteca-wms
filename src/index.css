@@ -54,20 +54,23 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
   width: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
+  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--primary);
+  opacity: 0.5;
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--primary);
 }
 #lovable-badge {
   display: none !important;
