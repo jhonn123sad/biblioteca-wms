@@ -65,6 +65,7 @@ function MainApp() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
+  const [gridCols, setGridCols] = useState<4 | 5>(4);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -295,14 +296,36 @@ function MainApp() {
                 <Filter className="w-4 h-4 text-black/40" />
                 <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-black/60">Filtros da Biblioteca</h3>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="md:hidden text-[10px] font-bold uppercase tracking-wider bg-black/5 rounded-lg px-3 h-8"
-              >
-                {isFilterOpen ? "Fechar" : "Ver Categorias"}
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="hidden md:flex items-center bg-secondary/30 rounded-lg p-1 border border-border mr-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setGridCols(4)}
+                    className={`w-7 h-7 rounded-md transition-all ${gridCols === 4 ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    title="Grade de 4"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setGridCols(5)}
+                    className={`w-7 h-7 rounded-md transition-all ${gridCols === 5 ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    title="Grade de 5"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="5" height="7"></rect><rect x="9.5" y="3" width="5" height="7"></rect><rect x="17" y="3" width="5" height="7"></rect><rect x="2" y="14" width="5" height="7"></rect><rect x="9.5" y="14" width="5" height="7"></rect><rect x="17" y="14" width="5" height="7"></rect></svg>
+                  </Button>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className="md:hidden text-[10px] font-bold uppercase tracking-wider bg-black/5 rounded-lg px-3 h-8"
+                >
+                  {isFilterOpen ? "Fechar" : "Ver Categorias"}
+                </Button>
+              </div>
             </div>
 
             <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-2.5 transition-all duration-300`}>
@@ -395,7 +418,7 @@ function MainApp() {
         ) : (
           <div className="space-y-12">
             {searchTerm ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
+              <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                 {(filteredPrompts as Prompt[])?.map((prompt) => (
                   <PromptCard 
                     key={`${prompt.id}-search`} 
@@ -405,7 +428,7 @@ function MainApp() {
                 ))}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
+              <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                 {(organizedPrompts as Prompt[])?.map((prompt) => (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
@@ -421,7 +444,7 @@ function MainApp() {
                     <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80">{group.tag || "Sem Categoria"}</h3>
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
+                  <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                     {group.prompts.map((prompt) => (
                       <PromptCard 
                         key={`${group.tag}-${prompt.id}`} 
