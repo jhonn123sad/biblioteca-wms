@@ -128,7 +128,7 @@ function MainApp() {
       return Array.from(new Set(matches));
     };
 
-    let basePrompts = prompts ? [...prompts] : [];
+    let basePrompts = [...prompts];
 
     // Sorting logic
     if (sortBy === 'az') {
@@ -136,8 +136,15 @@ function MainApp() {
     } else if (sortBy === 'numeric') {
       basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     } else if (sortBy === 'popular') {
-      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+      // Usando uma lógica determinística baseada no ID para simular popularidade
+      // já que não temos tráfego real no frontend
+      basePrompts.sort((a, b) => {
+        const hashA = a.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const hashB = b.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return (hashB % 100) - (hashA % 100);
+      });
     } else {
+      // recent: descending ID (supondo que IDs maiores são mais novos)
       basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
@@ -163,6 +170,24 @@ function MainApp() {
     });
 
     const result: { tag: string | null, prompts: Prompt[] }[] = [];
+    allTags.forEach(tag => {
+      if (categories[tag]) {
+        result.push({
+          tag,
+          prompts: categories[tag]
+        });
+      }
+    });
+
+    if (uncategorized.length > 0) {
+      result.push({
+        tag: null,
+        prompts: uncategorized
+      });
+    }
+
+    return result;
+  }, [prompts, selectedTag, allTags, sortBy]);
     allTags.forEach(tag => {
       if (categories[tag]) {
         result.push({
