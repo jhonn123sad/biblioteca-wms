@@ -2,14 +2,14 @@ import { Users, Instagram, Youtube, ExternalLink } from "lucide-react";
 
 export function AppFooter() {
   return (
-    <footer className="container mx-auto px-4 md:px-12 py-16 border-t border-black/[0.05] mt-20 bg-black/[0.01]">
+    <footer className="container mx-auto px-4 md:px-12 py-16 border-t border-border mt-20 bg-secondary/20">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <img src="/logo-wms.png" alt="WMS Logo" className="h-10 w-10 object-contain rounded-xl" />
-            <h2 className="text-xl font-black uppercase tracking-tighter">WMS Society</h2>
+            <h2 className="text-xl font-black uppercase tracking-tighter text-foreground">WMS Society</h2>
           </div>
-          <p className="text-gray-400 text-sm font-light leading-relaxed max-w-xs">
+          <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-xs">
             A maior comunidade de tecnologia e lifestyle para quem busca a liberdade através da internet.
           </p>
         </div>
