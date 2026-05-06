@@ -145,7 +145,13 @@ export function usePrompts() {
       }
     });
     
-    return uniqueTags.sort((a, b) => a.localeCompare(b));
+    return uniqueTags.sort((a, b) => {
+      const aLower = a.toLowerCase();
+      const bLower = b.toLowerCase();
+      if (aLower.includes('método') || aLower.includes('metodo')) return -1;
+      if (bLower.includes('método') || bLower.includes('metodo')) return 1;
+      return a.localeCompare(b);
+    });
   }, [prompts]);
 
   return { prompts, allTags, isLoading, refetch, isError };
