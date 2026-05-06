@@ -451,7 +451,7 @@ function MainApp() {
                     <Button
                       key={tag}
                       variant={isSelected ? "default" : "outline"}
-                      onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
+                      onClick={() => { setSelectedTag(isSelected ? null : tag); setShowCarousel(false); }}
                       className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
                         isSelected 
                           ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
@@ -467,10 +467,10 @@ function MainApp() {
                   );
                 })}
 
-                {(selectedTag || viewAllOrder) && (
+                {(selectedTag || sortBy !== 'recent') && (
                   <Button 
                     variant="ghost" 
-                    onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
+                    onClick={() => { setSelectedTag(null); setSortBy('recent'); setShowCarousel(true); }}
                     className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl flex-none ml-2"
                   >
                     <X className="w-3 h-3" />
