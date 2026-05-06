@@ -78,7 +78,7 @@ function MainApp() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
-  const [gridCols, setGridCols] = useState<4 | 5>(4);
+  // Grid selection removed per user request, defaulting to 5 columns
   const [sortBy, setSortBy] = useState<SortOption>('recent');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -347,34 +347,7 @@ function MainApp() {
                 <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-muted-foreground/60">Filtros da Biblioteca</h3>
               </div>
               <div className="flex items-center gap-2">
-                <div className="hidden md:flex items-center bg-secondary/30 rounded-lg p-1 border border-border mr-2">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => setGridCols(4)}
-                    className={`w-7 h-7 rounded-md transition-all backdrop-blur-md border ${
-                      gridCols === 4 
-                        ? 'bg-primary/90 text-primary-foreground border-primary/50 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
-                        : 'bg-white/40 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/60 dark:hover:bg-black/60'
-                    }`}
-                    title="Grade de 4"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => setGridCols(5)}
-                    className={`w-7 h-7 rounded-md transition-all backdrop-blur-md border ${
-                      gridCols === 5 
-                        ? 'bg-primary/90 text-primary-foreground border-primary/50 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
-                        : 'bg-white/40 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/60 dark:hover:bg-black/60'
-                    }`}
-                    title="Grade de 5"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="5" height="7"></rect><rect x="9.5" y="3" width="5" height="7"></rect><rect x="17" y="3" width="5" height="7"></rect><rect x="2" y="14" width="5" height="7"></rect><rect x="9.5" y="14" width="5" height="7"></rect><rect x="17" y="14" width="5" height="7"></rect></svg>
-                  </Button>
-                </div>
+                {/* Grid selection removed per user request, defaulting to 5 columns */}
               </div>
             </div>
 
@@ -510,7 +483,7 @@ function MainApp() {
         ) : (
           <div className="space-y-12">
             {searchTerm || selectedTag ? (
-              <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 md:gap-6">
                 {(searchTerm ? filteredPrompts : (organizedPrompts as {tag: string|null, prompts: Prompt[]}[])[0]?.prompts)?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
@@ -533,7 +506,7 @@ function MainApp() {
                     </motion.h3>
                     <div className="h-px flex-1 bg-border/50" />
                   </div>
-                  <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 md:gap-6">
                     {group.prompts.map((prompt) => prompt ? (
                       <PromptCard 
                         key={`${group.tag}-${prompt.id}`} 
