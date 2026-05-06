@@ -74,12 +74,12 @@ function MainApp() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
-  const [viewAllOrder, setViewAllOrder] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
   const [gridCols, setGridCols] = useState<4 | 5>(4);
+  const [sortBy, setSortBy] = useState<SortOption>('recent');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
