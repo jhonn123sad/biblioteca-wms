@@ -15,27 +15,27 @@ export function AppFooter() {
         </div>
         
         <div className="space-y-6">
-          <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 flex items-center gap-2">
+          <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
             <Users className="w-4 h-4" />
             Nossa Comunidade
           </h3>
           <div className="grid grid-cols-1 gap-3">
-            <a href="https://www.instagram.com/webmoneysociety/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-black/[0.03] shadow-sm hover:shadow-md transition-all group">
+            <a href="https://www.instagram.com/webmoneysociety/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-all group">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#FF007A] via-[#833AB4] to-[#FCAF45] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                 <Instagram className="w-6 h-6" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-bold">Instagram</span>
-                <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider">@webmoneysociety</span>
+                <span className="text-sm font-bold text-foreground">Instagram</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-black tracking-wider">@webmoneysociety</span>
               </div>
             </a>
-            <a href="https://www.youtube.com/@WMoneySociety" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-black/[0.03] shadow-sm hover:shadow-md transition-all group">
+            <a href="https://www.youtube.com/@WMoneySociety" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-all group">
               <div className="w-12 h-12 rounded-xl bg-[#FF0000] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                 <Youtube className="w-6 h-6" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-bold">YouTube</span>
-                <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider">Inscreva-se</span>
+                <span className="text-sm font-bold text-foreground">YouTube</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-black tracking-wider">Inscreva-se</span>
               </div>
             </a>
           </div>
