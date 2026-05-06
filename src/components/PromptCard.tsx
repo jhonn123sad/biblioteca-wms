@@ -106,6 +106,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
           Visualizar
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }
