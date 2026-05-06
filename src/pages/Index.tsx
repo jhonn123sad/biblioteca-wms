@@ -188,7 +188,7 @@ function MainApp() {
           variant="ghost" 
           size="icon" 
           onClick={() => { setShowAuthOverlay(false); setPendingPrompt(null); }}
-          className="absolute top-6 left-6 z-50 w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+          className="absolute top-6 left-6 z-50 w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 transition-colors border border-border"
         >
           <ChevronLeft className="w-6 h-6" />
         </Button>
@@ -253,6 +253,7 @@ function MainApp() {
         <AnimatePresence mode="wait">
           {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
             <motion.div 
+              key="carousel-section"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -420,7 +421,7 @@ function MainApp() {
             <AlertCircle className="w-10 h-10 text-red-500" />
             <h3 className="text-lg font-bold">Erro ao carregar dados</h3>
             <p className="text-sm text-gray-500">Não foi possível conectar à base de dados.</p>
-            <Button onClick={() => refetch()} className="bg-black text-white rounded-xl">Tentar Novamente</Button>
+            <Button onClick={() => refetch()} variant="default" className="rounded-xl shadow-lg shadow-primary/20">Tentar Novamente</Button>
           </div>
         ) : (searchTerm ? filteredPrompts : organizedPrompts)?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
@@ -432,23 +433,23 @@ function MainApp() {
           <div className="space-y-12">
             {searchTerm ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(filteredPrompts as Prompt[])?.map((prompt) => (
+                {(filteredPrompts as Prompt[])?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-search`} 
                     prompt={prompt} 
                     onView={() => handleViewPrompt(prompt)}
                   />
-                ))}
+                ) : null)}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(organizedPrompts as Prompt[])?.map((prompt) => (
+                {(organizedPrompts as Prompt[])?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 
                     onView={() => handleViewPrompt(prompt)}
                   />
-                ))}
+                ) : null)}
               </div>
             ) : (
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
@@ -465,13 +466,13 @@ function MainApp() {
                     <div className="h-px flex-1 bg-border/50" />
                   </div>
                   <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                    {group.prompts.map((prompt) => (
+                    {group.prompts.map((prompt) => prompt ? (
                       <PromptCard 
                         key={`${group.tag}-${prompt.id}`} 
                         prompt={prompt} 
                         onView={() => handleViewPrompt(prompt)}
                       />
-                    ))}
+                    ) : null)}
                   </div>
                 </div>
               ))

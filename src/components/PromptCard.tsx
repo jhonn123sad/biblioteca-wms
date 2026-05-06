@@ -33,21 +33,26 @@ interface PromptCardProps {
 }
 
 export function PromptCard({ prompt, onView }: PromptCardProps) {
-  const mainImage = prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`;
+  const title = prompt?.title || "Sem Título";
+  const description = prompt?.description || "";
+  const mainImage = (prompt?.images && prompt.images[0]) || `https://placehold.co/600x800?text=${encodeURIComponent(title)}`;
   
   // Extract number and tags from title
-  const idMatch = prompt.title.match(/#\d+/);
+  const idMatch = title.match(/#\d+/);
   const tagRegex = /\[([^\]]+)\](?!\()/g;
-  const tags = Array.from(prompt.title.matchAll(tagRegex)).map(match => match[1].trim());
+  const rawTags = Array.from(title.matchAll(tagRegex)).map(match => match[1].trim());
+  
+  // Filter out the ID from tags if it appears in brackets like [#34]
+  const tags = rawTags.filter(tag => !/^#?\d+$/.test(tag));
   
   // Clean title: remove #number and [tags]
-  const cleanTitle = prompt.title
+  const cleanTitle = title
     .replace(/#\d+/, '')
     .replace(/\[([^\]]+)\](?!\()/g, '')
     .trim();
 
   // Clean description: remove [tags]
-  const cleanDescription = prompt.description
+  const cleanDescription = description
     .replace(/\[([^\]]+)\](?!\()/g, '')
     .trim();
 
