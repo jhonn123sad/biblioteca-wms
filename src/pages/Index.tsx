@@ -540,7 +540,7 @@ function MainApp() {
         onClose={() => setSelectedPrompt(null)} 
       />
     )}
-  </div>
+    </div>
   );
 }
 
