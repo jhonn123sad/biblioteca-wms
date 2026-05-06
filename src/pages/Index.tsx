@@ -352,7 +352,7 @@ function MainApp() {
             </div>
 
             <div className="relative group/filters overflow-hidden">
-              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-1">
+              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-1 touch-pan-x">
                 <Button
                   variant="ghost"
                   onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
