@@ -271,7 +271,7 @@ function MainApp() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
+          {!isLoading && !searchTerm && showCarousel && !selectedTag && (
             <motion.div 
               key="carousel-section"
               initial={{ opacity: 0 }}
