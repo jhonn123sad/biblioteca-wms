@@ -110,9 +110,10 @@ export function usePrompts() {
         throw err;
       }
     },
-    retry: 2,
-    refetchInterval: 120000, // Atualiza a cada 2 minutos (reduzido para poupar API)
-    staleTime: 60000,       // Considera dados "frescos" por 1 minuto
+    retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10, // Dados considerados frescos por 10 minutos
+    gcTime: 1000 * 60 * 30,    // Mantém no cache por 30 minutos
   });
 
   /**
