@@ -115,6 +115,10 @@ function MainApp() {
   };
 
 
+  /**
+   * Memoização dos prompts organizados por categoria ou filtrados por tag/busca.
+   * Inclui lógica de ordenação (Recentes, A a Z, Ordem Numérica, Mais Vistos).
+   */
   const organizedPrompts = useMemo(() => {
     if (!prompts) return [];
     
@@ -130,13 +134,13 @@ function MainApp() {
 
     let basePrompts = [...prompts];
 
-    // Sorting logic
+    // Lógica de Ordenação
     if (sortBy === 'az') {
       basePrompts.sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === 'numeric') {
       basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     } else if (sortBy === 'popular') {
-      // Ordena pelas visualizações salvas no localStorage
+      // Ordena pelas visualizações simuladas salvas no localStorage
       basePrompts.sort((a, b) => {
         const viewsA = parseInt(localStorage.getItem(`views_${a.id}`) || "0");
         const viewsB = parseInt(localStorage.getItem(`views_${b.id}`) || "0");
@@ -144,16 +148,18 @@ function MainApp() {
         return parseInt(b.id) - parseInt(a.id);
       });
     } else {
-      // recent: descending ID
+      // Padrão: Recentes (IDs maiores primeiro)
       basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
+    // Se uma tag estiver selecionada, retorna apenas a lista flat para aquela tag
     if (selectedTag) {
       const targetTag = selectedTag.toLowerCase();
       const filtered = basePrompts.filter(p => getPromptTags(p).includes(targetTag));
       return [{ tag: selectedTag, prompts: filtered }];
     }
 
+    // Caso contrário, agrupa por categorias baseadas nas tags conhecidas
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
