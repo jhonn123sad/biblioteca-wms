@@ -420,7 +420,7 @@ function MainApp() {
             <AlertCircle className="w-10 h-10 text-red-500" />
             <h3 className="text-lg font-bold">Erro ao carregar dados</h3>
             <p className="text-sm text-gray-500">Não foi possível conectar à base de dados.</p>
-            <Button onClick={() => refetch()} className="bg-black text-white rounded-xl">Tentar Novamente</Button>
+            <Button onClick={() => refetch()} variant="default" className="rounded-xl shadow-lg shadow-primary/20">Tentar Novamente</Button>
           </div>
         ) : (searchTerm ? filteredPrompts : organizedPrompts)?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
