@@ -21,18 +21,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
       <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center mb-6">
-            <div className="h-20 w-20 md:h-24 md:w-24 flex items-center justify-center">
-              <img 
-                src="https://lovable-uploads.s3.us-west-2.amazonaws.com/97486e9e-56e2-4545-978d-966952e46e8c.png" 
-                alt="WMS Logo Dark" 
-                className="h-full w-full object-contain hidden dark:block" 
-              />
-              <img 
-                src="https://lovable-uploads.s3.us-west-2.amazonaws.com/994dd462-eb09-41db-bdb2-58d7fe833713.png" 
-                alt="WMS Logo Light" 
-                className="h-full w-full object-contain block dark:hidden" 
-              />
-            </div>
+            <BrandLogo className="h-20 w-20 md:h-24 md:w-24" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Biblioteca WMS</h1>
           <p className="text-muted-foreground font-light leading-relaxed text-sm md:text-base px-2">
