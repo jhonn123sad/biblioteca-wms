@@ -288,7 +288,7 @@ function MainApp() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3"
         >
-          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-foreground dark:text-white">Biblioteca WMS</h2>
+          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-foreground dark:text-white">BIBLIOTECA WMS</h2>
           <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0 dark:text-white/70">
             Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
@@ -462,7 +462,7 @@ function MainApp() {
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
-                      {tag}
+                      {tag === "Biblioteca WMS" ? "Prompts" : tag}
                       <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
                     </Button>
                   );

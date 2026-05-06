@@ -52,7 +52,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
           <div className="flex items-center justify-center mb-6">
             <BrandLogo className="h-40 w-40 md:h-48 md:w-48" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Biblioteca WMS</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">BIBLIOTECA WMS</h1>
           <p className="text-muted-foreground font-light leading-relaxed text-sm md:text-base px-2">
             Esta é uma área exclusiva. Use seu número cadastrado para entrar.
           </p>
