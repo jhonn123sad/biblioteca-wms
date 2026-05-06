@@ -357,22 +357,51 @@ function MainApp() {
             <div className="relative group/filters overflow-hidden">
               <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 custom-scrollbar cursor-grab active:cursor-grabbing select-none px-1">
                 <Button
-                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
-                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                  variant={(!selectedTag) ? "default" : "outline"}
+                  onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
+                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
                 >
                   <Grid className="w-3.5 h-3.5 mr-2" />
                   Início
                 </Button>
                 
-                <Button
-                  variant={viewAllOrder ? "default" : "outline"}
-                  onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
-                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
-                >
-                  <span className="mr-2 font-black">#</span>
-                  Ordem Numérica
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant={sortBy !== 'recent' ? "default" : "outline"}
+                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 gap-2 ${sortBy !== 'recent' ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                    >
+                      {sortBy === 'az' && <SortAsc className="w-3.5 h-3.5" />}
+                      {sortBy === 'numeric' && <Hash className="w-3.5 h-3.5" />}
+                      {sortBy === 'popular' && <Eye className="w-3.5 h-3.5" />}
+                      {sortBy === 'recent' && <Clock className="w-3.5 h-3.5" />}
+                      <span>
+                        {sortBy === 'recent' ? 'Ordenar' : 
+                         sortBy === 'az' ? 'A a Z' : 
+                         sortBy === 'numeric' ? 'Nº' : 'Vistos'}
+                      </span>
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem onClick={() => setSortBy('recent')} className="gap-2 cursor-pointer">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Recentes</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('az')} className="gap-2 cursor-pointer">
+                      <SortAsc className="w-3.5 h-3.5" />
+                      <span>A a Z</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('numeric')} className="gap-2 cursor-pointer">
+                      <Hash className="w-3.5 h-3.5" />
+                      <span>Ordem Numérica</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('popular')} className="gap-2 cursor-pointer">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Mais Vistos</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 <div className="w-px h-10 bg-border/50 mx-1 flex-none" />
 
