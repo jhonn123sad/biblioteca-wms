@@ -43,7 +43,7 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
           <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
         </div>
         
-        <div className="relative flex-1 max-w-[180px] xs:max-w-md group min-w-0">
+        <div className="relative flex-1 max-w-[220px] xs:max-w-md md:max-w-2xl group min-w-0 mx-2 md:mx-6">
           <Search className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3 md:w-3.5 h-3 md:h-3.5 text-muted-foreground group-focus-within:text-primary" />
           <input 
             type="text" 
