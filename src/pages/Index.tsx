@@ -352,8 +352,8 @@ function MainApp() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
             <div className="relative">
-              <div className="w-10 h-10 border-2 border-black/5 rounded-full" />
-              <div className="w-10 h-10 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" />
+              <div className="w-10 h-10 border-2 border-primary/10 rounded-full" />
+              <div className="w-10 h-10 border-t-2 border-primary rounded-full animate-spin absolute top-0 left-0" />
             </div>
             <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
           </div>
