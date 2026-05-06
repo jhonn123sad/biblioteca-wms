@@ -304,7 +304,7 @@ function MainApp() {
               className="mb-8 md:mb-12 relative w-full"
             >
             <div className="flex items-center justify-between mb-3 md:mb-4">
-              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Recentes</h3>
+              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Destaques</h3>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
