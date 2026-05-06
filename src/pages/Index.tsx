@@ -532,6 +532,7 @@ function MainApp() {
         )}
       </main>
       <AppFooter />
+      </div>
       {selectedPrompt && (
         <PromptDetailView 
           prompt={selectedPrompt} 
