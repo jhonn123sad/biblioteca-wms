@@ -541,7 +541,7 @@ function MainApp() {
       />
     )}
   </div>
-);
+  );
 }
 
 export default function Index() {
