@@ -188,24 +188,6 @@ function MainApp() {
 
     return result;
   }, [prompts, selectedTag, allTags, sortBy]);
-    allTags.forEach(tag => {
-      if (categories[tag]) {
-        result.push({
-          tag,
-          prompts: categories[tag]
-        });
-      }
-    });
-
-    if (uncategorized.length > 0) {
-      result.push({
-        tag: null,
-        prompts: uncategorized
-      });
-    }
-
-    return result;
-  }, [prompts, selectedTag, allTags, sortBy]);
 
   const filteredPrompts = useMemo(() => {
     const search = searchTerm.toLowerCase();
