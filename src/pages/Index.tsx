@@ -404,7 +404,6 @@ function MainApp() {
             </div>
           </div>
         )}
-        )}
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
