@@ -354,7 +354,7 @@ function MainApp() {
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
               >
                 <span className="mr-2 font-black">#</span>
                 Ordem Numérica
