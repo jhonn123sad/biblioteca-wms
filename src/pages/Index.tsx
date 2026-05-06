@@ -298,8 +298,9 @@ function MainApp() {
                 <span className="text-[9px] md:text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">Ordem Numérica</span>
               </button>
             </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {!isLoading && (
           <div className="mb-8 flex flex-col gap-4">
