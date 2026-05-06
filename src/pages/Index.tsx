@@ -288,17 +288,48 @@ function MainApp() {
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8">
-                  <span>Ordem Numérica</span>
-                  <ExternalLink className="w-2.5 h-2.5 ml-1" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8 gap-1">
+                      {sortBy === 'recent' && <Clock className="w-3 h-3" />}
+                      {sortBy === 'az' && <SortAsc className="w-3 h-3" />}
+                      {sortBy === 'numeric' && <Hash className="w-3 h-3" />}
+                      {sortBy === 'popular' && <Eye className="w-3 h-3" />}
+                      <span>
+                        {sortBy === 'recent' && 'Recentes'}
+                        {sortBy === 'az' && 'A a Z'}
+                        {sortBy === 'numeric' && 'Ordem Numérica'}
+                        {sortBy === 'popular' && 'Mais Vistos'}
+                      </span>
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem onClick={() => setSortBy('recent')} className="gap-2 cursor-pointer">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Recentes</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('az')} className="gap-2 cursor-pointer">
+                      <SortAsc className="w-3.5 h-3.5" />
+                      <span>A a Z</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('numeric')} className="gap-2 cursor-pointer">
+                      <Hash className="w-3.5 h-3.5" />
+                      <span>Ordem Numérica</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('popular')} className="gap-2 cursor-pointer">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Mais Vistos</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
             
             <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-1">
               {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
-                  <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
+                <div key={`preview-${prompt?.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
+                  <img src={prompt?.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt?.title || '')}`} alt={prompt?.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
                     <Button 
                       onClick={() => handleViewPrompt(prompt)}
@@ -309,13 +340,13 @@ function MainApp() {
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
                     <span className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-tighter line-clamp-1">
-                      {prompt.title.match(/#\d+/)?.[0] || ""}
+                      {prompt?.title.match(/#\d+/)?.[0] || ""}
                     </span>
                   </div>
                 </div>
               ))}
-              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-secondary/50 transition-colors snap-start">
-                <Grid className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground/40" />
+              <button onClick={() => setSortBy('numeric')} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-secondary/50 transition-colors snap-start">
+                <Hash className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground/40" />
                 <span className="text-[9px] md:text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">Ordem Numérica</span>
               </button>
             </div>
