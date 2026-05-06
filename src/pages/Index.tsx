@@ -250,8 +250,14 @@ function MainApp() {
           </p>
         </motion.div>
 
-        {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
-          <div className="mb-8 md:mb-12 relative w-full">
+        <AnimatePresence mode="wait">
+          {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mb-8 md:mb-12 relative w-full"
+            >
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Recentes</h3>
               <div className="flex items-center gap-2">
