@@ -32,12 +32,12 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-white flex items-center justify-center p-6 text-center">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6 text-center">
           <div className="space-y-4">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
             <h1 className="text-xl font-bold">Ops! Algo deu errado.</h1>
-            <p className="text-gray-500 text-sm">O sistema encontrou um erro inesperado.</p>
-            <Button onClick={() => window.location.reload()} className="bg-black text-white rounded-xl">Recarregar Página</Button>
+            <p className="text-muted-foreground text-sm">O sistema encontrou um erro inesperado.</p>
+            <Button onClick={() => window.location.reload()} className="bg-primary text-primary-foreground rounded-xl">Recarregar Página</Button>
           </div>
         </div>
       );
