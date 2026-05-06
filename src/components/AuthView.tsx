@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Lock, Phone, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Phone, Loader2, Moon, Sun } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { Button } from "./ui/button";
+import { useTheme } from "next-themes";
 
 interface AuthViewProps {
   onLogin: (phone: string) => Promise<boolean>;
@@ -10,14 +11,42 @@ interface AuthViewProps {
 
 export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onLogin(phoneNumber);
   };
 
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-primary selection:text-primary-foreground relative">
+      {mounted && (
+        <div className="absolute top-6 right-6">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleTheme}
+            className="w-10 h-10 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform duration-300 active:rotate-45 border border-border bg-background/50 backdrop-blur-sm"
+            title="Alternar Tema"
+          >
+            {resolvedTheme === 'dark' ? (
+              <Moon className="w-5 h-5 text-white" />
+            ) : (
+              <Sun className="w-5 h-5 text-foreground" />
+            )}
+          </Button>
+        </div>
+      )}
+
       <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center mb-6">
@@ -44,9 +73,9 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
           <Button 
             type="submit" 
             disabled={isVerifying || !phoneNumber}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl h-14 md:h-16 text-base font-bold shadow-xl shadow-primary/10 transition-all active:scale-[0.98]"
+            className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-14 md:h-16 text-base font-bold shadow-xl shadow-primary/10 transition-all active:scale-[0.98]"
           >
-            {isVerifying ? <Loader2 className="w-6 h-6 animate-spin" /> : "Entrar na Biblioteca"}
+            {isVerifying ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : <span className="text-white">Entrar na Biblioteca</span>}
           </Button>
 
           <div className="text-center pt-2">
