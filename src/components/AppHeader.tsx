@@ -33,13 +33,15 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
           <div className="h-10 w-10 md:h-16 md:w-16 flex items-center justify-center">
             <img 
               src="https://lovable-uploads.s3.us-west-2.amazonaws.com/97486e9e-56e2-4545-978d-966952e46e8c.png" 
-              alt="WMS Logo" 
-              className="h-full w-full object-contain transition-all hover:scale-110 duration-500 drop-shadow-sm dark:flex hidden" 
+              alt="" 
+              className="h-full w-full object-contain transition-all hover:scale-110 duration-500 drop-shadow-sm dark:block hidden" 
+              onError={(e) => (e.currentTarget.style.display = 'none')}
             />
             <img 
               src="https://lovable-uploads.s3.us-west-2.amazonaws.com/994dd462-eb09-41db-bdb2-58d7fe833713.png" 
-              alt="WMS Logo" 
-              className="h-full w-full object-contain transition-all hover:scale-110 duration-500 flex dark:hidden" 
+              alt="" 
+              className="h-full w-full object-contain transition-all hover:scale-110 duration-500 light:block dark:hidden" 
+              onError={(e) => (e.currentTarget.style.display = 'none')}
             />
           </div>
           <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
