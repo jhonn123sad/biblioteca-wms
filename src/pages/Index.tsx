@@ -366,49 +366,12 @@ function MainApp() {
                   Início
                 </Button>
                 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] gap-2 ${
-                        sortBy !== 'recent' 
-                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
-                          : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
-                      }`}
-                    >
-                      {sortBy === 'az' && <SortAsc className="w-3.5 h-3.5" />}
-                      {sortBy === 'numeric' && <Hash className="w-3.5 h-3.5" />}
-                      {sortBy === 'popular' && <Eye className="w-3.5 h-3.5" />}
-                      {sortBy === 'recent' && <Clock className="w-3.5 h-3.5" />}
-                      <span>
-                        {sortBy === 'recent' ? 'Ordenar' : 
-                         sortBy === 'az' ? 'Alfabética' : 
-                         sortBy === 'numeric' ? 'Nº' : 'Vistos'}
-                      </span>
-                      <ChevronDown className="w-3 h-3 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-48">
-                    <DropdownMenuItem onClick={() => setSortBy('recent')} className="gap-2 cursor-pointer">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>Recentes</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy('az')} className="gap-2 cursor-pointer">
-                      <SortAsc className="w-3.5 h-3.5" />
-                      <span>Alfabética</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy('numeric')} className="gap-2 cursor-pointer">
-                      <Hash className="w-3.5 h-3.5" />
-                      <span>Ordem Numérica</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy('popular')} className="gap-2 cursor-pointer">
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Mais Vistos</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <div className="w-px h-10 bg-border/50 mx-1 flex-none" />
+                <div
+                  className="rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex items-center transition-all duration-300 border backdrop-blur-xl shadow-lg gap-2 bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70"
+                >
+                  <Hash className="w-3.5 h-3.5" />
+                  <span>Ordem Numérica</span>
+                </div>
 
                 {allTags.map(tag => {
                   const isSpecial = tag.toLowerCase() === "curso dentro";
