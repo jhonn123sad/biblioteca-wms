@@ -236,12 +236,12 @@ function MainApp() {
         />
 
         <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
-          <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
-            <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
-            <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
-              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-            </p>
-          </div>
+        <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
+          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-foreground dark:text-white">Prompts WMS</h2>
+          <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0 dark:text-white/70">
+            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+          </p>
+        </div>
 
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-8 md:mb-12 relative w-full">
