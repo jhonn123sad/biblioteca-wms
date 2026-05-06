@@ -36,9 +36,9 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
             className="h-10 w-10 md:h-16 md:w-16 object-contain transition-all hover:scale-110 duration-500 drop-shadow-sm hidden dark:block" 
           />
           <img 
-            src="/logo-wms.png" 
+            src="https://lovable-uploads.s3.us-west-2.amazonaws.com/4952be74-f25b-4395-937b-91f868222941.png" 
             alt="WMS Logo" 
-            className="h-8 w-8 md:h-12 md:w-12 object-contain transition-all hover:scale-110 duration-500 block dark:hidden" 
+            className="h-10 w-10 md:h-16 md:w-16 object-contain transition-all hover:scale-110 duration-500 block dark:hidden" 
           />
           <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
         </div>
