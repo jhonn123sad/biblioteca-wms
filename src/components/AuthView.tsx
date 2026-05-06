@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Lock, Phone, Loader2 } from "lucide-react";
+import { BrandLogo } from "./BrandLogo";
 import { Button } from "./ui/button";
 
 interface AuthViewProps {
