@@ -83,7 +83,7 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
               
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="cursor-pointer">
-                  <Monitor className="mr-2 h-4 w-4" />
+                  {theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
                   <span>Modo</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
@@ -95,10 +95,6 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
                     <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
                       <Moon className="mr-2 h-4 w-4" />
                       <span>Escuro</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
-                      <Monitor className="mr-2 h-4 w-4" />
-                      <span>Sistema</span>
                     </DropdownMenuItem>
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
