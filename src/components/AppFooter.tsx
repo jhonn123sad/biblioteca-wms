@@ -12,9 +12,9 @@ export function AppFooter() {
               className="h-14 w-14 object-contain hidden dark:block" 
             />
             <img 
-              src="/logo-wms.png" 
+              src="https://lovable-uploads.s3.us-west-2.amazonaws.com/4952be74-f25b-4395-937b-91f868222941.png" 
               alt="WMS Logo" 
-              className="h-12 w-12 object-contain block dark:hidden" 
+              className="h-14 w-14 object-contain block dark:hidden" 
             />
             <h2 className="text-xl font-black uppercase tracking-tighter text-foreground">WMS Society</h2>
           </div>
