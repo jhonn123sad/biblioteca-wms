@@ -444,7 +444,7 @@ function MainApp() {
                     <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80">{group.tag || "Sem Categoria"}</h3>
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
+                  <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                     {group.prompts.map((prompt) => (
                       <PromptCard 
                         key={`${group.tag}-${prompt.id}`} 
