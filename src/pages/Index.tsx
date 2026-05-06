@@ -128,21 +128,40 @@ function MainApp() {
       return Array.from(new Set(matches));
     };
 
-    if (viewAllOrder) {
-      return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    const getPromptTags = (p: Prompt) => {
+      const tagRegex = /\[([^\]]+)\](?!\()/g;
+      const matches = [
+        ...(p.title.match(tagRegex) || []),
+        ...(p.description.match(tagRegex) || [])
+      ].map(t => t.slice(1, -1).trim().toLowerCase())
+       .filter(t => allTags.some(at => at.toLowerCase() === t));
+      return Array.from(new Set(matches));
+    };
+
+    let basePrompts = prompts ? [...prompts] : [];
+
+    // Sorting logic
+    if (sortBy === 'az') {
+      basePrompts.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === 'numeric') {
+      basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    } else if (sortBy === 'popular') {
+      // Mock popular sorting for now
+      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    } else {
+      // recent: descending ID/original order
+      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
     if (selectedTag) {
       const targetTag = selectedTag.toLowerCase();
-      return prompts
-        .filter(p => getPromptTags(p).includes(targetTag))
-        .sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+      return basePrompts.filter(p => getPromptTags(p).includes(targetTag));
     }
 
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
-    prompts.forEach(p => {
+    basePrompts.forEach(p => {
       const tags = getPromptTags(p);
       if (tags.length === 0) {
         uncategorized.push(p);
@@ -160,7 +179,7 @@ function MainApp() {
       if (categories[tag]) {
         result.push({
           tag,
-          prompts: [...categories[tag]].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+          prompts: categories[tag]
         });
       }
     });
@@ -168,12 +187,12 @@ function MainApp() {
     if (uncategorized.length > 0) {
       result.push({
         tag: null,
-        prompts: [...uncategorized].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+        prompts: uncategorized
       });
     }
 
     return result;
-  }, [prompts, viewAllOrder, selectedTag, allTags]);
+  }, [prompts, selectedTag, allTags, sortBy]);
 
   const filteredPrompts = useMemo(() => {
     const search = searchTerm.toLowerCase();
