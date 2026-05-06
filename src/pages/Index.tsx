@@ -128,16 +128,6 @@ function MainApp() {
       return Array.from(new Set(matches));
     };
 
-    const getPromptTags = (p: Prompt) => {
-      const tagRegex = /\[([^\]]+)\](?!\()/g;
-      const matches = [
-        ...(p.title.match(tagRegex) || []),
-        ...(p.description.match(tagRegex) || [])
-      ].map(t => t.slice(1, -1).trim().toLowerCase())
-       .filter(t => allTags.some(at => at.toLowerCase() === t));
-      return Array.from(new Set(matches));
-    };
-
     let basePrompts = prompts ? [...prompts] : [];
 
     // Sorting logic
@@ -146,10 +136,8 @@ function MainApp() {
     } else if (sortBy === 'numeric') {
       basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     } else if (sortBy === 'popular') {
-      // Mock popular sorting for now
       basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     } else {
-      // recent: descending ID/original order
       basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
