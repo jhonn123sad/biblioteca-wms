@@ -10,7 +10,12 @@ import {
   AlertCircle,
   Filter,
   Check,
-  X
+  X,
+  SortAsc,
+  Clock,
+  Hash,
+  Eye,
+  ChevronDown
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { usePrompts, getSortNumber, Prompt } from "../hooks/usePrompts";
@@ -21,6 +26,14 @@ import { AuthView } from "../components/AuthView";
 import { WelcomeScreen } from "../components/WelcomeScreen";
 import { AppHeader } from "../components/AppHeader";
 import { AppFooter } from "../components/AppFooter";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
+
+type SortOption = 'recent' | 'az' | 'numeric' | 'popular';
 
 /**
  * Componente ErrorBoundary para capturar falhas críticas no render 
