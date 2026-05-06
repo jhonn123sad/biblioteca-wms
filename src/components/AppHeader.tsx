@@ -32,7 +32,7 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
       <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
           <BrandLogo />
-          <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">Biblioteca WMS</h1>
+          <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">BIBLIOTECA WMS</h1>
         </div>
         
         <div className="relative flex-1 max-w-[220px] xs:max-w-md md:max-w-2xl group min-w-0 mx-2 md:mx-6">
