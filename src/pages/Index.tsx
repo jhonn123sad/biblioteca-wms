@@ -462,7 +462,7 @@ function MainApp() {
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
-                      {tag}
+                      {tag === "Biblioteca WMS" ? "Prompts" : tag}
                       <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
                     </Button>
                   );
