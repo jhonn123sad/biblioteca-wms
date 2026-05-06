@@ -433,13 +433,13 @@ function MainApp() {
           <div className="space-y-12">
             {searchTerm ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(filteredPrompts as Prompt[])?.map((prompt) => (
+                {(filteredPrompts as Prompt[])?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-search`} 
                     prompt={prompt} 
                     onView={() => handleViewPrompt(prompt)}
                   />
-                ))}
+                ) : null)}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
