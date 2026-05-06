@@ -335,7 +335,7 @@ function MainApp() {
             </div>
 
             <div className="relative group/filters overflow-hidden">
-              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-3 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-1">
+              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 custom-scrollbar cursor-grab active:cursor-grabbing select-none px-1">
                 <Button
                   variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                   onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
