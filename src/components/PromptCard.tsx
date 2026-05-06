@@ -35,8 +35,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
         >
           Visualizar
         </Button>
-          Visualizar
-        </Button>
       </div>
     </div>
   );
