@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, Component, ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Loader2, 
   Grid, 
