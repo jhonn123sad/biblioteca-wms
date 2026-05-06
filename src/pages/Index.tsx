@@ -379,7 +379,7 @@ function MainApp() {
 
               <div 
                 ref={scrollContainerRef}
-                className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-1 touch-pan-x"
+                className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-8 md:px-1 touch-pan-x"
               >
                 <Button
                   variant="ghost"
