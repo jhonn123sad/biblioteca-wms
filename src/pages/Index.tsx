@@ -253,6 +253,7 @@ function MainApp() {
         <AnimatePresence mode="wait">
           {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
             <motion.div 
+              key="carousel-section"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
