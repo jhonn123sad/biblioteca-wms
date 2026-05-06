@@ -28,7 +28,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-primary selection:text-primary-foreground relative">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative select-none">
       {mounted && (
         <div className="absolute top-6 right-6">
           <Button 
