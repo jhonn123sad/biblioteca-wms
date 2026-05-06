@@ -96,7 +96,3 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
     </header>
   );
 }
-      </div>
-    </header>
-  );
-}
