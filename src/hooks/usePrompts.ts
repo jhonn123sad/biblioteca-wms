@@ -50,7 +50,7 @@ const formatSheetData = (data: any[]): Prompt[] => {
     return {
       id: index.toString(),
       title: getValue(cols[0]) || "Sem Título",
-      description: getValue(cols[1]) || "",
+      description: (getValue(cols[1]) || "").replace(/https?:\/\/(www\.)?youtube\.com\/[^\s\n]+/g, "").trim(),
       content: getValue(cols[2]) || "",
       images
     };
