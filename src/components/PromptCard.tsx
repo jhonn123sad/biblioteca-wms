@@ -95,7 +95,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
 
         <Button 
           onClick={onView}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-9 md:h-11 text-[11px] md:text-sm font-bold transition-all shadow-lg shadow-black/5 active:scale-95 mt-1"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-9 md:h-11 text-[11px] md:text-sm font-bold transition-all shadow-lg shadow-black/5 active:scale-95 mt-1 dark:text-white"
         >
           Visualizar
         </Button>

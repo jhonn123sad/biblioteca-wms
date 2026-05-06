@@ -236,12 +236,12 @@ function MainApp() {
         />
 
         <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
-          <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
-            <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
-            <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
-              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-            </p>
-          </div>
+        <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
+          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-foreground dark:text-white">Prompts WMS</h2>
+          <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0 dark:text-white/70">
+            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+          </p>
+        </div>
 
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-8 md:mb-12 relative w-full">
@@ -418,7 +418,7 @@ function MainApp() {
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
                 <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
                   <div className="flex items-center gap-3 md:gap-4">
-                    <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-black/80">{group.tag || "Sem Categoria"}</h3>
+                    <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80">{group.tag || "Sem Categoria"}</h3>
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
