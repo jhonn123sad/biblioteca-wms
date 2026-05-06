@@ -87,9 +87,9 @@ export function AppFooter() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-black/[0.03] opacity-40">
-        <p className="text-[10px] font-black tracking-widest uppercase">&copy; {new Date().getFullYear()} WEB MONEY SOCIETY</p>
-        <div className="flex gap-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-border opacity-40">
+        <p className="text-[10px] font-black tracking-widest uppercase text-foreground">&copy; {new Date().getFullYear()} WEB MONEY SOCIETY</p>
+        <div className="flex gap-8 text-foreground">
           <span className="text-[10px] font-black uppercase tracking-widest">Premium Resource</span>
           <span className="text-[10px] font-black uppercase tracking-widest">Official Library</span>
         </div>
