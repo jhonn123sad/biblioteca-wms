@@ -25,7 +25,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
           </div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Biblioteca WMS</h1>
           <p className="text-muted-foreground font-light leading-relaxed text-sm md:text-base px-2">
-            Esta é uma área exclusiva. Use seu número de WhatsApp cadastrado para entrar.
+            Esta é uma área exclusiva. Use seu número cadastrado para entrar.
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
             <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input 
               type="tel" 
-              placeholder="WhatsApp (apenas números)" 
+              placeholder="Apenas números" 
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               disabled={isVerifying}
