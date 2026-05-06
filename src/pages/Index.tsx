@@ -392,7 +392,7 @@ function MainApp() {
                       {sortBy === 'recent' && <Clock className="w-3.5 h-3.5" />}
                       <span>
                         {sortBy === 'recent' ? 'Ordenar' : 
-                         sortBy === 'az' ? 'A a Z' : 
+                         sortBy === 'az' ? 'Alfabética' : 
                          sortBy === 'numeric' ? 'Nº' : 'Vistos'}
                       </span>
                       <ChevronDown className="w-3 h-3 opacity-50" />
@@ -405,7 +405,7 @@ function MainApp() {
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setSortBy('az')} className="gap-2 cursor-pointer">
                       <SortAsc className="w-3.5 h-3.5" />
-                      <span>A a Z</span>
+                      <span>Alfabética</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setSortBy('numeric')} className="gap-2 cursor-pointer">
                       <Hash className="w-3.5 h-3.5" />
