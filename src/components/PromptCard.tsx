@@ -52,7 +52,13 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
     .trim();
 
   return (
-    <div className="group bg-card rounded-xl md:rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="group bg-card rounded-xl md:rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full"
+    >
       {/* 1. IMAGEM EM DESTAQUE */}
       <div className="aspect-[3/4] overflow-hidden relative bg-muted">
         <img 
