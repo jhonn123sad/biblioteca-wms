@@ -306,8 +306,8 @@ function MainApp() {
           <div className="mb-8 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-black/40" />
-                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-black/60">Filtros da Biblioteca</h3>
+                <Filter className="w-4 h-4 text-muted-foreground/40" />
+                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-muted-foreground/60">Filtros da Biblioteca</h3>
               </div>
               <div className="flex items-center gap-2">
                 <div className="hidden md:flex items-center bg-secondary/30 rounded-lg p-1 border border-border mr-2">
