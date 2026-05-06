@@ -7,7 +7,7 @@ export function AppFooter() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <BrandLogo className="h-14 w-14" />
+            <BrandLogo className="h-28 w-28" />
             <h2 className="text-xl font-black uppercase tracking-tighter text-foreground">WMS Society</h2>
           </div>
           <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-xs">
