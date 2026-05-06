@@ -517,7 +517,7 @@ function MainApp() {
           <div className="space-y-12">
             {searchTerm || selectedTag ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(searchTerm ? filteredPrompts : organizedPrompts as Prompt[])?.map((prompt) => prompt ? (
+                {(searchTerm ? filteredPrompts : (organizedPrompts as {tag: string|null, prompts: Prompt[]}[])[0]?.prompts)?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 
