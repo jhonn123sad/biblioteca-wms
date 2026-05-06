@@ -331,79 +331,76 @@ function MainApp() {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="5" height="7"></rect><rect x="9.5" y="3" width="5" height="7"></rect><rect x="17" y="3" width="5" height="7"></rect><rect x="2" y="14" width="5" height="7"></rect><rect x="9.5" y="14" width="5" height="7"></rect><rect x="17" y="14" width="5" height="7"></rect></svg>
                   </Button>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="md:hidden text-[10px] font-bold uppercase tracking-wider bg-black/5 rounded-lg px-3 h-8"
-                >
-                  {isFilterOpen ? "Fechar" : "Ver Categorias"}
-                </Button>
               </div>
             </div>
 
-            <div className={`${isFilterOpen ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-2.5 transition-all duration-300`}>
-              <Button
-                variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
-              >
-                <Grid className="w-3.5 h-3.5 mr-2" />
-                Início
-              </Button>
-              
-              <Button
-                variant={viewAllOrder ? "default" : "outline"}
-                onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
-              >
-                <span className="mr-2 font-black">#</span>
-                Ordem Numérica
-              </Button>
-
-              <div className="hidden md:block w-px h-10 bg-border/50 mx-1" />
-
-              {allTags.map(tag => {
-                const isSpecial = tag.toLowerCase() === "curso dentro";
-                const isSelected = selectedTag === tag;
-                const count = prompts?.filter(p => {
-                  const matches = [
-                    ...(p.title.match(/\[([^\]]+)\](?!\()/g) || []),
-                    ...(p.description.match(/\[([^\]]+)\](?!\()/g) || [])
-                  ].map(t => t.slice(1, -1).trim().toLowerCase());
-                  return matches.includes(tag.toLowerCase());
-                }).length || 0;
-
-                return (
-                  <Button
-                    key={tag}
-                    variant={isSelected ? "default" : "outline"}
-                    onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
-                    className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
-                      isSelected 
-                        ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
-                        : isSpecial 
-                          ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"
-                    }`}
-                  >
-                    {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
-                    {tag}
-                    <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
-                  </Button>
-                );
-              })}
-
-              {(selectedTag || viewAllOrder) && (
-                <Button 
-                  variant="ghost" 
+            <div className="relative group/filters overflow-hidden">
+              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-3 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-1">
+                <Button
+                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                   onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
-                  className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl ml-auto"
+                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
                 >
-                  <X className="w-3 h-3" />
-                  Limpar
+                  <Grid className="w-3.5 h-3.5 mr-2" />
+                  Início
                 </Button>
-              )}
+                
+                <Button
+                  variant={viewAllOrder ? "default" : "outline"}
+                  onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
+                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                >
+                  <span className="mr-2 font-black">#</span>
+                  Ordem Numérica
+                </Button>
+
+                <div className="w-px h-10 bg-border/50 mx-1 flex-none" />
+
+                {allTags.map(tag => {
+                  const isSpecial = tag.toLowerCase() === "curso dentro";
+                  const isSelected = selectedTag === tag;
+                  const count = prompts?.filter(p => {
+                    const matches = [
+                      ...(p.title.match(/\[([^\]]+)\](?!\()/g) || []),
+                      ...(p.description.match(/\[([^\]]+)\](?!\()/g) || [])
+                    ].map(t => t.slice(1, -1).trim().toLowerCase());
+                    return matches.includes(tag.toLowerCase());
+                  }).length || 0;
+
+                  return (
+                    <Button
+                      key={tag}
+                      variant={isSelected ? "default" : "outline"}
+                      onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
+                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
+                        isSelected 
+                          ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
+                          : isSpecial 
+                            ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
+                            : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
+                      {tag}
+                      <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
+                    </Button>
+                  );
+                })}
+
+                {(selectedTag || viewAllOrder) && (
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
+                    className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl flex-none ml-2"
+                  >
+                    <X className="w-3 h-3" />
+                    Limpar
+                  </Button>
+                )}
+              </div>
+              
+              <div className="absolute left-0 top-0 bottom-3 w-12 bg-gradient-to-r from-background to-transparent pointer-events-none opacity-0 group-hover/filters:opacity-100 transition-opacity" />
+              <div className="absolute right-0 top-0 bottom-3 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
             </div>
           </div>
         )}
