@@ -10,7 +10,12 @@ import {
   AlertCircle,
   Filter,
   Check,
-  X
+  X,
+  SortAsc,
+  Clock,
+  Hash,
+  Eye,
+  ChevronDown
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { usePrompts, getSortNumber, Prompt } from "../hooks/usePrompts";
@@ -21,6 +26,14 @@ import { AuthView } from "../components/AuthView";
 import { WelcomeScreen } from "../components/WelcomeScreen";
 import { AppHeader } from "../components/AppHeader";
 import { AppFooter } from "../components/AppFooter";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
+
+type SortOption = 'recent' | 'az' | 'numeric' | 'popular';
 
 /**
  * Componente ErrorBoundary para capturar falhas críticas no render 
@@ -61,12 +74,12 @@ function MainApp() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
-  const [viewAllOrder, setViewAllOrder] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
   const [gridCols, setGridCols] = useState<4 | 5>(4);
+  const [sortBy, setSortBy] = useState<SortOption>('recent');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -115,21 +128,28 @@ function MainApp() {
       return Array.from(new Set(matches));
     };
 
-    if (viewAllOrder) {
-      return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    let basePrompts = prompts ? [...prompts] : [];
+
+    // Sorting logic
+    if (sortBy === 'az') {
+      basePrompts.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === 'numeric') {
+      basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+    } else if (sortBy === 'popular') {
+      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    } else {
+      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
     }
 
     if (selectedTag) {
       const targetTag = selectedTag.toLowerCase();
-      return prompts
-        .filter(p => getPromptTags(p).includes(targetTag))
-        .sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
+      return basePrompts.filter(p => getPromptTags(p).includes(targetTag));
     }
 
     const categories: { [key: string]: Prompt[] } = {};
     const uncategorized: Prompt[] = [];
 
-    prompts.forEach(p => {
+    basePrompts.forEach(p => {
       const tags = getPromptTags(p);
       if (tags.length === 0) {
         uncategorized.push(p);
@@ -147,7 +167,7 @@ function MainApp() {
       if (categories[tag]) {
         result.push({
           tag,
-          prompts: [...categories[tag]].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+          prompts: categories[tag]
         });
       }
     });
@@ -155,12 +175,12 @@ function MainApp() {
     if (uncategorized.length > 0) {
       result.push({
         tag: null,
-        prompts: [...uncategorized].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title))
+        prompts: uncategorized
       });
     }
 
     return result;
-  }, [prompts, viewAllOrder, selectedTag, allTags]);
+  }, [prompts, selectedTag, allTags, sortBy]);
 
   const filteredPrompts = useMemo(() => {
     const search = searchTerm.toLowerCase();
@@ -251,7 +271,7 @@ function MainApp() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
+          {!isLoading && !searchTerm && showCarousel && !selectedTag && (
             <motion.div 
               key="carousel-section"
               initial={{ opacity: 0 }}
@@ -268,17 +288,48 @@ function MainApp() {
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8">
-                  <span>Ordem Numérica</span>
-                  <ExternalLink className="w-2.5 h-2.5 ml-1" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8 gap-1">
+                      {sortBy === 'recent' && <Clock className="w-3 h-3" />}
+                      {sortBy === 'az' && <SortAsc className="w-3 h-3" />}
+                      {sortBy === 'numeric' && <Hash className="w-3 h-3" />}
+                      {sortBy === 'popular' && <Eye className="w-3 h-3" />}
+                      <span>
+                        {sortBy === 'recent' && 'Recentes'}
+                        {sortBy === 'az' && 'A a Z'}
+                        {sortBy === 'numeric' && 'Ordem Numérica'}
+                        {sortBy === 'popular' && 'Mais Vistos'}
+                      </span>
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem onClick={() => setSortBy('recent')} className="gap-2 cursor-pointer">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Recentes</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('az')} className="gap-2 cursor-pointer">
+                      <SortAsc className="w-3.5 h-3.5" />
+                      <span>A a Z</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('numeric')} className="gap-2 cursor-pointer">
+                      <Hash className="w-3.5 h-3.5" />
+                      <span>Ordem Numérica</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('popular')} className="gap-2 cursor-pointer">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Mais Vistos</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
             
             <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-1">
               {previewPrompts.map((prompt) => (
-                <div key={`preview-${prompt.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
-                  <img src={prompt.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt.title)}`} alt={prompt.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
+                <div key={`preview-${prompt?.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
+                  <img src={prompt?.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt?.title || '')}`} alt={prompt?.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
                     <Button 
                       onClick={() => handleViewPrompt(prompt)}
@@ -289,13 +340,13 @@ function MainApp() {
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
                     <span className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-tighter line-clamp-1">
-                      {prompt.title.match(/#\d+/)?.[0] || ""}
+                      {prompt?.title.match(/#\d+/)?.[0] || ""}
                     </span>
                   </div>
                 </div>
               ))}
-              <button onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-secondary/50 transition-colors snap-start">
-                <Grid className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground/40" />
+              <button onClick={() => setSortBy('numeric')} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-secondary/50 transition-colors snap-start">
+                <Hash className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground/40" />
                 <span className="text-[9px] md:text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">Ordem Numérica</span>
               </button>
             </div>
@@ -337,22 +388,51 @@ function MainApp() {
             <div className="relative group/filters overflow-hidden">
               <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 custom-scrollbar cursor-grab active:cursor-grabbing select-none px-1">
                 <Button
-                  variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
-                  onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
-                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                  variant={(!selectedTag) ? "default" : "outline"}
+                  onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
+                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
                 >
                   <Grid className="w-3.5 h-3.5 mr-2" />
                   Início
                 </Button>
                 
-                <Button
-                  variant={viewAllOrder ? "default" : "outline"}
-                  onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); }}
-                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
-                >
-                  <span className="mr-2 font-black">#</span>
-                  Ordem Numérica
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant={sortBy !== 'recent' ? "default" : "outline"}
+                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 gap-2 ${sortBy !== 'recent' ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
+                    >
+                      {sortBy === 'az' && <SortAsc className="w-3.5 h-3.5" />}
+                      {sortBy === 'numeric' && <Hash className="w-3.5 h-3.5" />}
+                      {sortBy === 'popular' && <Eye className="w-3.5 h-3.5" />}
+                      {sortBy === 'recent' && <Clock className="w-3.5 h-3.5" />}
+                      <span>
+                        {sortBy === 'recent' ? 'Ordenar' : 
+                         sortBy === 'az' ? 'A a Z' : 
+                         sortBy === 'numeric' ? 'Nº' : 'Vistos'}
+                      </span>
+                      <ChevronDown className="w-3 h-3 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem onClick={() => setSortBy('recent')} className="gap-2 cursor-pointer">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Recentes</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('az')} className="gap-2 cursor-pointer">
+                      <SortAsc className="w-3.5 h-3.5" />
+                      <span>A a Z</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('numeric')} className="gap-2 cursor-pointer">
+                      <Hash className="w-3.5 h-3.5" />
+                      <span>Ordem Numérica</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy('popular')} className="gap-2 cursor-pointer">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Mais Vistos</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 <div className="w-px h-10 bg-border/50 mx-1 flex-none" />
 
@@ -371,7 +451,7 @@ function MainApp() {
                     <Button
                       key={tag}
                       variant={isSelected ? "default" : "outline"}
-                      onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); }}
+                      onClick={() => { setSelectedTag(isSelected ? null : tag); setShowCarousel(false); }}
                       className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
                         isSelected 
                           ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
@@ -387,10 +467,10 @@ function MainApp() {
                   );
                 })}
 
-                {(selectedTag || viewAllOrder) && (
+                {(selectedTag || sortBy !== 'recent') && (
                   <Button 
                     variant="ghost" 
-                    onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); }}
+                    onClick={() => { setSelectedTag(null); setSortBy('recent'); setShowCarousel(true); }}
                     className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl flex-none ml-2"
                   >
                     <X className="w-3 h-3" />
@@ -428,19 +508,9 @@ function MainApp() {
           </div>
         ) : (
           <div className="space-y-12">
-            {searchTerm ? (
+            {searchTerm || selectedTag ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(filteredPrompts as Prompt[])?.map((prompt) => prompt ? (
-                  <PromptCard 
-                    key={`${prompt.id}-search`} 
-                    prompt={prompt} 
-                    onView={() => handleViewPrompt(prompt)}
-                  />
-                ) : null)}
-              </div>
-            ) : (selectedTag || viewAllOrder) ? (
-              <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(organizedPrompts as Prompt[])?.map((prompt) => prompt ? (
+                {(searchTerm ? filteredPrompts : organizedPrompts as Prompt[])?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 
