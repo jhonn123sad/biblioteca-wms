@@ -436,17 +436,17 @@ function MainApp() {
           </div>
         )}
       </main>
-
       <AppFooter />
-
-      {selectedPrompt && (
-        <PromptDetailView 
-          prompt={selectedPrompt} 
-          onClose={() => setSelectedPrompt(null)} 
-        />
-      )}
     </div>
-  );
+
+    {selectedPrompt && (
+      <PromptDetailView 
+        prompt={selectedPrompt} 
+        onClose={() => setSelectedPrompt(null)} 
+      />
+    )}
+  </div>
+);
 }
 
 export default function Index() {
