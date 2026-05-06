@@ -177,7 +177,17 @@ function MainApp() {
     });
 
     const result: { tag: string | null, prompts: Prompt[] }[] = [];
-    allTags.forEach(tag => {
+    
+    // Sort allTags for category grouping to ensure "Métodos" is first
+    const sortedTagsForGrouping = [...allTags].sort((a, b) => {
+      const aLower = a.toLowerCase();
+      const bLower = b.toLowerCase();
+      if (aLower.includes('método') || aLower.includes('metodo')) return -1;
+      if (bLower.includes('método') || bLower.includes('metodo')) return 1;
+      return a.localeCompare(b);
+    });
+
+    sortedTagsForGrouping.forEach(tag => {
       if (categories[tag]) {
         result.push({
           tag,
