@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, Component, ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Loader2, 
   Grid, 
@@ -237,15 +238,26 @@ function MainApp() {
         />
 
         <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
-        <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3"
+        >
           <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-foreground dark:text-white">Prompts WMS</h2>
           <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0 dark:text-white/70">
             Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
-        </div>
+        </motion.div>
 
-        {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
-          <div className="mb-8 md:mb-12 relative w-full">
+        <AnimatePresence mode="wait">
+          {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mb-8 md:mb-12 relative w-full"
+            >
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Recentes</h3>
               <div className="flex items-center gap-2">
@@ -286,15 +298,16 @@ function MainApp() {
                 <span className="text-[9px] md:text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">Ordem Numérica</span>
               </button>
             </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {!isLoading && (
           <div className="mb-8 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-black/40" />
-                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-black/60">Filtros da Biblioteca</h3>
+                <Filter className="w-4 h-4 text-muted-foreground/40" />
+                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-muted-foreground/60">Filtros da Biblioteca</h3>
               </div>
               <div className="flex items-center gap-2">
                 <div className="hidden md:flex items-center bg-secondary/30 rounded-lg p-1 border border-border mr-2">
@@ -332,7 +345,7 @@ function MainApp() {
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
               >
                 <Grid className="w-3.5 h-3.5 mr-2" />
                 Início
@@ -341,13 +354,13 @@ function MainApp() {
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"}`}
               >
                 <span className="mr-2 font-black">#</span>
                 Ordem Numérica
               </Button>
 
-              <div className="hidden md:block w-px h-10 bg-black/[0.05] mx-1" />
+              <div className="hidden md:block w-px h-10 bg-border/50 mx-1" />
 
               {allTags.map(tag => {
                 const isSpecial = tag.toLowerCase() === "curso dentro";
@@ -370,7 +383,7 @@ function MainApp() {
                         ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
                         : isSpecial 
                           ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"
+                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
@@ -441,8 +454,15 @@ function MainApp() {
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
                 <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
                   <div className="flex items-center gap-3 md:gap-4">
-                    <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80">{group.tag || "Sem Categoria"}</h3>
-                    <div className="h-px flex-1 bg-black/[0.05]" />
+                    <motion.h3 
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80"
+                    >
+                      {group.tag || "Sem Categoria"}
+                    </motion.h3>
+                    <div className="h-px flex-1 bg-border/50" />
                   </div>
                   <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                     {group.prompts.map((prompt) => (
