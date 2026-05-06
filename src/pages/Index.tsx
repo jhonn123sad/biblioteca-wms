@@ -79,7 +79,7 @@ function MainApp() {
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
   // Grid selection removed per user request, defaulting to 5 columns
-  const [sortBy, setSortBy] = useState<SortOption>('recent');
+  const [sortBy, setSortBy] = useState<SortOption>('numeric');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -352,7 +352,7 @@ function MainApp() {
             </div>
 
             <div className="relative group/filters overflow-hidden">
-              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 custom-scrollbar cursor-grab active:cursor-grabbing select-none px-1">
+              <div className="flex flex-wrap gap-2 md:gap-3 pb-4 select-none px-1">
                 <Button
                   variant="ghost"
                   onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
