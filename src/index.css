@@ -59,7 +59,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
   border-radius: 10px;
 }
 
