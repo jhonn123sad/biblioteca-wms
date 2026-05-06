@@ -454,7 +454,14 @@ function MainApp() {
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
                 <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
                   <div className="flex items-center gap-3 md:gap-4">
-                    <h3 className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80">{group.tag || "Sem Categoria"}</h3>
+                    <motion.h3 
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80"
+                    >
+                      {group.tag || "Sem Categoria"}
+                    </motion.h3>
                     <div className="h-px flex-1 bg-black/[0.05]" />
                   </div>
                   <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
