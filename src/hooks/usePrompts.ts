@@ -145,9 +145,9 @@ export function usePrompts() {
       }
     });
 
-    // Renomeia "Biblioteca WMS" para "Prompts" se existir entre as tags
+    // Renomeia "Biblioteca WMS" para "Livros" se existir entre as tags
     const renamedTags = uniqueTags.map(tag => 
-      tag.toLowerCase() === "biblioteca wms" ? "Prompts" : tag
+      tag.toLowerCase() === "biblioteca wms" ? "Livros" : tag
     );
     
     return renamedTags.sort((a, b) => {
