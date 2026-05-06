@@ -324,10 +324,6 @@ function MainApp() {
                   </div>
                 </div>
               ))}
-              <button onClick={() => setSortBy('numeric')} className="flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 md:gap-2 hover:bg-secondary/50 transition-colors snap-start">
-                <Hash className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground/40" />
-                <span className="text-[9px] md:text-[10px] font-bold uppercase text-muted-foreground/60 tracking-wider">Ordem Numérica</span>
-              </button>
             </div>
             </motion.div>
           )}
