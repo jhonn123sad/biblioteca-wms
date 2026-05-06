@@ -209,24 +209,39 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col w-full antialiased">
-      <AppHeader 
-        searchTerm={searchTerm} 
-        setSearchTerm={setSearchTerm} 
-        isLoading={isLoading} 
-        refetch={refetch} 
-        onLogout={handleLogout} 
-        isAuthenticated={isAuthenticated}
-        onLogin={() => setShowAuthOverlay(true)}
-      />
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col w-full antialiased relative overflow-hidden">
+      {/* Sistema de Background Premium */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Camada 1: Gradientes de Iluminação Difusa com Animação */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] animate-pulse duration-[10000ms]" />
+        <div className="absolute bottom-[-5%] right-[-5%] w-[35%] h-[35%] bg-primary/10 rounded-full blur-[100px] animate-pulse duration-[8000ms] delay-1000" />
+        <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-blue-500/5 dark:bg-emerald-500/5 rounded-full blur-[100px] animate-pulse duration-[12000ms]" />
+        
+        {/* Camada 2: Textura de Ruído Fino (Grain) */}
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] bg-noise mix-blend-overlay" />
+        
+        {/* Camada 3: Grid Orgânico Sutil */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      </div>
 
-      <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
-        <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
-          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
-          <p className="text-gray-400 max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
-            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-          </p>
-        </div>
+      <div className="relative z-10 flex flex-col w-full min-h-screen">
+        <AppHeader 
+          searchTerm={searchTerm} 
+          setSearchTerm={setSearchTerm} 
+          isLoading={isLoading} 
+          refetch={refetch} 
+          onLogout={handleLogout} 
+          isAuthenticated={isAuthenticated}
+          onLogin={() => setShowAuthOverlay(true)}
+        />
+
+        <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
+          <div className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3">
+            <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight">Prompts WMS</h2>
+            <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0">
+              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+            </p>
+          </div>
 
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-8 md:mb-12 relative w-full">
@@ -421,17 +436,17 @@ function MainApp() {
           </div>
         )}
       </main>
-
       <AppFooter />
-
-      {selectedPrompt && (
-        <PromptDetailView 
-          prompt={selectedPrompt} 
-          onClose={() => setSelectedPrompt(null)} 
-        />
-      )}
     </div>
-  );
+
+    {selectedPrompt && (
+      <PromptDetailView 
+        prompt={selectedPrompt} 
+        onClose={() => setSelectedPrompt(null)} 
+      />
+    )}
+  </div>
+);
 }
 
 export default function Index() {
