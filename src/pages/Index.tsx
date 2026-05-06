@@ -202,7 +202,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white flex flex-col w-full antialiased">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col w-full antialiased">
       <AppHeader 
         searchTerm={searchTerm} 
         setSearchTerm={setSearchTerm} 
