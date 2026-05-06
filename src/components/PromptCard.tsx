@@ -78,7 +78,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
 
       <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0 gap-2 md:gap-3">
         {/* 2. TÍTULO DO BLOCO */}
-        <h3 className="text-[13px] md:text-lg font-black leading-tight text-foreground line-clamp-2">
+        <h3 className="text-[13px] md:text-lg font-black leading-tight text-foreground">
           {cleanTitle}
         </h3>
 
@@ -100,7 +100,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
         </div>
 
         {/* 4. SUBTEXTO / DESCRIÇÃO */}
-        <div className="text-muted-foreground text-[10px] md:text-xs font-light line-clamp-3 leading-relaxed flex-1 overflow-hidden">
+        <div className="text-muted-foreground text-[10px] md:text-xs font-light leading-relaxed flex-1">
           {cleanDescription}
         </div>
 
