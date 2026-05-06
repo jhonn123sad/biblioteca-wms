@@ -428,7 +428,7 @@ function MainApp() {
                 ))}
               </div>
             ) : (selectedTag || viewAllOrder) ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-6">
+              <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
                 {(organizedPrompts as Prompt[])?.map((prompt) => (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
