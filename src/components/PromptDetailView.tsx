@@ -32,23 +32,23 @@ export function PromptDetailView({ prompt, onClose }: PromptDetailViewProps) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-white flex flex-col antialiased animate-in fade-in duration-200">
-      <div className="flex items-center justify-between px-4 h-16 border-b border-black/[0.05] bg-white flex-shrink-0 z-10">
+    <div className="fixed inset-0 z-[100] bg-background flex flex-col antialiased animate-in fade-in duration-200">
+      <div className="flex items-center justify-between px-4 h-16 border-b border-border bg-background flex-shrink-0 z-10">
         <div className="flex-1 min-w-0 pr-4">
-          <div className="text-xs md:text-lg font-black tracking-tight break-words leading-tight flex flex-wrap gap-1 items-center">
+          <div className="text-xs md:text-lg font-black tracking-tight break-words leading-tight flex flex-wrap gap-1 items-center text-foreground">
             {renderWithTags(prompt.title)}
           </div>
         </div>
         <button 
           onClick={onClose}
-          className="w-10 h-10 rounded-full bg-black flex items-center justify-center shadow-lg active:scale-90 transition-transform hover:scale-105"
+          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg active:scale-90 transition-transform hover:scale-105"
           aria-label="Fechar"
         >
-          <X className="h-5 w-5 text-white" />
+          <X className="h-5 w-5 text-primary-foreground" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-white">
+      <div className="flex-1 overflow-y-auto bg-background">
         <div className="container mx-auto max-w-6xl h-full">
           <div className="flex flex-col md:flex-row h-full">
             <div className="w-full md:w-1/2 p-4 md:p-8 bg-[#F9F9F9] md:overflow-y-auto custom-scrollbar border-b md:border-b-0 md:border-r border-black/[0.03]">
