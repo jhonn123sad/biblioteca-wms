@@ -1,7 +1,7 @@
 import { useState } from "react";
 import logoSrc from "@/assets/wms-logo.png";
 
-export function BrandLogo({ className = "h-10 w-10 md:h-16 md:w-16" }: { className?: string }) {
+export function BrandLogo({ className = "h-20 w-20 md:h-32 md:w-32" }: { className?: string }) {
   const [imageError, setImageError] = useState(false);
 
   if (imageError) {

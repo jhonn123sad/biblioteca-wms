@@ -21,7 +21,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
       <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center mb-6">
-            <BrandLogo className="h-20 w-20 md:h-24 md:w-24" />
+            <BrandLogo className="h-40 w-40 md:h-48 md:w-48" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Biblioteca WMS</h1>
           <p className="text-muted-foreground font-light leading-relaxed text-sm md:text-base px-2">
