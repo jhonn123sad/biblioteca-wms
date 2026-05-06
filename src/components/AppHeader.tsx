@@ -37,7 +37,7 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
               className="absolute inset-0 h-full w-full object-contain transition-all hover:scale-110 duration-500 drop-shadow-sm opacity-0 dark:opacity-100" 
             />
             <img 
-              src="https://lovable-uploads.s3.us-west-2.amazonaws.com/4952be74-f25b-4395-937b-91f868222941.png" 
+              src="https://lovable-uploads.s3.us-west-2.amazonaws.com/c6e827f3-cb71-4a78-8f99-7aade6dd830e.png" 
               alt="WMS Logo" 
               className="absolute inset-0 h-full w-full object-contain transition-all hover:scale-110 duration-500 dark:opacity-0 opacity-100" 
             />

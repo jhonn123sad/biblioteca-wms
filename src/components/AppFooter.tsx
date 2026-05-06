@@ -13,7 +13,7 @@ export function AppFooter() {
                 className="absolute inset-0 h-full w-full object-contain opacity-0 dark:opacity-100" 
               />
               <img 
-                src="https://lovable-uploads.s3.us-west-2.amazonaws.com/4952be74-f25b-4395-937b-91f868222941.png" 
+                src="https://lovable-uploads.s3.us-west-2.amazonaws.com/c6e827f3-cb71-4a78-8f99-7aade6dd830e.png" 
                 alt="WMS Logo" 
                 className="absolute inset-0 h-full w-full object-contain dark:opacity-0 opacity-100" 
               />
