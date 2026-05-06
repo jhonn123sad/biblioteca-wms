@@ -50,7 +50,7 @@ export function AuthView({ onLogin, isVerifying }: AuthViewProps) {
 
           <div className="text-center pt-2">
             <a 
-              href="https://pay.kiwify.com.br/3790" 
+              href="https://wms-checkout.lovable.app/c/comunidade-wms" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-xs md:text-sm text-gray-400 hover:text-black transition-colors font-medium"
