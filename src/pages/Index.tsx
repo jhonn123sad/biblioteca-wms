@@ -32,12 +32,12 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-white flex items-center justify-center p-6 text-center">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6 text-center">
           <div className="space-y-4">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
             <h1 className="text-xl font-bold">Ops! Algo deu errado.</h1>
-            <p className="text-gray-500 text-sm">O sistema encontrou um erro inesperado.</p>
-            <Button onClick={() => window.location.reload()} className="bg-black text-white rounded-xl">Recarregar Página</Button>
+            <p className="text-muted-foreground text-sm">O sistema encontrou um erro inesperado.</p>
+            <Button onClick={() => window.location.reload()} className="bg-primary text-primary-foreground rounded-xl">Recarregar Página</Button>
           </div>
         </div>
       );
@@ -202,7 +202,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] font-sans selection:bg-black selection:text-white flex flex-col w-full antialiased">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col w-full antialiased">
       <AppHeader 
         searchTerm={searchTerm} 
         setSearchTerm={setSearchTerm} 
@@ -224,15 +224,15 @@ function MainApp() {
         {!isLoading && !searchTerm && showCarousel && !selectedTag && !viewAllOrder && (
           <div className="mb-8 md:mb-12 relative w-full">
             <div className="flex items-center justify-between mb-3 md:mb-4">
-              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-black/40">Recentes</h3>
+              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Recentes</h3>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-black/5 md:flex hidden">
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-black/5 rounded-lg px-2 h-7 md:h-8">
+                <Button variant="ghost" size="sm" onClick={() => { setViewAllOrder(true); setShowCarousel(false); }} className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8">
                   <span>Ordem Numérica</span>
                   <ExternalLink className="w-2.5 h-2.5 ml-1" />
                 </Button>
@@ -287,7 +287,7 @@ function MainApp() {
               <Button
                 variant={(!selectedTag && !viewAllOrder) ? "default" : "outline"}
                 onClick={() => { setSelectedTag(null); setViewAllOrder(false); setShowCarousel(true); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${(!selectedTag && !viewAllOrder) ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
               >
                 <Grid className="w-3.5 h-3.5 mr-2" />
                 Início
@@ -296,7 +296,7 @@ function MainApp() {
               <Button
                 variant={viewAllOrder ? "default" : "outline"}
                 onClick={() => { setViewAllOrder(true); setSelectedTag(null); setShowCarousel(false); setIsFilterOpen(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-black text-white border-black shadow-md shadow-black/10" : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"}`}
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${viewAllOrder ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"}`}
               >
                 <span className="mr-2 font-black">#</span>
                 Ordem Numérica
@@ -322,10 +322,10 @@ function MainApp() {
                     onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
                     className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
                       isSelected 
-                        ? "bg-black text-white border-black shadow-md shadow-black/10" 
+                        ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
                         : isSpecial 
                           ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"
+                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
@@ -352,8 +352,8 @@ function MainApp() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-6">
             <div className="relative">
-              <div className="w-10 h-10 border-2 border-black/5 rounded-full" />
-              <div className="w-10 h-10 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" />
+              <div className="w-10 h-10 border-2 border-primary/10 rounded-full" />
+              <div className="w-10 h-10 border-t-2 border-primary rounded-full animate-spin absolute top-0 left-0" />
             </div>
             <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
           </div>

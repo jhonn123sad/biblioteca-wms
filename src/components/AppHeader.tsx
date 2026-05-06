@@ -1,5 +1,17 @@
-import { Search, RotateCw } from "lucide-react";
+import { Search, RotateCw, Menu, Moon, Sun, LogIn, LogOut, Monitor } from "lucide-react";
 import { Button } from "./ui/button";
+import { useTheme } from "next-themes";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
+} from "./ui/dropdown-menu";
 
 interface AppHeaderProps {
   searchTerm: string;
@@ -12,8 +24,10 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLogout, isAuthenticated, onLogin }: AppHeaderProps) {
+  const { theme, setTheme } = useTheme();
+
   return (
-    <header className="sticky top-0 z-[60] bg-white/80 backdrop-blur-xl border-b border-black/[0.03] safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
+    <header className="sticky top-0 z-[60] bg-background/80 backdrop-blur-xl border-b border-border safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
       <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
           <img src="/logo-wms.png" alt="WMS Logo" className="h-7 w-7 md:h-10 md:w-10 object-contain rounded-lg shadow-sm" />
@@ -21,13 +35,13 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
         </div>
         
         <div className="relative flex-1 max-w-[180px] xs:max-w-md group min-w-0">
-          <Search className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3 md:w-3.5 h-3 md:h-3.5 text-gray-400 group-focus-within:text-black" />
+          <Search className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3 md:w-3.5 h-3 md:h-3.5 text-muted-foreground group-focus-within:text-primary" />
           <input 
             type="text" 
             placeholder="Pesquisar..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-black/[0.04] border border-transparent rounded-xl h-9 md:h-10 pl-8 md:pl-9 pr-3 md:pr-4 text-[11px] md:text-sm focus:bg-white focus:border-black/10 transition-all outline-none"
+            className="w-full bg-secondary/50 border border-transparent rounded-xl h-9 md:h-10 pl-8 md:pl-9 pr-3 md:pr-4 text-[11px] md:text-sm focus:bg-background focus:border-primary/20 transition-all outline-none"
           />
         </div>
 
@@ -36,28 +50,61 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
             variant="ghost" 
             size="icon" 
             onClick={() => refetch()}
-            className="w-8 h-8 rounded-full text-gray-400 hover:text-black hover:bg-black/5"
+            className="w-8 h-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
             title="Sincronizar"
           >
             <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
-          {isAuthenticated ? (
-            <Button 
-              variant="ghost" 
-              onClick={onLogout}
-              className="text-[9px] md:text-xs text-gray-400 hover:text-red-500 transition-colors h-7 md:h-8 px-1.5 md:px-2 flex-shrink-0"
-            >
-              Sair
-            </Button>
-          ) : (
-            <Button 
-              variant="default" 
-              onClick={onLogin}
-              className="text-[9px] md:text-xs bg-black text-white hover:bg-black/90 transition-colors h-7 md:h-8 px-2 md:px-4 rounded-xl flex-shrink-0 shadow-sm"
-            >
-              Entrar
-            </Button>
-          )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="w-8 h-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+              >
+                <Menu className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-background border-border animate-in fade-in slide-in-from-top-2 duration-200">
+              {isAuthenticated ? (
+                <DropdownMenuItem onClick={onLogout} className="text-destructive focus:text-destructive cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sair</span>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem onClick={onLogin} className="cursor-pointer">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  <span>Entrar</span>
+                </DropdownMenuItem>
+              )}
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  <Monitor className="mr-2 h-4 w-4" />
+                  <span>Modo</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background border-border animate-in fade-in slide-in-from-left-2 duration-200">
+                    <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
+                      <Sun className="mr-2 h-4 w-4" />
+                      <span>Claro</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
+                      <Moon className="mr-2 h-4 w-4" />
+                      <span>Escuro</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
+                      <Monitor className="mr-2 h-4 w-4" />
+                      <span>Sistema</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
