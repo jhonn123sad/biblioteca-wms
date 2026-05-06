@@ -443,13 +443,13 @@ function MainApp() {
               </div>
             ) : (selectedTag || viewAllOrder) ? (
               <div className={`grid grid-cols-2 md:grid-cols-3 ${gridCols === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-5'} gap-2.5 md:gap-6`}>
-                {(organizedPrompts as Prompt[])?.map((prompt) => (
+                {(organizedPrompts as Prompt[])?.map((prompt) => prompt ? (
                   <PromptCard 
                     key={`${prompt.id}-list`} 
                     prompt={prompt} 
                     onView={() => handleViewPrompt(prompt)}
                   />
-                ))}
+                ) : null)}
               </div>
             ) : (
               (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
