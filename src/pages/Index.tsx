@@ -255,7 +255,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col w-full antialiased relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col w-full antialiased relative overflow-hidden select-none">
       {/* Sistema de Background Premium */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Camada 1: Gradientes de Iluminação Difusa com Animação */}
