@@ -100,7 +100,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
         </div>
 
         {/* 4. SUBTEXTO / DESCRIÇÃO */}
-        <div className="text-muted-foreground text-[10px] md:text-xs font-light leading-relaxed flex-1">
+        <div className="text-muted-foreground text-[10px] md:text-xs font-light line-clamp-3 leading-relaxed flex-1 overflow-hidden">
           {cleanDescription}
         </div>
 
