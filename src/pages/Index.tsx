@@ -302,11 +302,6 @@ function MainApp() {
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => setSortBy('numeric')} className="text-[9px] md:text-xs font-bold hover:bg-secondary rounded-lg px-2 h-7 md:h-8 gap-1">
-                  <Hash className="w-3 h-3" />
-                  <span>Ordem Numérica</span>
-                  <ExternalLink className="w-2.5 h-2.5 ml-1" />
-                </Button>
               </div>
             </div>
             
