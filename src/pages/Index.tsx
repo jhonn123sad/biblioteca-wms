@@ -351,8 +351,36 @@ function MainApp() {
               </div>
             </div>
 
-            <div className="relative group/filters overflow-hidden">
-              <div className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-1 touch-pan-x">
+            <div className="relative group/filters">
+              <div className="absolute left-0 top-0 bottom-4 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none opacity-0 group-hover/filters:opacity-100 transition-opacity hidden md:block" />
+              <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none opacity-0 group-hover/filters:opacity-100 transition-opacity hidden md:block" />
+              
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 z-20 md:opacity-0 md:group-hover/filters:opacity-100 transition-opacity">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -ml-2"
+                  onClick={() => scrollCarousel('left')}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 md:opacity-0 md:group-hover/filters:opacity-100 transition-opacity">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -mr-2"
+                  onClick={() => scrollCarousel('right')}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div 
+                ref={scrollContainerRef}
+                className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-8 md:px-1 touch-pan-x"
+              >
                 <Button
                   variant="ghost"
                   onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
