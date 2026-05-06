@@ -322,10 +322,10 @@ function MainApp() {
                     onClick={() => { setSelectedTag(isSelected ? null : tag); setViewAllOrder(false); setShowCarousel(false); setIsFilterOpen(false); }}
                     className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all border-2 ${
                       isSelected 
-                        ? "bg-black text-white border-black shadow-md shadow-black/10" 
+                        ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
                         : isSpecial 
                           ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-white border-black/[0.03] text-black/40 hover:border-black/20 hover:text-black"
+                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
