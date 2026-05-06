@@ -383,7 +383,7 @@ function MainApp() {
                         ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
                         : isSpecial 
                           ? "bg-[#FF007A]/5 text-[#FF007A] border-[#FF007A] hover:bg-[#FF007A]/10" 
-                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary"
+                          : "bg-card border-border text-muted-foreground hover:border-primary/20 hover:text-primary dark:text-white/60"
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
