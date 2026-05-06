@@ -136,11 +136,12 @@ function MainApp() {
     } else if (sortBy === 'numeric') {
       basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
     } else if (sortBy === 'popular') {
-      // Simulação determinística de popularidade usando hash do ID
+      // Ordena pelas visualizações salvas no localStorage
       basePrompts.sort((a, b) => {
-        const hashA = a.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const hashB = b.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return (hashB % 100) - (hashA % 100);
+        const viewsA = parseInt(localStorage.getItem(`views_${a.id}`) || "0");
+        const viewsB = parseInt(localStorage.getItem(`views_${b.id}`) || "0");
+        if (viewsB !== viewsA) return viewsB - viewsA;
+        return parseInt(b.id) - parseInt(a.id);
       });
     } else {
       // recent: descending ID
