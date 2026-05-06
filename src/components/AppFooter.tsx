@@ -6,16 +6,16 @@ export function AppFooter() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="h-14 w-14 flex items-center justify-center">
+            <div className="h-14 w-14 flex items-center justify-center relative">
               <img 
                 src="https://lovable-uploads.s3.us-west-2.amazonaws.com/97486e9e-56e2-4545-978d-966952e46e8c.png" 
                 alt="WMS Logo" 
-                className="h-full w-full object-contain hidden dark:block" 
+                className="absolute inset-0 h-full w-full object-contain opacity-0 dark:opacity-100" 
               />
               <img 
                 src="https://lovable-uploads.s3.us-west-2.amazonaws.com/994dd462-eb09-41db-bdb2-58d7fe833713.png" 
                 alt="WMS Logo" 
-                className="h-full w-full object-contain block dark:hidden" 
+                className="absolute inset-0 h-full w-full object-contain opacity-100 dark:opacity-0" 
               />
             </div>
             <h2 className="text-xl font-black uppercase tracking-tighter text-foreground">WMS Society</h2>
