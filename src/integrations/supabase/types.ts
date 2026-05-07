@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      allowed_numbers: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          phone: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          phone: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          phone?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           buying_intention: string | null
