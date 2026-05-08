@@ -1,71 +1,27 @@
-import { useState, useRef, useEffect, useMemo, Component, ReactNode } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Loader2, 
-  Grid, 
-  ExternalLink, 
-  Image as ImageIcon,
   ChevronLeft,
-  ChevronRight,
   AlertCircle,
-  Filter,
-  Check,
-  X,
-  SortAsc,
-  Clock,
-  Hash,
-  Eye,
-  ChevronDown
+  ImageIcon
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { usePrompts, getSortNumber, Prompt } from "../hooks/usePrompts";
+import { usePrompts, Prompt } from "../hooks/usePrompts";
 import { useAuth } from "../hooks/useAuth";
-import { PromptCard } from "../components/PromptCard";
+import { useFilteredPrompts } from "../hooks/useFilteredPrompts";
 import { PromptDetailView } from "../components/PromptDetailView";
 import { AuthView } from "../components/AuthView";
 import { WelcomeScreen } from "../components/WelcomeScreen";
 import { AppHeader } from "../components/AppHeader";
 import { AppFooter } from "../components/AppFooter";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
+import { BackgroundEffects } from "../components/BackgroundEffects";
+import { HighlightCarousel } from "../components/HighlightCarousel";
+import { FilterSystem } from "../components/FilterSystem";
+import { PromptGrid } from "../components/PromptGrid";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
 type SortOption = 'recent' | 'az' | 'numeric' | 'popular';
-
-/**
- * Componente ErrorBoundary para capturar falhas críticas no render 
- * e evitar que o aplicativo inteiro quebre.
- */
-class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}> {
-  constructor(props: {children: ReactNode}) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() { return { hasError: true }; }
-  componentDidCatch(error: any, errorInfo: any) { 
-    console.error("CRITICAL_RENDER_ERROR:", error, errorInfo); 
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6 text-center">
-          <div className="space-y-4 max-w-sm">
-            <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
-            <h1 className="text-xl font-bold">Ops! Algo deu errado.</h1>
-            <p className="text-muted-foreground text-sm">Ocorreu um erro ao carregar esta parte da interface.</p>
-            <Button onClick={() => window.location.reload()} variant="default" className="rounded-xl w-full">
-              Recarregar Página
-            </Button>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
 
 function MainApp() {
   const { isAuthenticated, isVerifying, userName, showWelcome, handleLogin, handleLogout } = useAuth();
@@ -75,14 +31,9 @@ function MainApp() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
-  // Grid selection removed per user request, defaulting to 5 columns
   const [sortBy, setSortBy] = useState<SortOption>('numeric');
-
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const filterScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
@@ -93,20 +44,6 @@ function MainApp() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const scrollCarousel = (direction: 'left' | 'right', type: 'highlight' | 'filters' = 'highlight') => {
-    const ref = type === 'highlight' ? scrollContainerRef : filterScrollRef;
-    if (!ref.current) return;
-    const scrollAmount = ref.current.offsetWidth * 0.8;
-    try {
-      ref.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    } catch (e) {
-      ref.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
-    }
-  };
-
   const handleViewPrompt = (prompt: Prompt) => {
     if (!isAuthenticated) {
       setPendingPrompt(prompt);
@@ -116,132 +53,36 @@ function MainApp() {
     setSelectedPrompt(prompt);
   };
 
-
-  /**
-   * Memoização dos prompts organizados por categoria ou filtrados por tag/busca.
-   * Inclui lógica de ordenação (Recentes, A a Z, Ordem Numérica, Mais Vistos).
-   */
-  const organizedPrompts = useMemo(() => {
-    if (!prompts) return [];
-    
-    const getPromptTags = (p: Prompt) => {
-      const tagRegex = /\[([^\]]+)\](?!\()/g;
-      const matches = [
-        ...(p.title.match(tagRegex) || []),
-        ...(p.description.match(tagRegex) || [])
-      ].map(t => t.slice(1, -1).trim().toLowerCase())
-       .filter(t => allTags.some(at => at.toLowerCase() === t));
-      return Array.from(new Set(matches));
-    };
-
-    let basePrompts = [...prompts];
-
-    // Lógica de Ordenação
-    if (sortBy === 'az') {
-      basePrompts.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === 'numeric') {
-      basePrompts.sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title));
-    } else if (sortBy === 'popular') {
-      // Ordena pelas visualizações simuladas salvas no localStorage
-      basePrompts.sort((a, b) => {
-        const viewsA = parseInt(localStorage.getItem(`views_${a.id}`) || "0");
-        const viewsB = parseInt(localStorage.getItem(`views_${b.id}`) || "0");
-        if (viewsB !== viewsA) return viewsB - viewsA;
-        return parseInt(b.id) - parseInt(a.id);
-      });
-    } else {
-      // Padrão: Recentes (IDs maiores primeiro)
-      basePrompts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
-    }
-
-    // Se uma tag estiver selecionada, retorna apenas a lista flat para aquela tag
-    if (selectedTag) {
-      const targetTag = selectedTag.toLowerCase();
-      const filtered = basePrompts.filter(p => getPromptTags(p).includes(targetTag));
-      return [{ tag: selectedTag, prompts: filtered }];
-    }
-
-    // Caso contrário, agrupa por categorias baseadas nas tags conhecidas
-    const categories: { [key: string]: Prompt[] } = {};
-    const uncategorized: Prompt[] = [];
-
-    basePrompts.forEach(p => {
-      const tags = getPromptTags(p);
-      if (tags.length === 0) {
-        uncategorized.push(p);
-      } else {
-        tags.forEach(tagLower => {
-          const originalTag = allTags.find(t => t.toLowerCase() === tagLower) || tagLower;
-          if (!categories[originalTag]) categories[originalTag] = [];
-          categories[originalTag].push(p);
-        });
-      }
-    });
-
-    const result: { tag: string | null, prompts: Prompt[] }[] = [];
-    
-    // Sort allTags for category grouping to ensure "Métodos" is first
-    const sortedTagsForGrouping = [...allTags].sort((a, b) => {
-      const aLower = a.toLowerCase();
-      const bLower = b.toLowerCase();
-      if (aLower.includes('método') || aLower.includes('metodo')) return -1;
-      if (bLower.includes('método') || bLower.includes('metodo')) return 1;
-      return a.localeCompare(b);
-    });
-
-    sortedTagsForGrouping.forEach(tag => {
-      if (categories[tag]) {
-        result.push({
-          tag,
-          prompts: categories[tag]
-        });
-      }
-    });
-
-    if (uncategorized.length > 0) {
-      result.push({
-        tag: null,
-        prompts: uncategorized
-      });
-    }
-
-    return result;
-  }, [prompts, selectedTag, allTags, sortBy]);
-
-  /**
-   * Memoização dos contadores de prompts por tag para evitar recalculados pesados no render.
-   */
   const tagCounts = useMemo(() => {
     if (!prompts || !allTags) return {};
     const counts: { [key: string]: number } = {};
-    
     allTags.forEach(tag => {
       const tagLower = tag.toLowerCase();
       counts[tag] = prompts.filter(p => {
-        if (!p) return false;
         const titleTags = p.title?.match(/\[([^\]]+)\](?!\()/g) || [];
         const descTags = p.description?.match(/\[([^\]]+)\](?!\()/g) || [];
         const matches = [...titleTags, ...descTags].map(t => t.slice(1, -1).trim().toLowerCase());
         return matches.includes(tagLower);
       }).length;
     });
-    
     return counts;
   }, [prompts, allTags]);
 
-  const filteredPrompts = useMemo(() => {
-    const search = searchTerm.toLowerCase();
-    if (search) {
-      return prompts?.filter(p => 
-        p.title.toLowerCase().includes(search) || 
-        p.description.toLowerCase().includes(search)
-      ).sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 50);
-    }
-    return null;
-  }, [prompts, searchTerm]);
+  const { groups, filteredFlat } = useFilteredPrompts({
+    prompts,
+    searchTerm,
+    selectedTag,
+    sortBy,
+    allTags
+  });
 
   const previewPrompts = useMemo(() => {
-    return prompts ? [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) : [];
+    if (!prompts) return [];
+    const getSortNumber = (title: string) => {
+      const match = title.match(/#(\d+)/);
+      return match ? parseInt(match[1]) : Infinity;
+    };
+    return [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11);
   }, [prompts]);
 
   if (isAuthenticated === null) {
@@ -288,19 +129,7 @@ function MainApp() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-background text-foreground font-sans flex flex-col w-full antialiased relative overflow-hidden select-none">
-      {/* Sistema de Background Premium */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Camada 1: Gradientes de Iluminação Difusa com Animação */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] animate-pulse duration-[10000ms]" />
-        <div className="absolute bottom-[-5%] right-[-5%] w-[35%] h-[35%] bg-primary/10 rounded-full blur-[100px] animate-pulse duration-[8000ms] delay-1000" />
-        <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-blue-500/5 dark:bg-emerald-500/5 rounded-full blur-[100px] animate-pulse duration-[12000ms]" />
-        
-        {/* Camada 2: Textura de Ruído Fino (Grain) */}
-        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04] bg-noise mix-blend-overlay pointer-events-none" />
-        
-        {/* Camada 3: Grid Orgânico Sutil */}
-        <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.03] bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] dark:bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]" />
-      </div>
+      <BackgroundEffects />
 
       <div className="relative z-10 flex flex-col w-full min-h-screen">
         <AppHeader 
@@ -313,228 +142,78 @@ function MainApp() {
           onLogin={() => setShowAuthOverlay(true)}
         />
 
-        <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3"
-        >
-          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white">BIBLIOTECA WMS</h2>
-          <p className="text-slate-600 dark:text-white/70 max-w-2xl text-[11px] md:text-lg font-medium leading-relaxed px-1 md:px-0">
-            Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
-          </p>
-        </motion.div>
+        <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 flex-1 w-full max-w-full overflow-x-hidden mt-16 md:mt-20">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3"
+          >
+            <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white">BIBLIOTECA WMS</h2>
+            <p className="text-slate-600 dark:text-white/70 max-w-2xl text-[11px] md:text-lg font-medium leading-relaxed px-1 md:px-0">
+              Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
+            </p>
+          </motion.div>
 
-        <AnimatePresence mode="wait">
-          {!isLoading && !searchTerm && showCarousel && !selectedTag && (
-            <motion.div 
-              key="carousel-section"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="mb-8 md:mb-12 relative w-full"
-            >
-            <div className="flex items-center justify-between mb-3 md:mb-4">
-              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-muted-foreground">Destaques</h3>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            
-            <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-1">
-              {(previewPrompts || []).map((prompt) => (
-                <div key={`preview-${prompt?.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
-                  <img src={prompt?.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt?.title || '')}`} alt={prompt?.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
-                    <Button 
-                      onClick={() => handleViewPrompt(prompt)}
-                      className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/20 backdrop-blur-md p-0 hover:bg-white/40 border border-white/20"
-                    >
-                      <ImageIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
-                    </Button>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 md:p-2">
-                    <span className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-tighter line-clamp-1">
-                      {prompt?.title.match(/#\d+/)?.[0] || ""}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!isLoading && (
-          <div className="mb-8 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-slate-400 dark:text-muted-foreground/40" />
-                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-muted-foreground/60">Filtros da Biblioteca</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                {/* Grid selection removed per user request, defaulting to 5 columns */}
-              </div>
-            </div>
-
-            <div className="relative group/filters">
-              <div className="absolute left-0 top-0 bottom-4 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none opacity-0 group-hover/filters:opacity-100 transition-opacity hidden md:block" />
-              <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none opacity-0 group-hover/filters:opacity-100 transition-opacity hidden md:block" />
-              
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 z-20 md:opacity-0 md:group-hover/filters:opacity-100 transition-opacity">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -ml-2"
-                  onClick={() => scrollCarousel('left', 'filters')}
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 md:opacity-0 md:group-hover/filters:opacity-100 transition-opacity">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -mr-2"
-                  onClick={() => scrollCarousel('right', 'filters')}
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div 
-                ref={filterScrollRef}
-                className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-8 md:px-1 touch-pan-x"
+          <AnimatePresence mode="wait">
+            {!isLoading && !searchTerm && showCarousel && !selectedTag && (
+              <motion.div 
+                key="carousel-section"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               >
-                <Button
-                  variant="ghost"
-                  onClick={() => { setSelectedTag(null); setShowCarousel(true); }}
-                  className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
-                    (!selectedTag) 
-                      ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
-                      : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
-                  }`}
-                >
-                  <Grid className="w-3.5 h-3.5 mr-2" />
-                  Início
-                </Button>
-                
-                {/* Bloco de Ordem Numérica removido por solicitação do usuário */}
-
-                {allTags.map(tag => {
-                  const isSpecial = tag.toLowerCase() === "curso dentro";
-                  const isSelected = selectedTag === tag;
-                  const count = tagCounts[tag] || 0;
-
-                  return (
-                    <Button
-                      key={tag}
-                      variant="ghost"
-                      onClick={() => { setSelectedTag(isSelected ? null : tag); setShowCarousel(false); }}
-                      className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
-                        isSelected 
-                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
-                          : isSpecial 
-                            ? "bg-[#FF007A]/10 text-[#FF007A] border-[#FF007A]/30 hover:bg-[#FF007A]/20" 
-                            : "bg-white/50 dark:bg-black/40 border-slate-900/10 dark:border-white/10 text-slate-900 dark:text-white/70 hover:bg-white/70 dark:hover:bg-black/60 hover:border-green-500/30"
-                      }`}
-                    >
-                      {isSelected && <Check className="w-3.5 h-3.5 mr-2" />}
-                      {tag === "Biblioteca WMS" ? "Prompts" : tag}
-                      <span className={`ml-2 text-[8px] opacity-40 ${isSelected ? 'text-white/60' : ''}`}>({count})</span>
-                    </Button>
-                  );
-                })}
-
-                {(selectedTag || sortBy !== 'recent') && (
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => { setSelectedTag(null); setSortBy('recent'); setShowCarousel(true); }}
-                    className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl flex-none ml-2"
-                  >
-                    <X className="w-3 h-3" />
-                    Limpar
-                  </Button>
-                )}
-              </div>
-              
-              <div className="absolute left-0 top-0 bottom-3 w-12 bg-gradient-to-r from-background to-transparent pointer-events-none opacity-0 group-hover/filters:opacity-100 transition-opacity" />
-              <div className="absolute right-0 top-0 bottom-3 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
-            </div>
-          </div>
-        )}
-
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-40 gap-6">
-            <div className="relative">
-              <div className="w-10 h-10 border-2 border-primary/10 rounded-full" />
-              <div className="w-10 h-10 border-t-2 border-primary rounded-full animate-spin absolute top-0 left-0" />
-            </div>
-            <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
-          </div>
-        ) : isError ? (
-          <div className="flex flex-col items-center justify-center py-32 text-center space-y-4">
-            <AlertCircle className="w-10 h-10 text-red-500" />
-            <h3 className="text-lg font-bold">Erro ao carregar dados</h3>
-            <p className="text-sm text-gray-500">Não foi possível conectar à base de dados.</p>
-            <Button onClick={() => refetch()} variant="default" className="rounded-xl shadow-lg shadow-primary/20">Tentar Novamente</Button>
-          </div>
-        ) : (searchTerm ? filteredPrompts : organizedPrompts)?.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
-            <ImageIcon className="w-10 h-10 mb-4" />
-            <h3 className="text-lg font-medium">Nenhum resultado</h3>
-            <p className="text-sm">Tente outros termos ou limpe o filtro.</p>
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {searchTerm || selectedTag ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 md:gap-6">
-                {(searchTerm ? filteredPrompts : (organizedPrompts as {tag: string|null, prompts: Prompt[]}[])[0]?.prompts)?.map((prompt) => prompt ? (
-                  <PromptCard 
-                    key={`${prompt.id}-list`} 
-                    prompt={prompt} 
-                    onView={() => handleViewPrompt(prompt)}
-                  />
-                ) : null)}
-              </div>
-            ) : (
-              (organizedPrompts as { tag: string | null, prompts: Prompt[] }[]).map((group) => (
-                <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
-                  <div className="flex items-center gap-3 md:gap-4">
-                    <motion.h3 
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      className="text-sm md:text-xl font-bold uppercase tracking-widest text-slate-900 dark:text-white/80"
-                    >
-                      {group.tag || "Sem Categoria"}
-                    </motion.h3>
-                    <div className="h-px flex-1 bg-border/50" />
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 md:gap-6">
-                    {group.prompts.map((prompt) => prompt ? (
-                      <PromptCard 
-                        key={`${group.tag}-${prompt.id}`} 
-                        prompt={prompt} 
-                        onView={() => handleViewPrompt(prompt)}
-                      />
-                    ) : null)}
-                  </div>
-                </div>
-              ))
+                <HighlightCarousel prompts={previewPrompts} onView={handleViewPrompt} />
+              </motion.div>
             )}
-          </div>
-        )}
-      </main>
-      <AppFooter />
-    </div>
+          </AnimatePresence>
+
+          {!isLoading && (
+            <FilterSystem 
+              allTags={allTags}
+              tagCounts={tagCounts}
+              selectedTag={selectedTag}
+              setSelectedTag={setSelectedTag}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              setShowCarousel={setShowCarousel}
+            />
+          )}
+
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-40 gap-6">
+              <div className="relative">
+                <div className="w-10 h-10 border-2 border-primary/10 rounded-full" />
+                <div className="w-10 h-10 border-t-2 border-primary rounded-full animate-spin absolute top-0 left-0" />
+              </div>
+              <p className="text-sm font-medium text-gray-400 animate-pulse">Carregando biblioteca...</p>
+            </div>
+          ) : isError ? (
+            <div className="flex flex-col items-center justify-center py-32 text-center space-y-4">
+              <AlertCircle className="w-10 h-10 text-red-500" />
+              <h3 className="text-lg font-bold">Erro ao carregar dados</h3>
+              <p className="text-sm text-gray-500">Não foi possível conectar à base de dados.</p>
+              <Button onClick={() => refetch()} variant="default" className="rounded-xl shadow-lg shadow-primary/20">Tentar Novamente</Button>
+            </div>
+          ) : (searchTerm ? filteredFlat : groups)?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-32 text-center opacity-40">
+              <ImageIcon className="w-10 h-10 mb-4" />
+              <h3 className="text-lg font-medium">Nenhum resultado</h3>
+              <p className="text-sm">Tente outros termos ou limpe o filtro.</p>
+            </div>
+          ) : (
+            <PromptGrid 
+              groups={groups} 
+              onView={handleViewPrompt} 
+              searchTerm={searchTerm} 
+              filteredFlat={filteredFlat} 
+              selectedTag={selectedTag} 
+            />
+          )}
+        </main>
+        <AppFooter />
+      </div>
+
       {selectedPrompt && (
         <PromptDetailView 
           prompt={selectedPrompt} 
@@ -558,29 +237,6 @@ export default function Index() {
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-        
-        header { 
-          position: fixed !important; 
-          top: 0 !important; 
-          left: 0 !important;
-          right: 0 !important;
-          z-index: 100 !important;
-          width: 100%;
-        }
-
-        main {
-          margin-top: 64px;
-        }
-
-        @media (min-width: 768px) {
-          main {
-            margin-top: 80px;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .container { padding-left: 1rem; padding-right: 1rem; }
-        }
       `}} />
       <MainApp />
     </ErrorBoundary>
