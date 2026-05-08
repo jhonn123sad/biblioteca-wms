@@ -287,7 +287,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col w-full antialiased relative overflow-hidden select-none">
+    <div className="min-h-screen bg-slate-50 dark:bg-background text-foreground font-sans flex flex-col w-full antialiased relative overflow-hidden select-none">
       {/* Sistema de Background Premium */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Camada 1: Gradientes de Iluminação Difusa com Animação */}
@@ -299,7 +299,7 @@ function MainApp() {
         <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04] bg-noise mix-blend-overlay pointer-events-none" />
         
         {/* Camada 3: Grid Orgânico Sutil */}
-        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+        <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.03] bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] dark:bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]" />
       </div>
 
       <div className="relative z-10 flex flex-col w-full min-h-screen">
@@ -320,8 +320,8 @@ function MainApp() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-6 md:mb-12 flex flex-col items-center md:items-start text-center md:text-left gap-2 md:gap-3"
         >
-          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-foreground dark:text-white">BIBLIOTECA WMS</h2>
-          <p className="text-muted-foreground max-w-2xl text-[11px] md:text-lg font-light leading-relaxed px-1 md:px-0 dark:text-white/70">
+          <h2 className="text-2xl md:text-5xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white">BIBLIOTECA WMS</h2>
+          <p className="text-slate-600 dark:text-white/70 max-w-2xl text-[11px] md:text-lg font-medium leading-relaxed px-1 md:px-0">
             Pegue o que for útil e use para colocar dinheiro no seu bolso, viralizar vídeos e fazer a mudança na sua própria história.
           </p>
         </motion.div>
@@ -336,7 +336,7 @@ function MainApp() {
               className="mb-8 md:mb-12 relative w-full"
             >
             <div className="flex items-center justify-between mb-3 md:mb-4">
-              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Destaques</h3>
+              <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-muted-foreground">Destaques</h3>
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
@@ -375,8 +375,8 @@ function MainApp() {
           <div className="mb-8 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-muted-foreground/40" />
-                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-muted-foreground/60">Filtros da Biblioteca</h3>
+                <Filter className="w-4 h-4 text-slate-400 dark:text-muted-foreground/40" />
+                <h3 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-muted-foreground/60">Filtros da Biblioteca</h3>
               </div>
               <div className="flex items-center gap-2">
                 {/* Grid selection removed per user request, defaulting to 5 columns */}
@@ -512,7 +512,7 @@ function MainApp() {
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      className="text-sm md:text-xl font-bold uppercase tracking-widest text-foreground/80 dark:text-white/80"
+                      className="text-sm md:text-xl font-bold uppercase tracking-widest text-slate-900 dark:text-white/80"
                     >
                       {group.tag || "Sem Categoria"}
                     </motion.h3>
