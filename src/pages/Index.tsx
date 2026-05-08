@@ -82,6 +82,7 @@ function MainApp() {
   const [sortBy, setSortBy] = useState<SortOption>('numeric');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const filterScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
@@ -92,16 +93,17 @@ function MainApp() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const scrollCarousel = (direction: 'left' | 'right') => {
-    if (!scrollContainerRef.current) return;
-    const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
+  const scrollCarousel = (direction: 'left' | 'right', type: 'highlight' | 'filters' = 'highlight') => {
+    const ref = type === 'highlight' ? scrollContainerRef : filterScrollRef;
+    if (!ref.current) return;
+    const scrollAmount = ref.current.offsetWidth * 0.8;
     try {
-      scrollContainerRef.current.scrollBy({
+      ref.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
       });
     } catch (e) {
-      scrollContainerRef.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
+      ref.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
     }
   };
 
@@ -390,7 +392,7 @@ function MainApp() {
                   variant="secondary"
                   size="icon"
                   className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -ml-2"
-                  onClick={() => scrollCarousel('left')}
+                  onClick={() => scrollCarousel('left', 'filters')}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -401,14 +403,14 @@ function MainApp() {
                   variant="secondary"
                   size="icon"
                   className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -mr-2"
-                  onClick={() => scrollCarousel('right')}
+                  onClick={() => scrollCarousel('right', 'filters')}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
 
               <div 
-                ref={scrollContainerRef}
+                ref={filterScrollRef}
                 className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-8 md:px-1 touch-pan-x"
               >
                 <Button
