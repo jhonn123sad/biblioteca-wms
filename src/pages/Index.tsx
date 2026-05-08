@@ -221,7 +221,16 @@ function MainApp() {
     return prompts ? [...prompts].sort((a, b) => getSortNumber(a.title) - getSortNumber(b.title)).slice(0, 11) : [];
   }, [prompts]);
 
-  if (isAuthenticated === null) return null;
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
+        <div className="space-y-4">
+          <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto" />
+          <p className="text-muted-foreground animate-pulse text-sm font-medium">Validando acesso...</p>
+        </div>
+      </div>
+    );
+  }
   
   if (showWelcome) return <WelcomeScreen userName={userName} />;
 
@@ -399,13 +408,16 @@ function MainApp() {
                 {allTags.map(tag => {
                   const isSpecial = tag.toLowerCase() === "curso dentro";
                   const isSelected = selectedTag === tag;
-                  const count = prompts?.filter(p => {
-                    const matches = [
-                      ...(p.title.match(/\[([^\]]+)\](?!\()/g) || []),
-                      ...(p.description.match(/\[([^\]]+)\](?!\()/g) || [])
-                    ].map(t => t.slice(1, -1).trim().toLowerCase());
-                    return matches.includes(tag.toLowerCase());
-                  }).length || 0;
+                  const count = useMemo(() => {
+                    if (!prompts) return 0;
+                    return prompts.filter(p => {
+                      if (!p) return false;
+                      const titleTags = p.title?.match(/\[([^\]]+)\](?!\()/g) || [];
+                      const descTags = p.description?.match(/\[([^\]]+)\](?!\()/g) || [];
+                      const matches = [...titleTags, ...descTags].map(t => t.slice(1, -1).trim().toLowerCase());
+                      return matches.includes(tag.toLowerCase());
+                    }).length;
+                  }, [prompts, tag]);
 
                   return (
                     <Button
