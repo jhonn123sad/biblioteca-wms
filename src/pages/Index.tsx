@@ -206,6 +206,27 @@ function MainApp() {
     return result;
   }, [prompts, selectedTag, allTags, sortBy]);
 
+  /**
+   * Memoização dos contadores de prompts por tag para evitar recalculados pesados no render.
+   */
+  const tagCounts = useMemo(() => {
+    if (!prompts || !allTags) return {};
+    const counts: { [key: string]: number } = {};
+    
+    allTags.forEach(tag => {
+      const tagLower = tag.toLowerCase();
+      counts[tag] = prompts.filter(p => {
+        if (!p) return false;
+        const titleTags = p.title?.match(/\[([^\]]+)\](?!\()/g) || [];
+        const descTags = p.description?.match(/\[([^\]]+)\](?!\()/g) || [];
+        const matches = [...titleTags, ...descTags].map(t => t.slice(1, -1).trim().toLowerCase());
+        return matches.includes(tagLower);
+      }).length;
+    });
+    
+    return counts;
+  }, [prompts, allTags]);
+
   const filteredPrompts = useMemo(() => {
     const search = searchTerm.toLowerCase();
     if (search) {
@@ -408,16 +429,8 @@ function MainApp() {
                 {allTags.map(tag => {
                   const isSpecial = tag.toLowerCase() === "curso dentro";
                   const isSelected = selectedTag === tag;
-                  const count = useMemo(() => {
-                    if (!prompts) return 0;
-                    return prompts.filter(p => {
-                      if (!p) return false;
-                      const titleTags = p.title?.match(/\[([^\]]+)\](?!\()/g) || [];
-                      const descTags = p.description?.match(/\[([^\]]+)\](?!\()/g) || [];
-                      const matches = [...titleTags, ...descTags].map(t => t.slice(1, -1).trim().toLowerCase());
-                      return matches.includes(tag.toLowerCase());
-                    }).length;
-                  }, [prompts, tag]);
+                  const isSelected = selectedTag === tag;
+                  const count = tagCounts[tag] || 0;
 
                   return (
                     <Button
