@@ -429,7 +429,6 @@ function MainApp() {
                 {allTags.map(tag => {
                   const isSpecial = tag.toLowerCase() === "curso dentro";
                   const isSelected = selectedTag === tag;
-                  const isSelected = selectedTag === tag;
                   const count = tagCounts[tag] || 0;
 
                   return (
