@@ -338,17 +338,17 @@ function MainApp() {
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Destaques</h3>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
             
             <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-1">
-              {previewPrompts.map((prompt) => (
+              {(previewPrompts || []).map((prompt) => (
                 <div key={`preview-${prompt?.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
                   <img src={prompt?.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt?.title || '')}`} alt={prompt?.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
