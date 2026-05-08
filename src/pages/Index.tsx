@@ -82,6 +82,7 @@ function MainApp() {
   const [sortBy, setSortBy] = useState<SortOption>('numeric');
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const filterScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
@@ -92,16 +93,17 @@ function MainApp() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const scrollCarousel = (direction: 'left' | 'right') => {
-    if (!scrollContainerRef.current) return;
-    const scrollAmount = scrollContainerRef.current.offsetWidth * 0.8;
+  const scrollCarousel = (direction: 'left' | 'right', type: 'highlight' | 'filters' = 'highlight') => {
+    const ref = type === 'highlight' ? scrollContainerRef : filterScrollRef;
+    if (!ref.current) return;
+    const scrollAmount = ref.current.offsetWidth * 0.8;
     try {
-      scrollContainerRef.current.scrollBy({
+      ref.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
       });
     } catch (e) {
-      scrollContainerRef.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
+      ref.current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
     }
   };
 
@@ -336,17 +338,17 @@ function MainApp() {
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <h3 className="text-[9px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Destaques</h3>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('left', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
+                <Button variant="ghost" size="icon" onClick={() => scrollCarousel('right', 'highlight')} className="w-8 h-8 rounded-full border border-border md:flex hidden">
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
             
             <div ref={scrollContainerRef} className="flex gap-4 md:gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none px-1">
-              {previewPrompts.map((prompt) => (
+              {(previewPrompts || []).map((prompt) => (
                 <div key={`preview-${prompt?.id}`} className="group/item relative flex-none w-[110px] xs:w-[130px] md:w-36 aspect-[3/4] rounded-xl overflow-hidden border border-border shadow-sm snap-start">
                   <img src={prompt?.images[0] || `https://placehold.co/600x800?text=${encodeURIComponent(prompt?.title || '')}`} alt={prompt?.title} className="w-full h-full object-cover transition-transform group-hover/item:scale-110" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center md:opacity-0 group-hover/item:opacity-100 transition-opacity">
@@ -390,7 +392,7 @@ function MainApp() {
                   variant="secondary"
                   size="icon"
                   className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -ml-2"
-                  onClick={() => scrollCarousel('left')}
+                  onClick={() => scrollCarousel('left', 'filters')}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -401,14 +403,14 @@ function MainApp() {
                   variant="secondary"
                   size="icon"
                   className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -mr-2"
-                  onClick={() => scrollCarousel('right')}
+                  onClick={() => scrollCarousel('right', 'filters')}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
 
               <div 
-                ref={scrollContainerRef}
+                ref={filterScrollRef}
                 className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-8 md:px-1 touch-pan-x"
               >
                 <Button
