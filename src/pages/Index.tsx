@@ -66,13 +66,16 @@ function MainApp() {
   };
 
   const tagCounts = useMemo(() => {
-    if (!prompts || !allTags) return {};
+    if (!prompts || prompts.length === 0 || !allTags || allTags.length === 0) return {};
     const counts: { [key: string]: number } = {};
+    
     allTags.forEach(tag => {
+      if (!tag) return;
       const tagLower = tag.toLowerCase();
       counts[tag] = prompts.filter(p => {
-        const titleTags = p.title?.match(/\[([^\]]+)\](?!\()/g) || [];
-        const descTags = p.description?.match(/\[([^\]]+)\](?!\()/g) || [];
+        if (!p || !p.title) return false;
+        const titleTags = p.title.match(/\[([^\]]+)\](?!\()/g) || [];
+        const descTags = (p.description || "").match(/\[([^\]]+)\](?!\()/g) || [];
         const matches = [...titleTags, ...descTags].map(t => t.slice(1, -1).trim().toLowerCase());
         return matches.includes(tagLower);
       }).length;
@@ -91,6 +94,7 @@ function MainApp() {
   const previewPrompts = useMemo(() => {
     if (!prompts) return [];
     const getSortNumber = (title: string) => {
+      if (!title) return Infinity;
       const match = title.match(/#(\d+)/);
       return match ? parseInt(match[1]) : Infinity;
     };
