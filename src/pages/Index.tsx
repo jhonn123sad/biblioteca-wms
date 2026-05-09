@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Loader2, 
@@ -47,13 +47,17 @@ function MainApp() {
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('numeric');
 
-  useEffect(() => {
-    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-    const handleResize = () => {
+  useLayoutEffect(() => {
+    const setHeight = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    setHeight();
+    window.addEventListener('resize', setHeight);
+    window.addEventListener('orientationchange', setHeight);
+    return () => {
+      window.removeEventListener('resize', setHeight);
+      window.removeEventListener('orientationchange', setHeight);
+    };
   }, []);
 
   const handleViewPrompt = (prompt: Prompt) => {

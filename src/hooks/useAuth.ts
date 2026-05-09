@@ -10,12 +10,12 @@ export function useAuth() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    try {
-      console.log("AUTH_INITIALIZING...");
+    console.log("AUTH_HOOK_MOUNTED");
       const auth = localStorage.getItem("wms_member_auth");
       const name = localStorage.getItem("wms_member_name");
       console.log("AUTH_STORAGE_CHECK:", { auth, name });
       
+      console.log("AUTH_STATUS_DETERMINED:", { auth: !!auth });
       if (auth === "true") {
         setIsAuthenticated(true);
         if (name) setUserName(name);
