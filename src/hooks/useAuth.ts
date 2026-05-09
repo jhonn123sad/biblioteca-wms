@@ -10,7 +10,8 @@ export function useAuth() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    console.log("AUTH_HOOK_MOUNTED");
+    try {
+      console.log("AUTH_HOOK_MOUNTED");
       const auth = localStorage.getItem("wms_member_auth");
       const name = localStorage.getItem("wms_member_name");
       console.log("AUTH_STORAGE_CHECK:", { auth, name });
