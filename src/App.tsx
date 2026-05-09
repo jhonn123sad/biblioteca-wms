@@ -1,5 +1,4 @@
 import { Toaster } from "./components/ui/toaster";
-console.log("APP_JS_LOADED_OK");
 import { Toaster as Sonner } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

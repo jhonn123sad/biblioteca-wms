@@ -43,7 +43,7 @@ function MainApp() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
-  console.log("INDEX_STATE_V2:", { auth: isAuthenticated !== null, isLoading, hasPrompts: !!prompts });
+  
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('numeric');

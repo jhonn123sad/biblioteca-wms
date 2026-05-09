@@ -11,12 +11,8 @@ export function useAuth() {
 
   useEffect(() => {
     try {
-      console.log("AUTH_HOOK_MOUNTED");
       const auth = localStorage.getItem("wms_member_auth");
       const name = localStorage.getItem("wms_member_name");
-      console.log("AUTH_STORAGE_CHECK:", { auth, name });
-      
-      console.log("AUTH_STATUS_DETERMINED:", { auth: !!auth });
       if (auth === "true") {
         setIsAuthenticated(true);
         if (name) setUserName(name);
@@ -24,7 +20,7 @@ export function useAuth() {
         setIsAuthenticated(false);
       }
     } catch (e) {
-      console.error("AUTH_STORAGE_ERROR:", e);
+      console.warn("Storage access failed:", e);
       setIsAuthenticated(false);
     }
   }, []);
