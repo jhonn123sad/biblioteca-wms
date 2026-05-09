@@ -13,7 +13,7 @@ export interface UseFilteredPromptsProps {
 
 export function useFilteredPrompts({ prompts, searchTerm, selectedTag, sortBy, allTags }: UseFilteredPromptsProps) {
   return useMemo(() => {
-    if (!prompts) return { groups: [], filteredFlat: [] };
+    if (!prompts || !allTags) return { groups: [], filteredFlat: [] };
 
     const getPromptTags = (p: Prompt) => {
       const tagRegex = /\[([^\]]+)\](?!\()/g;

@@ -50,7 +50,7 @@ const formatSheetData = (data: any[]): Prompt[] => {
       content: getValue(cols[2]) || "",
       images
     };
-  }).filter(p => p.content && p.title !== "Sem Título");
+  }).filter(p => p && p.content && p.title && p.title !== "Sem Título");
 };
 
 export const getSortNumber = (title: string): number => {

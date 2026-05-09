@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Loader2, 
@@ -24,24 +24,41 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 type SortOption = 'recent' | 'az' | 'numeric' | 'popular';
 
 function MainApp() {
-  const { isAuthenticated, isVerifying, userName, showWelcome, handleLogin, handleLogout } = useAuth();
-  const { prompts, allTags, isLoading, refetch, isError } = usePrompts();
+  const auth = useAuth();
+  const { isAuthenticated, isVerifying, userName, showWelcome, handleLogin, handleLogout } = auth;
+  const promptsData = usePrompts();
+  const { prompts, allTags, isLoading, refetch, isError } = promptsData;
+  
+  // Debug log to identify if any critical value is causing issues
+  useEffect(() => {
+    console.log("APP_STATE_DIAGNOSTIC:", { 
+      authReady: isAuthenticated !== null, 
+      promptsLoading: isLoading,
+      hasPrompts: !!prompts,
+      promptsCount: prompts?.length 
+    });
+  }, [isAuthenticated, isLoading, prompts]);
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showCarousel, setShowCarousel] = useState(true);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
   const [pendingPrompt, setPendingPrompt] = useState<Prompt | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('numeric');
 
-  useEffect(() => {
-    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-    const handleResize = () => {
+  useLayoutEffect(() => {
+    const setHeight = () => {
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    setHeight();
+    window.addEventListener('resize', setHeight);
+    window.addEventListener('orientationchange', setHeight);
+    return () => {
+      window.removeEventListener('resize', setHeight);
+      window.removeEventListener('orientationchange', setHeight);
+    };
   }, []);
 
   const handleViewPrompt = (prompt: Prompt) => {
@@ -54,13 +71,16 @@ function MainApp() {
   };
 
   const tagCounts = useMemo(() => {
-    if (!prompts || !allTags) return {};
+    if (!prompts || prompts.length === 0 || !allTags || allTags.length === 0) return {};
     const counts: { [key: string]: number } = {};
+    
     allTags.forEach(tag => {
+      if (!tag) return;
       const tagLower = tag.toLowerCase();
       counts[tag] = prompts.filter(p => {
-        const titleTags = p.title?.match(/\[([^\]]+)\](?!\()/g) || [];
-        const descTags = p.description?.match(/\[([^\]]+)\](?!\()/g) || [];
+        if (!p || !p.title) return false;
+        const titleTags = p.title.match(/\[([^\]]+)\](?!\()/g) || [];
+        const descTags = (p.description || "").match(/\[([^\]]+)\](?!\()/g) || [];
         const matches = [...titleTags, ...descTags].map(t => t.slice(1, -1).trim().toLowerCase());
         return matches.includes(tagLower);
       }).length;
@@ -79,6 +99,7 @@ function MainApp() {
   const previewPrompts = useMemo(() => {
     if (!prompts) return [];
     const getSortNumber = (title: string) => {
+      if (!title) return Infinity;
       const match = title.match(/#(\d+)/);
       return match ? parseInt(match[1]) : Infinity;
     };
