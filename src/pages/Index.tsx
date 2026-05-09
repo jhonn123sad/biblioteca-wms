@@ -24,8 +24,20 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 type SortOption = 'recent' | 'az' | 'numeric' | 'popular';
 
 function MainApp() {
-  const { isAuthenticated, isVerifying, userName, showWelcome, handleLogin, handleLogout } = useAuth();
-  const { prompts, allTags, isLoading, refetch, isError } = usePrompts();
+  const auth = useAuth();
+  const { isAuthenticated, isVerifying, userName, showWelcome, handleLogin, handleLogout } = auth;
+  const promptsData = usePrompts();
+  const { prompts, allTags, isLoading, refetch, isError } = promptsData;
+  
+  // Debug log to identify if any critical value is causing issues
+  useEffect(() => {
+    console.log("APP_STATE_DIAGNOSTIC:", { 
+      authReady: isAuthenticated !== null, 
+      promptsLoading: isLoading,
+      hasPrompts: !!prompts,
+      promptsCount: prompts?.length 
+    });
+  }, [isAuthenticated, isLoading, prompts]);
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
