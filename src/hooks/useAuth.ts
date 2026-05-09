@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -34,23 +32,7 @@ export function useAuth() {
 
     setIsVerifying(true);
     try {
-      // Primeiro tenta verificar na tabela local do Supabase
-      const { data: allowedData, error: allowedError } = await supabase
-        .from('allowed_numbers')
-        .select('name')
-        .eq('phone', sanitizedPhone)
-        .maybeSingle();
-
-      if (allowedError) {
-        console.error("Supabase auth error:", allowedError);
-      }
-
-      if (allowedData) {
-        const finalName = allowedData.name || "Membro";
-        return await finalizeLogin(finalName);
-      }
-
-      // Se não encontrar no Supabase, tenta o Google Script (legado)
+      // Validação exclusiva pelo Google Apps Script
       const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtcYiY9cgrk_vme8aMZEKJvUoaIMvjXq4UxwbtFNUMGWvRQJiUhhU1thdmOwIwZ7k5/exec";
       const response = await fetch(`${AUTH_SCRIPT_URL}?phone=${encodeURIComponent(sanitizedPhone)}`);
       
@@ -65,7 +47,7 @@ export function useAuth() {
       return false;
     } catch (error: any) {
       console.error("Login error:", error);
-      toast.error("Erro ao validar acesso.");
+      toast.error("Erro ao validar acesso. Tente novamente mais tarde.");
       return false;
     } finally {
       setIsVerifying(false);
