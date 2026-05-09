@@ -89,7 +89,7 @@ export function usePrompts() {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const json = await response.json();
-        console.log("FETCH_RESPONSE_JSON:", json ? "Success (data keys: " + Object.keys(json) + ")" : "Null/Undefined");
+        console.log("FETCH_RESPONSE_JSON:", json ? "Success" : "Null");
         
         if (!json || !json.data) throw new Error("Invalid data format");
         
