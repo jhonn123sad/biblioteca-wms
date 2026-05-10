@@ -34,7 +34,6 @@ interface PromptCardProps {
 
 export function PromptCard({ prompt, onView }: PromptCardProps) {
   const title = prompt?.title || "Sem Título";
-  const description = prompt?.description || "";
   const mainImage = (prompt?.images && prompt.images[0]) || `https://placehold.co/600x800?text=${encodeURIComponent(title)}`;
   
   // Extract number and tags from title
