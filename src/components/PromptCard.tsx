@@ -76,16 +76,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
       </div>
 
       <div className="p-3 md:p-5 flex flex-col min-w-0 gap-2 md:gap-3">
-        {/* 2. TÍTULO DO BLOCO */}
-        <h3 
-          onClick={onView}
-          className="text-[13px] md:text-[18px] font-medium font-display leading-tight text-foreground cursor-pointer hover:text-[#FF007A] active:text-[#FF007A] transition-colors flex items-center gap-1.5"
-        >
-          <Star size={14} className="fill-black text-black shrink-0" />
-          <span>{cleanTitle}</span>
-        </h3>
-
-        {/* 3. LINHA COM NUMERAÇÃO + TAG */}
+        {/* 2. LINHA COM NUMERAÇÃO + TAG (Mover para cima) */}
         <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
           {idMatch && (
             <span className="text-[#FF007A] font-black text-[10px] md:text-xs">
@@ -101,6 +92,14 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
             </span>
           ))}
         </div>
+
+        {/* 3. TÍTULO DO BLOCO */}
+        <h3 
+          onClick={onView}
+          className="text-[14px] md:text-[18px] font-medium font-display leading-tight text-foreground cursor-pointer hover:text-[#FF007A] active:text-[#FF007A] transition-colors line-clamp-2 md:line-clamp-none"
+        >
+          {cleanTitle}
+        </h3>
 
         <Button 
           onClick={onView}
