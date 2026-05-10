@@ -50,10 +50,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
     .replace(/\[([^\]]+)\](?!\()/g, '')
     .trim();
 
-  // Clean description: remove [tags]
-  const cleanDescription = description
-    .replace(/\[([^\]]+)\](?!\()/g, '')
-    .trim();
 
   return (
     <motion.div 
