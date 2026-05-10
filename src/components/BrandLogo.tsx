@@ -23,6 +23,7 @@ export function BrandLogo({ className = "h-12 w-12" }: { className?: string }) {
         alt="WMS Logo"
         className="h-full w-full object-contain transition-all duration-300"
         onError={() => setImageError(true)}
+        loading="eager"
       />
     </div>
   );

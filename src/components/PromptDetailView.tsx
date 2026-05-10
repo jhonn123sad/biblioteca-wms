@@ -64,7 +64,7 @@ export function PromptDetailView({ prompt, onClose }: PromptDetailViewProps) {
                       onClick={() => setExpandedImage(img)}
                       className="aspect-square rounded-2xl overflow-hidden border border-border shadow-sm bg-card cursor-zoom-in group/img relative"
                     >
-                      <img src={img} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                      <img src={img} alt={`Preview ${i + 1}`} className="w-full h-full object-cover" loading="eager" />
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                         <Search className="w-6 h-6 text-white drop-shadow-md" />
                       </div>

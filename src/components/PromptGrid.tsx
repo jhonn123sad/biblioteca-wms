@@ -33,9 +33,8 @@ export function PromptGrid({ groups, onView, searchTerm, filteredFlat, selectedT
         <div key={group.tag || 'uncategorized'} className="space-y-4 md:space-y-6">
           <div className="flex items-center gap-3 md:gap-4">
             <motion.h3 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               className="text-sm md:text-xl font-bold uppercase tracking-widest text-slate-900 dark:text-white/80"
             >
               {group.tag || "Sem Categoria"}

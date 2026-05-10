@@ -58,10 +58,9 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className="group bg-card rounded-xl md:rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full"
     >
       {/* 1. IMAGEM EM DESTAQUE */}
@@ -70,8 +69,8 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
           src={mainImage} 
           alt={prompt.title} 
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-          loading="lazy" 
           decoding="async"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
