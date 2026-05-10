@@ -21,6 +21,7 @@ export function FilterSystem({
   setSortBy, 
   setShowCarousel 
 }: FilterSystemProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const INITIAL_VISIBLE_COUNT = 8;
   const visibleTags = isExpanded 
     ? allTags 
