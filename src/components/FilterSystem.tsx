@@ -95,7 +95,7 @@ export function FilterSystem({
               ) : (
                 <>
                   <ChevronDown className="w-3.5 h-3.5 mr-2" />
-                  Ver Mais (+{allTags.length - INITIAL_VISIBLE_COUNT})
+                  Ver Mais (+{hiddenTagsCount})
                 </>
               )}
             </Button>
