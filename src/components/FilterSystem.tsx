@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { Filter, Grid, Check, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Filter, Grid, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface FilterSystemProps {
@@ -21,16 +21,14 @@ export function FilterSystem({
   setSortBy, 
   setShowCarousel 
 }: FilterSystemProps) {
-  const filterScrollRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (!filterScrollRef.current) return;
-    const scrollAmount = filterScrollRef.current.offsetWidth * 0.8;
-    filterScrollRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
-    });
-  };
+  const [isExpanded, setIsExpanded] = useState(false);
+  const INITIAL_VISIBLE_COUNT = 8;
+  const visibleTags = isExpanded 
+    ? allTags 
+    : allTags.filter((tag, index) => index < INITIAL_VISIBLE_COUNT || tag === selectedTag);
+  
+  const hiddenTagsCount = allTags.length - visibleTags.length;
+  const hasMoreTags = hiddenTagsCount > 0;
 
   return (
     <div className="mb-8 flex flex-col gap-4">
@@ -41,32 +39,9 @@ export function FilterSystem({
         </div>
       </div>
 
-      <div className="relative group/filters">
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-20 md:opacity-0 md:group-hover/filters:opacity-100 transition-opacity">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -ml-2"
-            onClick={() => scroll('left')}
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-        </div>
-
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 md:opacity-0 md:group-hover/filters:opacity-100 transition-opacity">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8 rounded-full shadow-lg bg-background/80 backdrop-blur-md border border-white/10 -mr-2"
-            onClick={() => scroll('right')}
-          >
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
-
+      <div className="relative">
         <div 
-          ref={filterScrollRef}
-          className="flex overflow-x-auto gap-2 md:gap-2.5 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none px-8 md:px-1 touch-pan-x"
+          className="flex flex-wrap gap-2 md:gap-2.5 pb-2 select-none md:px-1"
         >
           <Button
             variant="ghost"
@@ -81,7 +56,7 @@ export function FilterSystem({
             Início
           </Button>
           
-          {allTags.map(tag => {
+          {visibleTags.map(tag => {
             const isSpecial = tag.toLowerCase() === "curso dentro";
             const isSelected = selectedTag === tag;
             const count = tagCounts[tag] || 0;
@@ -91,7 +66,7 @@ export function FilterSystem({
                 key={tag}
                 variant="ghost"
                 onClick={() => { setSelectedTag(isSelected ? null : tag); setShowCarousel(false); }}
-                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider flex-none transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
+                className={`rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider transition-all duration-300 border backdrop-blur-xl shadow-lg hover:-translate-y-[1px] ${
                   isSelected 
                     ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white border-white/20 shadow-green-500/20" 
                     : isSpecial 
@@ -106,11 +81,31 @@ export function FilterSystem({
             );
           })}
 
+          {hasMoreTags && (
+            <Button
+              variant="ghost"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="rounded-xl px-4 h-9 md:h-10 text-[10px] md:text-xs font-extrabold uppercase tracking-wider transition-all duration-300 border backdrop-blur-xl bg-white/30 dark:bg-black/20 border-slate-900/5 dark:border-white/5 text-slate-500 dark:text-white/40 hover:bg-white/50 dark:hover:bg-black/40"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="w-3.5 h-3.5 mr-2" />
+                  Ver Menos
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-3.5 h-3.5 mr-2" />
+                  Ver Mais (+{hiddenTagsCount})
+                </>
+              )}
+            </Button>
+          )}
+
           {(selectedTag || sortBy !== 'recent') && (
             <Button 
               variant="ghost" 
               onClick={() => { setSelectedTag(null); setSortBy('recent'); setShowCarousel(true); }}
-              className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl flex-none ml-2"
+              className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl transition-all duration-300"
             >
               <X className="w-3 h-3" />
               Limpar
