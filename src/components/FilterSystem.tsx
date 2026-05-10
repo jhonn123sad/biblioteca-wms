@@ -102,7 +102,7 @@ export function FilterSystem({
             <Button 
               variant="ghost" 
               onClick={() => { setSelectedTag(null); setSortBy('recent'); setShowCarousel(true); }}
-              className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl transition-all duration-300 ml-auto"
+              className="text-[9px] md:text-[10px] font-black uppercase text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1.5 h-9 md:h-10 px-3 rounded-xl transition-all duration-300"
             >
               <X className="w-3 h-3" />
               Limpar
