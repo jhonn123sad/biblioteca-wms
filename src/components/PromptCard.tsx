@@ -69,6 +69,10 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
           loading="eager"
         />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Ícone de estrela premium */}
+        <div className="absolute top-2 right-2 bg-black/20 backdrop-blur-md p-1.5 rounded-full border border-white/10 shadow-lg">
+          <Star size={14} className="fill-[#FFD700] text-[#FFD700]" />
+        </div>
       </div>
 
       <div className="p-3 md:p-5 flex flex-col min-w-0 gap-2 md:gap-3">
