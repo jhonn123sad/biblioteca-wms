@@ -21,11 +21,13 @@ export function FilterSystem({
   setSortBy, 
   setShowCarousel 
 }: FilterSystemProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const INITIAL_VISIBLE_COUNT = 8;
-
-  const visibleTags = isExpanded ? allTags : allTags.slice(0, INITIAL_VISIBLE_COUNT);
-  const hasMoreTags = allTags.length > INITIAL_VISIBLE_COUNT;
+  const visibleTags = isExpanded 
+    ? allTags 
+    : allTags.filter((tag, index) => index < INITIAL_VISIBLE_COUNT || tag === selectedTag);
+  
+  const hiddenTagsCount = allTags.length - visibleTags.length;
+  const hasMoreTags = hiddenTagsCount > 0;
 
   return (
     <div className="mb-8 flex flex-col gap-4">
