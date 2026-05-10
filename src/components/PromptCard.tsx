@@ -34,7 +34,6 @@ interface PromptCardProps {
 
 export function PromptCard({ prompt, onView }: PromptCardProps) {
   const title = prompt?.title || "Sem Título";
-  const description = prompt?.description || "";
   const mainImage = (prompt?.images && prompt.images[0]) || `https://placehold.co/600x800?text=${encodeURIComponent(title)}`;
   
   // Extract number and tags from title
@@ -51,10 +50,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
     .replace(/\[([^\]]+)\](?!\()/g, '')
     .trim();
 
-  // Clean description: remove [tags]
-  const cleanDescription = description
-    .replace(/\[([^\]]+)\](?!\()/g, '')
-    .trim();
 
   return (
     <motion.div 
@@ -77,7 +72,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
 
       <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0 gap-2 md:gap-3">
         {/* 2. TÍTULO DO BLOCO */}
-        <h3 className="text-[13px] md:text-lg font-black leading-tight text-foreground">
+        <h3 className="text-[14px] md:text-xl font-medium font-display leading-tight text-foreground">
           {cleanTitle}
         </h3>
 
@@ -96,11 +91,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
               {tag}
             </span>
           ))}
-        </div>
-
-        {/* 4. SUBTEXTO / DESCRIÇÃO */}
-        <div className="text-muted-foreground text-[10px] md:text-xs font-light line-clamp-1 leading-relaxed flex-1 overflow-hidden">
-          {cleanDescription}
         </div>
 
         <Button 
