@@ -2,7 +2,7 @@ import { useState } from "react";
 import logoSrc from "@/assets/wms-logo.png";
 import { Image } from "lucide-react";
 
-export function BrandLogo({ className = "h-20 w-20 md:h-32 md:w-32" }: { className?: string }) {
+export function BrandLogo({ className = "h-12 w-12" }: { className?: string }) {
   const [imageError, setImageError] = useState(false);
 
   if (imageError) {
