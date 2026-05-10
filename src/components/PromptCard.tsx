@@ -1,6 +1,5 @@
 import { Button } from "./ui/button";
 import { Prompt } from "../hooks/usePrompts";
-import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 
 const neonColors = [
@@ -53,10 +52,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
 
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+    <div 
       className="group bg-card rounded-xl md:rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col w-full"
     >
       {/* 1. IMAGEM EM DESTAQUE */}
@@ -67,6 +63,8 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
           decoding="async"
           loading="eager"
+          // @ts-ignore - fetchPriority is supported in modern browsers
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
         {/* Ícone de estrela premium */}
@@ -96,7 +94,7 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
         {/* 3. TÍTULO DO BLOCO */}
         <h3 
           onClick={onView}
-          className="text-[14px] md:text-[18px] font-medium font-display leading-tight text-foreground cursor-pointer hover:text-[#FF007A] active:text-[#FF007A] transition-colors line-clamp-2 md:line-clamp-none"
+          className="text-[14px] md:text-[18px] font-medium font-display leading-tight text-foreground cursor-pointer hover:text-[#FF007A] active:text-[#FF007A] transition-colors whitespace-normal break-words"
         >
           {cleanTitle}
         </h3>
@@ -108,6 +106,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
           Visualizar
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }
