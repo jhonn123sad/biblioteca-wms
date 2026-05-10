@@ -1,6 +1,5 @@
 import { Button } from "./ui/button";
 import { Prompt } from "../hooks/usePrompts";
-import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 
 const neonColors = [
@@ -107,6 +106,6 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
           Visualizar
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }
