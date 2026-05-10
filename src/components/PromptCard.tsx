@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import { Prompt } from "../hooks/usePrompts";
 import { motion } from "framer-motion";
+import { Star } from "lucide-react";
 
 const neonColors = [
   'bg-[#FF00FF] text-white border-transparent', 
@@ -56,10 +57,10 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="group bg-card rounded-xl md:rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full w-full"
+      className="group bg-card rounded-xl md:rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col w-full"
     >
       {/* 1. IMAGEM EM DESTAQUE */}
-      <div className="aspect-video overflow-hidden relative bg-muted">
+      <div className="aspect-video overflow-hidden relative bg-muted cursor-pointer" onClick={onView}>
         <img 
           src={mainImage} 
           alt={prompt.title} 
@@ -70,10 +71,14 @@ export function PromptCard({ prompt, onView }: PromptCardProps) {
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
 
-      <div className="p-3 md:p-5 flex flex-col flex-1 min-w-0 gap-2 md:gap-3">
+      <div className="p-3 md:p-5 flex flex-col min-w-0 gap-2 md:gap-3">
         {/* 2. TÍTULO DO BLOCO */}
-        <h3 className="text-[14px] md:text-xl font-medium font-display leading-tight text-foreground">
-          {cleanTitle}
+        <h3 
+          onClick={onView}
+          className="text-[13px] md:text-[18px] font-medium font-display leading-tight text-foreground cursor-pointer hover:text-[#FF007A] active:text-[#FF007A] transition-colors flex items-center gap-1.5"
+        >
+          <Star size={14} className="fill-black text-black shrink-0" />
+          <span>{cleanTitle}</span>
         </h3>
 
         {/* 3. LINHA COM NUMERAÇÃO + TAG */}
