@@ -22,7 +22,7 @@ export function FilterSystem({
   setShowCarousel 
 }: FilterSystemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const INITIAL_VISIBLE_COUNT = 5;
+  const INITIAL_VISIBLE_COUNT = 8;
 
   const visibleTags = isExpanded ? allTags : allTags.slice(0, INITIAL_VISIBLE_COUNT);
   const hasMoreTags = allTags.length > INITIAL_VISIBLE_COUNT;
