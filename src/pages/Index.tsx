@@ -32,26 +32,28 @@ function MainApp() {
   // Efeito para pre-carregar imagens e otimizar velocidade
   useEffect(() => {
     if (prompts && prompts.length > 0) {
-      // Pre-carregar as primeiras 15 imagens com prioridade máxima
-      const imagesToPreload = prompts.slice(0, 15);
-      imagesToPreload.forEach(prompt => {
+      // Prioridade máxima para as imagens visíveis (primeiras 20)
+      const priorityImages = prompts.slice(0, 20);
+      priorityImages.forEach(prompt => {
         if (prompt.images && prompt.images[0]) {
           const img = new Image();
           img.src = prompt.images[0];
+          // @ts-ignore
+          img.fetchPriority = 'high';
         }
       });
       
-      // Carregar o restante em background após um pequeno delay
-      const timer = setTimeout(() => {
-        prompts.slice(15, 40).forEach(prompt => {
-          if (prompt.images && prompt.images[0]) {
+      // Carregar o restante imediatamente após sem delay, mas em background
+      const otherImages = prompts.slice(20);
+      otherImages.forEach((prompt, index) => {
+        if (prompt.images && prompt.images[0]) {
+          // Pequeno escalonamento para não travar a main thread se forem muitos
+          setTimeout(() => {
             const img = new Image();
             img.src = prompt.images[0];
-          }
-        });
-      }, 1000);
-      
-      return () => clearTimeout(timer);
+          }, index * 20); 
+        }
+      });
     }
   }, [prompts]);
 
