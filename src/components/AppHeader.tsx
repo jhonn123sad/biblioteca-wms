@@ -31,7 +31,7 @@ export function AppHeader({ searchTerm, setSearchTerm, isLoading, refetch, onLog
     <header className="sticky top-0 z-[60] bg-background/80 backdrop-blur-xl border-b border-border safe-top w-full transition-all duration-300" style={{ WebkitBackdropFilter: 'blur(24px)' }}>
       <div className="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-          <BrandLogo />
+          <BrandLogo className="h-10 w-10 md:h-12 md:w-12" />
           <h1 className="text-xs md:text-xl font-bold tracking-tight line-clamp-1 hidden xs:block">BIBLIOTECA WMS</h1>
         </div>
         
